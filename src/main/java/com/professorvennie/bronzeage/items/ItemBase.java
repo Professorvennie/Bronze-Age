@@ -1,6 +1,6 @@
 package com.professorvennie.bronzeage.items;
 
-import com.professorvennie.bronzeage.core.creativetab.CreativeTab;
+import com.professorvennie.bronzeage.BronzeAge;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.item.Item;
 
@@ -9,9 +9,9 @@ import net.minecraft.item.Item;
  */
 public class ItemBase extends Item {
 
-    public ItemBase(String name){
+    public ItemBase(String name) {
         setUnlocalizedName(name);
-        setCreativeTab(CreativeTab.tabMain);
+        setCreativeTab(BronzeAge.tabMain);
     }
 
     @Override

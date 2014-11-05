@@ -1,7 +1,6 @@
 package com.professorvennie.bronzeage.blocks;
 
-import com.professorvennie.bronzeage.core.creativetab.CreativeTab;
-import cpw.mods.fml.common.registry.GameRegistry;
+import com.professorvennie.bronzeage.BronzeAge;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 
@@ -13,12 +12,12 @@ public class BlockBase extends Block {
     protected BlockBase(Material material, String name) {
         super(material);
         setBlockName(name);
-        setCreativeTab(CreativeTab.tabMain);
+        setCreativeTab(BronzeAge.tabMain);
     }
 
     @Override
     public Block setBlockName(String name) {
-        GameRegistry.registerBlock(this, this.getUnlocalizedName());
+        //GameRegistry.registerBlock(this, name);
         return super.setBlockName(name);
     }
 }
