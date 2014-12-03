@@ -3,6 +3,7 @@ package com.professorvennie.bronzeage.blocks;
 import com.professorvennie.bronzeage.tileentitys.TileEntitySteamPipe;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -33,5 +34,10 @@ public class BlockSteamPipe extends BlockBase implements ITileEntityProvider {
     @Override
     public int getRenderType() {
         return -1;
+    }
+
+    @Override
+    public void registerBlockIcons(IIconRegister iconRegister) {
+
     }
 }

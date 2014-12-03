@@ -1,14 +1,15 @@
 package com.professorvennie.bronzeage.client.gui;
 
 import com.professorvennie.bronzeage.api.BronzeAgeAPI;
-import com.professorvennie.bronzeage.api.IGuiManual;
+import com.professorvennie.bronzeage.api.manual.IGuiManual;
+import com.professorvennie.bronzeage.api.manual.IPage;
 import com.professorvennie.bronzeage.client.gui.pages.Page;
 import com.professorvennie.bronzeage.client.gui.pages.PageCover;
+import com.professorvennie.bronzeage.lib.BookData;
 import com.professorvennie.bronzeage.lib.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -22,31 +23,22 @@ import java.util.List;
 public class GuiManual extends GuiScreen implements IGuiManual {
 
     public static ResourceLocation texture = new ResourceLocation(Reference.MOD_ID, "textures/gui/Book.png");
-    private ItemStack itemStack;
-    private List<Page> pages = new ArrayList<Page>();
+    public static ItemStack currentItemStack;
+    public static GuiManual currentOpenManual = new GuiManual(BookData.pageCover);
+    private List<IPage> pages = new ArrayList<IPage>();
     private Page currentPage;
     private int currentPageNumber, guiWidth = 146, guiHeight = 180, left, top;
     private GuiButtonNextPage buttonNextPage, buttonPerviousPage;
 
-    public GuiManual(ItemStack currentEquippedItem, EntityPlayer player) {
-        this.itemStack = currentEquippedItem;
-        this.pages = BronzeAgeAPI.getPages();
+    public GuiManual(IPage currentPage) {
+        this.pages = BronzeAgeAPI.getInstance().getPages();
+        this.currentPage = (Page) currentPage;
+        this.currentPageNumber = currentPage.getPageNumber();
     }
 
     @Override
     public void initGui() {
         super.initGui();
-        if (itemStack.getTagCompound() != null) {
-            currentPageNumber = itemStack.getTagCompound().getInteger("CurrentPage");
-        } else {
-            itemStack.setTagCompound(new NBTTagCompound());
-            currentPageNumber = itemStack.getTagCompound().getInteger("CurrentPage");
-        }
-        /*for (Page page : pages)
-            if (page.getPageNumber() == currentPageNumber) {
-                currentPage = page;
-            }*/
-        currentPage = pages.get(currentPageNumber);
         left = width / 2 - 146 / 2;
         top = height / 2 - 180 / 2;
         buttonPerviousPage = new GuiButtonNextPage(0, left, top + 180 - 10, false);
@@ -59,7 +51,8 @@ public class GuiManual extends GuiScreen implements IGuiManual {
     public void drawScreen(int mx, int my, float idk) {
         Minecraft.getMinecraft().renderEngine.bindTexture(texture);
         drawTexturedModalRect(left, top, 0, 0, guiWidth, guiHeight);
-        for (Page page : pages)
+        for (IPage p : pages) {
+            Page page = (Page) p;
             if (currentPage instanceof PageCover && page == currentPage) {
                 page.drawScreen(this, mx, my);
                 if (currentPageNumber > 0) {
@@ -78,6 +71,7 @@ public class GuiManual extends GuiScreen implements IGuiManual {
                 if (page == currentPage)
                     page.drawScreen(this, mx, my);
             }
+        }
     }
 
     @Override
@@ -85,12 +79,12 @@ public class GuiManual extends GuiScreen implements IGuiManual {
         if (button.equals(buttonNextPage)) {
             if (currentPage.getPageNumber() + 1 < pages.size()) {
                 currentPageNumber++;
-                this.currentPage = pages.get(currentPageNumber);
+                this.currentPage = (Page) pages.get(currentPageNumber);
             }
         } else if (button.equals(buttonPerviousPage)) {
             if (currentPageNumber > 0) {
                 currentPageNumber--;
-                this.currentPage = pages.get(currentPageNumber);
+                this.currentPage = (Page) pages.get(currentPageNumber);
             }
         }
     }
@@ -98,11 +92,11 @@ public class GuiManual extends GuiScreen implements IGuiManual {
     @Override
     public void onGuiClosed() {
         super.onGuiClosed();
-        if (itemStack.getTagCompound() != null) {
-            itemStack.getTagCompound().setInteger("CurrentPage", currentPageNumber);
+        if (currentItemStack.getTagCompound() != null) {
+            currentItemStack.getTagCompound().setInteger("CurrentPage", currentPageNumber);
         } else {
-            itemStack.setTagCompound(new NBTTagCompound());
-            itemStack.getTagCompound().setInteger("CurrentPage", currentPageNumber);
+            currentItemStack.setTagCompound(new NBTTagCompound());
+            currentItemStack.getTagCompound().setInteger("CurrentPage", currentPageNumber);
         }
     }
 
@@ -124,15 +118,11 @@ public class GuiManual extends GuiScreen implements IGuiManual {
         return top;
     }
 
-    public int getGuiWidth() {
+    public int getWidth() {
         return guiWidth;
     }
 
-    public int getGuiHeight() {
+    public int getHeight() {
         return guiHeight;
-    }
-
-    public List<GuiButton> getButtonList() {
-        return buttonList;
     }
 }

@@ -1,5 +1,6 @@
 package com.professorvennie.bronzeage.client.gui.pages;
 
+import com.professorvennie.bronzeage.api.manual.IGuiManual;
 import com.professorvennie.bronzeage.client.gui.GuiManual;
 import com.professorvennie.bronzeage.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
@@ -10,6 +11,7 @@ import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 
 import java.awt.*;
 
@@ -29,29 +31,30 @@ public class PageSmelting extends Page {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void drawScreen(GuiManual screen, int mx, int my) {
-        super.drawScreen(screen, mx, my);
+    public void drawScreen(IGuiManual gui, int mx, int my) {
+        super.drawScreen(gui, mx, my);
+        GuiManual screen = (GuiManual) gui;
         if (input != null) {
             FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
-            fontRenderer.drawStringWithShadow(input.getDisplayName(), screen.getLeft() + fontRenderer.getStringWidth(input.getDisplayName()), screen.getTop() + 10, Color.BLUE.getRGB());
+            fontRenderer.drawStringWithShadow(input.getDisplayName(), screen.getLeft() + screen.getWidth() / 2 - (fontRenderer.getStringWidth(input.getDisplayName()) / 2), screen.getTop() + 10, Color.BLUE.getRGB());
             bindTexture(new ResourceLocation(Reference.MOD_ID, "textures/gui/guiElements.png"));
             screen.drawTexturedModalRect(screen.getLeft() + 13, screen.getTop() + 38, 35, 236, 20, 20);
             RenderItem renderItem = new RenderItem();
-            renderItem.renderItemAndEffectIntoGUI(fontRenderer, minecraft.renderEngine, input, screen.getLeft() + screen.getGuiWidth() / 2 - 27, screen.getTop() + 40);
+            renderItem.renderItemAndEffectIntoGUI(fontRenderer, minecraft.renderEngine, input, screen.getLeft() + screen.getWidth() / 2 - 34, screen.getTop() + 40);
             ItemStack output = FurnaceRecipes.smelting().getSmeltingResult(input);
             if (output != null) {
                 bindTexture(new ResourceLocation(Reference.MOD_ID, "textures/gui/guiElements.png"));
-                //screen.drawTexturedModalRect(screen.getLeft() + 16, screen.getTop() + 60, 0, 193, 14, 14);
-                //screen.drawTexturedModalRect(screen.getLeft() + 35, screen.getTop() + 40, 13, 240, 22, 16);
-                //screen.drawTexturedModalRect(screen.getLeft() + 58, screen.getTop() + 38, 35, 236, 20, 20);
                 int k = getBurnTimeReamingScaled(14);
-                screen.drawTexturedModalRect(screen.getLeft() + screen.getGuiWidth() / 2 - 27, screen.getTop() + 60 + 14 - k, 0, 206 - k, 14, k + 2);
+                screen.drawTexturedModalRect(screen.getLeft() + screen.getWidth() / 2 - 34, screen.getTop() + 60 + 14 - k, 0, 206 - k, 14, k + 2);
 
                 int j = getCookProgressScaled(22);
-                screen.drawTexturedModalRect(screen.getLeft() + screen.getGuiWidth() / 2 - 3, screen.getGuiWidth() / 2 - 27, 0, 223, 22, 22);
-                renderItem.renderItemAndEffectIntoGUI(fontRenderer, minecraft.renderEngine, output, screen.getLeft() + screen.getGuiWidth() / 2 + 10, screen.getTop() + 40);
+                screen.drawTexturedModalRect(screen.getLeft() + screen.getWidth() / 2 - 13, screen.getTop() + 40, 0, 208, 22, 22);
+                renderItem.renderItemAndEffectIntoGUI(fontRenderer, minecraft.renderEngine, output, screen.getLeft() + screen.getWidth() / 2 + 15, screen.getTop() + 40);
+
+                String local = StatCollector.translateToLocal("bronzeAge.book.smeltingRecipe");
+                fontRenderer.drawStringWithShadow(local, screen.getLeft() + screen.getWidth() / 2 - (fontRenderer.getStringWidth(local) / 2), screen.getTop() + 100, 0x0026FF);
             } else
-                fontRenderer.drawStringWithShadow("Invalid recipe", screen.getLeft(), screen.getTop() + 95, screen.getGuiWidth());
+                fontRenderer.drawStringWithShadow("Invalid recipe", screen.getLeft(), screen.getTop() + 95, Color.BLUE.getRGB());
         }
     }
 
@@ -59,7 +62,6 @@ public class PageSmelting extends Page {
     @SideOnly(Side.CLIENT)
     public void update() {
         super.update();
-        //System.out.println(burnTime);
         if (burnTime == 0)
             burnTime = 100;
         if (burnTime > 0)

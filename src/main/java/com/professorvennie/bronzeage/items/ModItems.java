@@ -1,5 +1,6 @@
 package com.professorvennie.bronzeage.items;
 
+import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.item.Item;
 
 /**
@@ -8,8 +9,17 @@ import net.minecraft.item.Item;
 public class ModItems {
 
     public static Item manual;
+    public static Item wrench;
 
     public static void init() {
         manual = new ItemManual();
+        wrench = new ItemWrench();
+
+        registerItem(manual);
+        registerItem(wrench);
+    }
+
+    private static void registerItem(Item item) {
+        GameRegistry.registerItem(item, item.getUnlocalizedName());
     }
 }

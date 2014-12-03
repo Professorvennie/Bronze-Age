@@ -1,13 +1,16 @@
 package com.professorvennie.bronzeage.blocks;
 
 import com.professorvennie.bronzeage.BronzeAge;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 
 /**
  * Created by ProfessorVennie on 10/21/2014 at 5:20 PM.
  */
-public class BlockBase extends Block {
+public abstract class BlockBase extends Block {
 
     protected BlockBase(Material material, String name) {
         super(material);
@@ -16,8 +19,11 @@ public class BlockBase extends Block {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
+    public abstract void registerBlockIcons(IIconRegister iconRegister);
+
+    @Override
     public Block setBlockName(String name) {
-        //GameRegistry.registerBlock(this, name);
         return super.setBlockName(name);
     }
 }

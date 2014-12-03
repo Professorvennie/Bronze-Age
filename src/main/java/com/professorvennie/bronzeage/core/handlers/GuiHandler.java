@@ -1,6 +1,7 @@
 package com.professorvennie.bronzeage.core.handlers;
 
 import com.professorvennie.bronzeage.client.gui.GuiManual;
+import com.professorvennie.bronzeage.client.gui.GuiSteamBoiler;
 import com.professorvennie.bronzeage.common.containers.ContainerSteamBoiler;
 import com.professorvennie.bronzeage.lib.GuiIds;
 import com.professorvennie.bronzeage.tileentitys.TileEntitySteamBoiler;
@@ -32,7 +33,15 @@ public class GuiHandler implements IGuiHandler {
 
         switch (ID) {
             case GuiIds.MANUAL:
-                return new GuiManual(player.getCurrentEquippedItem(), player);
+                GuiManual manual = GuiManual.currentOpenManual;
+                GuiManual.currentItemStack = player.getCurrentEquippedItem();
+                if (GuiManual.currentItemStack == null)
+                    return null;
+                return manual;
+
+            case GuiIds.STEAM_BOILER:
+                if (tile instanceof TileEntitySteamBoiler)
+                    return new GuiSteamBoiler(player, (TileEntitySteamBoiler) tile);
         }
         return null;
     }

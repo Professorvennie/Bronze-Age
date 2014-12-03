@@ -1,5 +1,6 @@
 package com.professorvennie.bronzeage.client.gui.pages;
 
+import com.professorvennie.bronzeage.api.manual.IGuiManual;
 import com.professorvennie.bronzeage.client.gui.GuiManual;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -18,7 +19,9 @@ public class PageText extends Page {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void drawScreen(GuiManual screen, int mx, int my) {
-        PageUtil.renderText(screen.getLeft() + 16, screen.getTop() + 2, screen.getGuiWidth() - 24, screen.getGuiWidth(), text);
+    public void drawScreen(IGuiManual gui, int mx, int my) {
+        super.drawScreen(gui, mx, my);
+        GuiManual screen = (GuiManual) gui;
+        PageUtil.renderText(screen.getLeft() + 16, screen.getTop() + 2, screen.getWidth() - 24, screen.getWidth(), text);
     }
 }

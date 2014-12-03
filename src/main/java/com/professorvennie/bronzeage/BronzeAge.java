@@ -7,14 +7,16 @@ import com.professorvennie.bronzeage.core.proxeys.CommonProxey;
 import com.professorvennie.bronzeage.items.ModItems;
 import com.professorvennie.bronzeage.lib.BookData;
 import com.professorvennie.bronzeage.lib.Reference;
-import com.professorvennie.bronzeage.tileentitys.RegisterTiles;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 
 /**
  * Created by ProfessorVennie on 10/21/2014 at 5:15 PM.
@@ -34,10 +36,11 @@ public class BronzeAge {
     public static void preInit(FMLPreInitializationEvent event) {
         ModBlocks.init();
         ModItems.init();
-        RegisterTiles.register();
         BookData.initPages();
 
         proxey.registerRenders();
+
+        GameRegistry.addShapedRecipe(new ItemStack(ModItems.wrench, 1, 5), "D  ", 'D', Items.diamond);
     }
 
     @Mod.EventHandler

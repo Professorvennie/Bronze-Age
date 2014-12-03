@@ -1,5 +1,7 @@
 package com.professorvennie.bronzeage.client.gui.pages;
 
+import com.professorvennie.bronzeage.api.manual.IGuiManual;
+import com.professorvennie.bronzeage.api.manual.IPage;
 import com.professorvennie.bronzeage.client.gui.GuiManual;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -10,7 +12,7 @@ import org.lwjgl.opengl.GL11;
 /**
  * Created by ProfessorVennie on 10/23/2014 at 5:13 PM.
  */
-public class Page {
+public class Page implements IPage {
 
     protected static Minecraft minecraft = Minecraft.getMinecraft();
     private int pageNumber;
@@ -24,7 +26,7 @@ public class Page {
     }
 
     @SideOnly(Side.CLIENT)
-    public void drawScreen(GuiManual screen, int mx, int my) {
+    public void drawScreen(IGuiManual screen, int mx, int my) {
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
     }
 
@@ -34,5 +36,9 @@ public class Page {
 
     public void update() {
 
+    }
+
+    public void drawElement(GuiManual gui, int x, int y, int u, int v, int width, int height) {
+        gui.drawTexturedModalRect(x, y, u, v, width, height);
     }
 }

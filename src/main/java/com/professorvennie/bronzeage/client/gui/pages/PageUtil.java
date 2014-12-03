@@ -4,6 +4,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ public class PageUtil {
         String lastFormat = "";
         String pendingFormat = "";
         for (String s : textEntries) {
-            List<String> wrappedLines = new ArrayList();
+            List<String> wrappedLines = new ArrayList<String>();
             String workingOn = "";
 
             int i = 0;
@@ -45,8 +46,8 @@ public class PageUtil {
                     pendingFormat = "";
                 }
 
-                /*if (MathHelper.stringNullOrLengthZero(format))
-                    format = lastFormat;*/
+                if (MathHelper.stringNullOrLengthZero(format))
+                    format = lastFormat;
 
                 if (renderer.getStringWidth(workingOn + " " + s1) >= width) {
                     wrappedLines.add(workingOn);

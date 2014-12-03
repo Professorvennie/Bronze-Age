@@ -1,5 +1,6 @@
 package com.professorvennie.bronzeage.client.gui.pages;
 
+import com.professorvennie.bronzeage.api.manual.IGuiManual;
 import com.professorvennie.bronzeage.client.gui.GuiManual;
 import com.professorvennie.bronzeage.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
@@ -24,10 +25,11 @@ public class PageCover extends Page {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void drawScreen(GuiManual screen, int mx, int my) {
-        super.drawScreen(screen, mx, my);
+    public void drawScreen(IGuiManual gui, int mx, int my) {
+        GuiManual screen = (GuiManual) gui;
+        super.drawScreen(gui, mx, my);
         bindTexture(new ResourceLocation(Reference.MOD_ID, "textures/gui/bookCover.png"));
-        screen.drawTexturedModalRect(screen.getLeft(), screen.getTop(), 0, 0, screen.getGuiWidth(), screen.getGuiHeight());
+        screen.drawTexturedModalRect(screen.getLeft(), screen.getTop(), 0, 0, screen.getWidth(), screen.getHeight());
         String localizedTitle = StatCollector.translateToLocal(title);
         String localizedAuthor = StatCollector.translateToLocal(author);
         FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
