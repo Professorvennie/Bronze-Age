@@ -1,5 +1,6 @@
 package com.professorvennie.bronzeage.items;
 
+import com.professorvennie.bronzeage.api.BronzeAgeAPI;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.item.Item;
 
@@ -9,14 +10,17 @@ import net.minecraft.item.Item;
 public class ModItems {
 
     public static Item manual;
-    public static Item wrench;
+    public static Item stoneWrench;
+    public static Item tinWrench;
 
     public static void init() {
         manual = new ItemManual();
-        wrench = new ItemWrench();
+        stoneWrench = new ItemWrench(BronzeAgeAPI.getInstance().stoneWrenchMaterial);
+        tinWrench = new ItemWrench(BronzeAgeAPI.getInstance().tinWrenchMaterial);
 
         registerItem(manual);
-        registerItem(wrench);
+        registerItem(stoneWrench);
+        registerItem(tinWrench);
     }
 
     private static void registerItem(Item item) {

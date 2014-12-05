@@ -40,7 +40,7 @@ public class BronzeAge {
 
         proxey.registerRenders();
 
-        GameRegistry.addShapedRecipe(new ItemStack(ModItems.wrench, 1, 5), "D  ", 'D', Items.diamond);
+        GameRegistry.addShapedRecipe(new ItemStack(ModItems.stoneWrench, 1, 5), "D  ", 'D', Items.diamond);
     }
 
     @Mod.EventHandler
