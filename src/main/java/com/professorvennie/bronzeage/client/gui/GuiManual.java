@@ -31,7 +31,7 @@ public class GuiManual extends GuiScreen implements IGuiManual {
     private GuiButtonNextPage buttonNextPage, buttonPerviousPage;
 
     public GuiManual(IPage currentPage) {
-        this.pages = BronzeAgeAPI.getInstance().getPages();
+        this.pages = BronzeAgeAPI.getPages();
         this.currentPage = (Page) currentPage;
         this.currentPageNumber = currentPage.getPageNumber();
     }

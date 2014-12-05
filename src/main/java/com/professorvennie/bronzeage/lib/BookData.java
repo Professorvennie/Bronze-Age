@@ -19,6 +19,6 @@ public class BookData {
     }
 
     private static void addPage(Page page) {
-        BronzeAgeAPI.getInstance().addPage(page);
+        BronzeAgeAPI.addPage(page);
     }
 }

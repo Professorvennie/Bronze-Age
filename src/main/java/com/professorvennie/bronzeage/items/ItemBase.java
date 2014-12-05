@@ -17,11 +17,6 @@ public abstract class ItemBase extends Item {
     }
 
     @Override
-    public Item setUnlocalizedName(String name) {
-        return super.setUnlocalizedName(name);
-    }
-
-    @Override
     @SideOnly(Side.CLIENT)
     public abstract void registerIcons(IIconRegister iconRegister);
 }
