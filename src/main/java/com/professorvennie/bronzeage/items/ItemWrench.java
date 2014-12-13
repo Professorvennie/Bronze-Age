@@ -4,17 +4,19 @@ import com.professorvennie.bronzeage.api.BronzeAgeAPI;
 import com.professorvennie.bronzeage.api.wrench.IWrench;
 import com.professorvennie.bronzeage.api.wrench.IWrenchable;
 import com.professorvennie.bronzeage.api.wrench.WrenchMaterial;
+import com.professorvennie.bronzeage.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IIcon;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.input.Keyboard;
@@ -25,6 +27,9 @@ import java.util.List;
  * Created by ProfessorVennie on 11/26/2014 at 11:50 PM.
  */
 public class ItemWrench extends ItemBase implements IWrench {
+
+    private final int numOfWrenches = 6;
+    private IIcon[] icons;
 
     public ItemWrench() {
         super("wrench");
@@ -38,15 +43,11 @@ public class ItemWrench extends ItemBase implements IWrench {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs tab, List list) {
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < numOfWrenches; i++) {
             list.add(new ItemStack(item, 1, i));
         }
-    }
-
-    @Override
-    public void onUpdate(ItemStack itemStack, World world, Entity entity, int tick, boolean b) {
-
     }
 
     @Override
@@ -56,16 +57,8 @@ public class ItemWrench extends ItemBase implements IWrench {
 
     @Override
     public float getNumOfUsesRemaining(ItemStack itemStack) {
-        if (itemStack.getTagCompound() == null) {
-            itemStack.setTagCompound(new NBTTagCompound());
-            itemStack.getTagCompound().setFloat("NumOfUsesRemaining", getWrenchMaterial(itemStack).getNumOfUses());
-        }
+        initNBT(itemStack);
         return itemStack.getTagCompound().getFloat("NumOfUsesRemaining");
-    }
-
-    @Override
-    public void damage(ItemStack itemStack, boolean isDismantle) {
-
     }
 
     @Override
@@ -73,54 +66,64 @@ public class ItemWrench extends ItemBase implements IWrench {
     public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean b) {
 
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
-            list.add(EnumChatFormatting.GOLD + "Material Name: " + EnumChatFormatting.DARK_AQUA + getWrenchMaterial(itemStack).getName());
-            list.add(EnumChatFormatting.GOLD + "Number of Uses Remaining: " + EnumChatFormatting.DARK_AQUA + getNumOfUsesRemaining(itemStack));
-            list.add(EnumChatFormatting.GOLD + "Number of Uses Per Rotation: " + EnumChatFormatting.DARK_AQUA + getWrenchMaterial(itemStack).getUsesPerRotation());
-            list.add(EnumChatFormatting.GOLD + "Number of Uses Per Dismantle: " + EnumChatFormatting.DARK_AQUA + getWrenchMaterial(itemStack).getUsesPerDismantle());
-            list.add(EnumChatFormatting.GOLD + "Max Durability: " + EnumChatFormatting.DARK_AQUA + getDurability(itemStack));
-            list.add(EnumChatFormatting.DARK_GRAY + "Right click on a Machine to rotate it.");
-            list.add(EnumChatFormatting.DARK_GRAY + "Shift Right Click on a Machine to Dismantle it");
-            list.add(EnumChatFormatting.DARK_GRAY + "The Number of Uses is Determined By");
-            list.add(EnumChatFormatting.DARK_GRAY + "Dividing The Max Durability By 100");
+            list.add(EnumChatFormatting.GOLD + translate("material") + ": " + EnumChatFormatting.DARK_AQUA + getWrenchMaterial(itemStack).getName());
+            list.add(EnumChatFormatting.GOLD + translate("numOfUses") + ": " + EnumChatFormatting.DARK_AQUA + getNumOfUsesRemaining(itemStack));
+            list.add(EnumChatFormatting.GOLD + translate("rotation") + ": " + EnumChatFormatting.DARK_AQUA + getWrenchMaterial(itemStack).getUsesPerRotation());
+            list.add(EnumChatFormatting.GOLD + translate("dismantle") + ": " + EnumChatFormatting.DARK_AQUA + getWrenchMaterial(itemStack).getUsesPerDismantle());
+            list.add(EnumChatFormatting.GOLD + translate("durability") + ": " + EnumChatFormatting.DARK_AQUA + getDurability(itemStack));
+
         } else {
-            list.add(EnumChatFormatting.GOLD + "Number of Uses Remaining: " + EnumChatFormatting.DARK_AQUA + getNumOfUsesRemaining(itemStack));
-            list.add(EnumChatFormatting.DARK_GRAY + "Hold " + EnumChatFormatting.DARK_AQUA + "Shift " + EnumChatFormatting.DARK_GRAY + "for more info");
+            list.add(EnumChatFormatting.GOLD + translate("numOfUses") + ": " + EnumChatFormatting.DARK_AQUA + getNumOfUsesRemaining(itemStack));
+            list.add(EnumChatFormatting.DARK_GRAY + translate("hold") + " " + EnumChatFormatting.DARK_AQUA + translate("shift") + " " + EnumChatFormatting.DARK_GRAY + translate("moreInfo"));
+            list.add(EnumChatFormatting.DARK_GRAY + translate("hold") + " " + EnumChatFormatting.DARK_AQUA + translate("shiftandh") + " " + EnumChatFormatting.DARK_GRAY + translate("helpInfo"));
         }
+
+        if ((Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) && Keyboard.isKeyDown(Keyboard.KEY_H)) {
+            list.add(EnumChatFormatting.DARK_GRAY + translate("info.0"));
+            list.add(EnumChatFormatting.DARK_GRAY + translate("info.1"));
+            list.add(EnumChatFormatting.DARK_GRAY + translate("info.2"));
+            list.add(EnumChatFormatting.DARK_GRAY + translate("info.3"));
+            list.add(EnumChatFormatting.DARK_GRAY + translate("info.4"));
+            list.add(EnumChatFormatting.DARK_GRAY + translate("info.5"));
+        }
+    }
+
+    private String translate(String name) {
+        return StatCollector.translateToLocal("tooltip.wrench." + name);
     }
 
     @Override
     public boolean onItemUseFirst(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
+        float dismanlt = getWrenchMaterial(itemStack).getUsesPerRotation();
+        float usesRemaining = getNumOfUsesRemaining(itemStack);
         if (!player.isSneaking()) {
             if (world.getBlock(x, y, z) instanceof IWrenchable) {
-
-                float dismanlt = getWrenchMaterial(itemStack).getUsesPerRotation();
-                float usesRemaining = getNumOfUsesRemaining(itemStack);
                 if (usesRemaining - dismanlt >= 0 && !world.isRemote) {
                     subtractUse(itemStack, dismanlt);
                     Block block = world.getBlock(x, y, z);
                     block.rotateBlock(world, x, y, z, ForgeDirection.getOrientation(side).getOpposite());
+                    player.swingItem();
                 }
             }
         } else {
             if (world.getBlock(x, y, z) instanceof IWrenchable) {
                 IWrenchable wrenchable = (IWrenchable) world.getBlock(x, y, z);
 
-                float dismanlt = getWrenchMaterial(itemStack).getUsesPerDismantle();
-                float usesRemaining = getNumOfUsesRemaining(itemStack);
                 if (usesRemaining - dismanlt >= 0 && !world.isRemote) {
                     subtractUse(itemStack, dismanlt);
-                    if (!world.isRemote)
+                    if (!world.isRemote) {
+                        player.swingItem();
                         wrenchable.dismantle(world, player, itemStack, x, y, z);
+                    }
+                }
+            } else {
+                if (usesRemaining - dismanlt >= 0 && !world.isRemote && world.getBlock(x, y, z).rotateBlock(world, x, y, z, ForgeDirection.getOrientation(side).getOpposite())) {
+                    subtractUse(itemStack, dismanlt);
+                    world.getBlock(x, y, z).rotateBlock(world, x, y, z, ForgeDirection.getOrientation(side).getOpposite());
                 }
             }
         }
         return super.onItemUseFirst(itemStack, player, world, x, y, z, side, hitX, hitY, hitZ);
-    }
-
-    @Override
-    public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int side, float p_77648_8_, float p_77648_9_, float p_77648_10_) {
-
-        return super.onItemUse(itemStack, player, world, x, y, z, side, p_77648_8_, p_77648_9_, p_77648_10_);
     }
 
     @Override
@@ -143,30 +146,42 @@ public class ItemWrench extends ItemBase implements IWrench {
                 return BronzeAgeAPI.bronzeWrenchMaterial;
             case 5:
                 return BronzeAgeAPI.diamondWrenchMaterial;
+            default:
+                return null;
         }
-        return null;
     }
 
     @Override
     public void addUse(ItemStack itemStack, float amountOfUses) {
-        if (itemStack.getTagCompound() == null) {
-            itemStack.setTagCompound(new NBTTagCompound());
-            itemStack.getTagCompound().setFloat("NumOfUsesRemaining", getWrenchMaterial(itemStack).getNumOfUses());
-        }
+        initNBT(itemStack);
         itemStack.getTagCompound().setFloat("NumOfUsesRemaining", itemStack.getTagCompound().getFloat("NumOfUsesRemaining") + amountOfUses);
     }
 
     @Override
     public void subtractUse(ItemStack itemStack, float amountOfUses) {
+        initNBT(itemStack);
+        itemStack.getTagCompound().setFloat("NumOfUsesRemaining", itemStack.getTagCompound().getFloat("NumOfUsesRemaining") - amountOfUses);
+    }
+
+    private void initNBT(ItemStack itemStack) {
         if (itemStack.getTagCompound() == null) {
             itemStack.setTagCompound(new NBTTagCompound());
             itemStack.getTagCompound().setFloat("NumOfUsesRemaining", getWrenchMaterial(itemStack).getNumOfUses());
         }
-        itemStack.getTagCompound().setFloat("NumOfUsesRemaining", itemStack.getTagCompound().getFloat("NumOfUsesRemaining") - amountOfUses);
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister iconRegister) {
+        icons = new IIcon[numOfWrenches];
 
+        for (int i = 0; i < icons.length; i++)
+            icons[i] = iconRegister.registerIcon(Reference.MOD_ID + ":" + getWrenchMaterial(new ItemStack(this, 1, i)).getName() + "Wrench");
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public IIcon getIconFromDamage(int i) {
+        return i < icons.length ? icons[i] : icons[0];
     }
 }

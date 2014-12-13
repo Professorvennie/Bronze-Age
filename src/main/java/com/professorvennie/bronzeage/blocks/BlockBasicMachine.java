@@ -2,6 +2,7 @@ package com.professorvennie.bronzeage.blocks;
 
 import com.professorvennie.bronzeage.BronzeAge;
 import com.professorvennie.bronzeage.api.wrench.IWrench;
+import com.professorvennie.bronzeage.api.wrench.IWrenchHUD;
 import com.professorvennie.bronzeage.api.wrench.IWrenchable;
 import com.professorvennie.bronzeage.lib.Reference;
 import com.professorvennie.bronzeage.tileentitys.TileEntityBasicMachine;
@@ -35,7 +36,7 @@ import java.util.Random;
 /**
  * Created by ProfessorVennie on 10/21/2014 at 7:28 PM.
  */
-public abstract class BlockBasicMachine extends Block implements ITileEntityProvider, IWrenchable {
+public abstract class BlockBasicMachine extends Block implements ITileEntityProvider, IWrenchable, IWrenchHUD {
 
     private static boolean keepInventory;
     public boolean isActive;

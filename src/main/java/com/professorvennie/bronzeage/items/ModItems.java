@@ -10,11 +10,14 @@ public class ModItems {
 
     public static Item manual;
     public static Item wrench;
+    public static Item materials;
 
     public static void init() {
         manual = new ItemManual();
         wrench = new ItemWrench();
+        materials = new ItemMaterials();
 
+        registerItem(materials);
         registerItem(manual);
         registerItem(wrench);
     }

@@ -1,6 +1,7 @@
 package com.professorvennie.bronzeage;
 
 import com.professorvennie.bronzeage.blocks.ModBlocks;
+import com.professorvennie.bronzeage.client.handlers.HudHandler;
 import com.professorvennie.bronzeage.core.creativetab.CreativeTab;
 import com.professorvennie.bronzeage.core.handlers.GuiHandler;
 import com.professorvennie.bronzeage.core.proxeys.CommonProxey;
@@ -13,10 +14,8 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
 
 /**
  * Created by ProfessorVennie on 10/21/2014 at 5:15 PM.
@@ -39,13 +38,12 @@ public class BronzeAge {
         BookData.initPages();
 
         proxey.registerRenders();
-
-        GameRegistry.addShapedRecipe(new ItemStack(ModItems.wrench, 1, 5), "D  ", 'D', Items.diamond);
     }
 
     @Mod.EventHandler
     public static void init(FMLInitializationEvent event) {
         NetworkRegistry.INSTANCE.registerGuiHandler(Reference.MOD_ID, new GuiHandler());
+        MinecraftForge.EVENT_BUS.register(new HudHandler());
     }
 
     @Mod.EventHandler
