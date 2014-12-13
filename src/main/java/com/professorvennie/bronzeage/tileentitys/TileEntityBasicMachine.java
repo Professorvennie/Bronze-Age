@@ -6,13 +6,18 @@ import com.professorvennie.bronzeage.api.tiles.ISteamTank;
 import com.professorvennie.bronzeage.api.tiles.SteamTank;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidTankInfo;
 
 /**
  * Created by ProfessorVennie on 11/23/2014 at 3:29 PM.
  */
-public class TileEntityBasicMachine extends TileEntityBasicSidedInventory implements ISteamHandler {
+public class TileEntityBasicMachine extends TileEntityBasicSidedInventory implements ISteamBoiler {
 
     private SteamTank steamTank;
+    private FluidTank waterTank;
 
     public TileEntityBasicMachine(String name, int capacity) {
         super(name);
@@ -48,8 +53,12 @@ public class TileEntityBasicMachine extends TileEntityBasicSidedInventory implem
                 }
             }
         }
+
+        if (waterTank.getFluid().amount > waterTank.getCapacity())
+            waterTank.getFluid().amount = waterTank.getCapacity();
     }
 
+    //ISteamHandler
     @Override
     public ISteamTank getSteamTank() {
         return steamTank;
@@ -85,5 +94,52 @@ public class TileEntityBasicMachine extends TileEntityBasicSidedInventory implem
     @Override
     public int getSteamCapacity() {
         return steamTank.getCapacity();
+    }
+
+    //ISteamBoiler
+    @Override
+    public FluidTank getWaterTank() {
+        return waterTank;
+    }
+
+    @Override
+    public int getWaterAmount() {
+        return waterTank.getFluidAmount();
+    }
+
+    @Override
+    public int getWaterCapacity() {
+        return waterTank.getCapacity();
+    }
+
+    //IFluidHandler
+    @Override
+    public int fill(ForgeDirection from, FluidStack resource, boolean doFill) {
+        return 0;
+    }
+
+    @Override
+    public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) {
+        return null;
+    }
+
+    @Override
+    public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
+        return null;
+    }
+
+    @Override
+    public boolean canFill(ForgeDirection from, Fluid fluid) {
+        return false;
+    }
+
+    @Override
+    public boolean canDrain(ForgeDirection from, Fluid fluid) {
+        return false;
+    }
+
+    @Override
+    public FluidTankInfo[] getTankInfo(ForgeDirection from) {
+        return new FluidTankInfo[]{waterTank.getInfo()};
     }
 }
