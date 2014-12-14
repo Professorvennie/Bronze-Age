@@ -35,7 +35,7 @@ public class PageCrafting extends Page {
     private Object[] items;
 
     public PageCrafting(int pageNumber, ItemStack output) {
-        super(pageNumber);
+        super(pageNumber, "crafting." + pageNumber);
         this.output = output;
         items = getItemShapedRecipe(output);
     }

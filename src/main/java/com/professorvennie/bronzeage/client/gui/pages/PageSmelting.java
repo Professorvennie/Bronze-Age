@@ -25,7 +25,7 @@ public class PageSmelting extends Page {
     private int burnTime, cookTime, speed = 100;
 
     public PageSmelting(int pageNumber, ItemStack input) {
-        super(pageNumber);
+        super(pageNumber, "smelting." + pageNumber);
         this.input = input;
     }
 

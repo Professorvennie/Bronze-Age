@@ -7,6 +7,7 @@ import com.professorvennie.bronzeage.api.wrench.IWrenchable;
 import com.professorvennie.bronzeage.lib.Reference;
 import com.professorvennie.bronzeage.tileentitys.TileEntityBasicMachine;
 import com.professorvennie.bronzeage.tileentitys.TileEntityMod;
+import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -36,11 +37,10 @@ import java.util.Random;
 /**
  * Created by ProfessorVennie on 10/21/2014 at 7:28 PM.
  */
-public abstract class BlockBasicMachine extends Block implements ITileEntityProvider, IWrenchable, IWrenchHUD {
+public abstract class BlockBasicMachine extends Block implements ITileEntityProvider, IWrenchable, IWrenchHUD, IGuiHandler {
 
     private static boolean keepInventory;
     public boolean isActive;
-    public int guiId = -1;
     private String name;
     @SideOnly(Side.CLIENT)
     private IIcon frontIcon, sideIcon, topIcon;
@@ -50,6 +50,7 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
         setCreativeTab(BronzeAge.tabMain);
         this.name = name;
         setBlockName(name);
+        BronzeAge.guiHandler.registerHandler(getGuiId(), this);
         /*if (isActive)
             setBlockName(name + "Active");
         else {
@@ -79,6 +80,8 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
         }
     }
 
+    public abstract int getGuiId();
+
     @Override
     public void getSubBlocks(Item item, CreativeTabs tabs, List list) {
         list.add(new ItemStack(item, 1, 0));//Idle
@@ -87,10 +90,10 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
 
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
-        if (guiId != -1) {
+        if (getGuiId() != -1) {
             if (!world.isRemote) {
                 if (!(player.getCurrentEquippedItem().getItem() instanceof IWrench))
-                    player.openGui(BronzeAge.INSTANSE, guiId, world, x, y, z);
+                    player.openGui(BronzeAge.INSTANSE, getGuiId(), world, x, y, z);
             }
         }
         return true;

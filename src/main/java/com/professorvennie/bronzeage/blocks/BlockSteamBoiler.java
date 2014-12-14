@@ -3,11 +3,14 @@ package com.professorvennie.bronzeage.blocks;
 
 import com.professorvennie.bronzeage.api.manual.IManualEntry;
 import com.professorvennie.bronzeage.api.manual.IPage;
+import com.professorvennie.bronzeage.client.gui.GuiSteamBoiler;
+import com.professorvennie.bronzeage.common.containers.ContainerSteamBoiler;
 import com.professorvennie.bronzeage.lib.BookData;
 import com.professorvennie.bronzeage.lib.GuiIds;
 import com.professorvennie.bronzeage.tileentitys.TileEntitySteamBoiler;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -19,7 +22,11 @@ public class BlockSteamBoiler extends BlockBasicMachine implements IManualEntry 
 
     public BlockSteamBoiler() {
         super(Material.iron, "steamBoiler");
-        guiId = GuiIds.STEAM_BOILER;
+    }
+
+    @Override
+    public int getGuiId() {
+        return GuiIds.STEAM_BOILER;
     }
 
     @Override
@@ -35,5 +42,19 @@ public class BlockSteamBoiler extends BlockBasicMachine implements IManualEntry 
     @Override
     public void renderHUD(World world, Minecraft minecraft, ItemStack wrench, int x, int y, int z) {
 
+    }
+
+    @Override
+    public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+        if (world.getTileEntity(x, y, z) instanceof TileEntitySteamBoiler)
+            return new ContainerSteamBoiler(player.inventory, (TileEntitySteamBoiler) world.getTileEntity(x, y, z));
+        return null;
+    }
+
+    @Override
+    public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+        if (world.getTileEntity(x, y, z) instanceof TileEntitySteamBoiler)
+            return new GuiSteamBoiler(player, (TileEntitySteamBoiler) world.getTileEntity(x, y, z));
+        return null;
     }
 }

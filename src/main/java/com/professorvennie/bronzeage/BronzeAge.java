@@ -31,6 +31,8 @@ public class BronzeAge {
 
     public static CreativeTabs tabMain = new CreativeTab(Reference.MOD_ID);
 
+    public static GuiHandler guiHandler = new GuiHandler();
+
     @Mod.EventHandler
     public static void preInit(FMLPreInitializationEvent event) {
         ModBlocks.init();
@@ -42,7 +44,7 @@ public class BronzeAge {
 
     @Mod.EventHandler
     public static void init(FMLInitializationEvent event) {
-        NetworkRegistry.INSTANCE.registerGuiHandler(Reference.MOD_ID, new GuiHandler());
+        NetworkRegistry.INSTANCE.registerGuiHandler(Reference.MOD_ID, guiHandler);
         MinecraftForge.EVENT_BUS.register(new HudHandler());
     }
 

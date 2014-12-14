@@ -14,4 +14,6 @@ public interface IPage {
     public void drawScreen(IGuiManual gui, int mx, int my);
 
     public void update();
+
+    public String getUnlocalizedName();
 }
