@@ -4,6 +4,7 @@ import com.professorvennie.bronzeage.blocks.ModBlocks;
 import com.professorvennie.bronzeage.client.handlers.HudHandler;
 import com.professorvennie.bronzeage.core.creativetab.CreativeTab;
 import com.professorvennie.bronzeage.core.handlers.GuiHandler;
+import com.professorvennie.bronzeage.core.network.PacketHandler;
 import com.professorvennie.bronzeage.core.proxeys.CommonProxey;
 import com.professorvennie.bronzeage.items.ModItems;
 import com.professorvennie.bronzeage.lib.BookData;
@@ -38,6 +39,7 @@ public class BronzeAge {
         ModBlocks.init();
         ModItems.init();
         BookData.initPages();
+        PacketHandler.init();
 
         proxey.registerRenders();
     }

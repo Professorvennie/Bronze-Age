@@ -10,6 +10,6 @@ import net.minecraft.entity.player.EntityPlayer;
 public class GuiSteamBoiler extends GuiBase {
 
     public GuiSteamBoiler(EntityPlayer player, TileEntitySteamBoiler tile) {
-        super(new ContainerSteamBoiler(player.inventory, tile));
+        super(new ContainerSteamBoiler(player.inventory, tile), tile);
     }
 }

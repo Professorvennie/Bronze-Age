@@ -11,14 +11,14 @@ import net.minecraftforge.fluids.*;
 /**
  * Created by ProfessorVennie on 10/22/2014 at 8:39 PM.
  */
-public class TileEntitySteamBoiler extends TileEntityBasicSidedInventory implements ISteamBoiler {
+public class TileEntitySteamBoiler extends TileEntityBasicMachine implements ISteamBoiler {
 
     public int burnTime, currentItemBurnTime;
     private SteamTank steamTank;
     private FluidTank waterTank;
 
     public TileEntitySteamBoiler() {
-        super("container.SteamBoiler");
+        super("container.SteamBoiler", 10000);
         steamTank = new SteamTank(0, 10000);
         waterTank = new FluidTank(FluidRegistry.WATER, 0, 10000);
     }

@@ -4,24 +4,27 @@ import com.professorvennie.bronzeage.api.tiles.ISteamBoiler;
 import com.professorvennie.bronzeage.api.tiles.ISteamHandler;
 import com.professorvennie.bronzeage.api.tiles.ISteamTank;
 import com.professorvennie.bronzeage.api.tiles.SteamTank;
+import com.professorvennie.bronzeage.api.tilesenties.IButtonHandler;
+import com.professorvennie.bronzeage.api.tilesenties.IRedstoneControlable;
+import com.professorvennie.bronzeage.client.gui.buttons.RedstoneMode;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidTankInfo;
 
 /**
  * Created by ProfessorVennie on 11/23/2014 at 3:29 PM.
  */
-public class TileEntityBasicMachine extends TileEntityBasicSidedInventory implements ISteamBoiler {
+public class TileEntityBasicMachine extends TileEntityBasicSidedInventory implements ISteamHandler, IButtonHandler, IRedstoneControlable {
 
+    public boolean canWork;
     private SteamTank steamTank;
-    private FluidTank waterTank;
+    private RedstoneMode redStoneMode;
+
 
     public TileEntityBasicMachine(String name, int capacity) {
         super(name);
         steamTank = new SteamTank(0, capacity);
+        redStoneMode = RedstoneMode.low;
     }
 
     @Override
@@ -54,8 +57,40 @@ public class TileEntityBasicMachine extends TileEntityBasicSidedInventory implem
             }
         }
 
-        if (waterTank.getFluid().amount > waterTank.getCapacity())
-            waterTank.getFluid().amount = waterTank.getCapacity();
+        switch (redStoneMode) {
+            case low:
+                if (!worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord))
+                    canWork = true;
+                else
+                    canWork = false;
+                break;
+            case high:
+                if (worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord))
+                    canWork = true;
+                else
+                    canWork = false;
+                break;
+            case disabled:
+                canWork = true;
+                break;
+            default:
+                canWork = false;
+                break;
+        }
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound nbtTagCompound) {
+        super.readFromNBT(nbtTagCompound);
+
+        redStoneMode = RedstoneMode.values()[nbtTagCompound.getInteger("Mode")];
+    }
+
+    @Override
+    public void writeToNBT(NBTTagCompound nbtTagCompound) {
+        super.writeToNBT(nbtTagCompound);
+
+        nbtTagCompound.setInteger("Mode", redStoneMode.ordinal());
     }
 
     //ISteamHandler
@@ -96,50 +131,28 @@ public class TileEntityBasicMachine extends TileEntityBasicSidedInventory implem
         return steamTank.getCapacity();
     }
 
-    //ISteamBoiler
     @Override
-    public FluidTank getWaterTank() {
-        return waterTank;
+    public void handleClick(int id) {
+        switch (id) {
+            case 0:
+                setRedstoneMode(RedstoneMode.high);
+                break;
+            case 1:
+                setRedstoneMode(RedstoneMode.disabled);
+                break;
+            case 2:
+                setRedstoneMode(RedstoneMode.low);
+                break;
+        }
     }
 
     @Override
-    public int getWaterAmount() {
-        return waterTank.getFluidAmount();
+    public RedstoneMode getRedStoneMode() {
+        return redStoneMode;
     }
 
     @Override
-    public int getWaterCapacity() {
-        return waterTank.getCapacity();
-    }
-
-    //IFluidHandler
-    @Override
-    public int fill(ForgeDirection from, FluidStack resource, boolean doFill) {
-        return 0;
-    }
-
-    @Override
-    public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) {
-        return null;
-    }
-
-    @Override
-    public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
-        return null;
-    }
-
-    @Override
-    public boolean canFill(ForgeDirection from, Fluid fluid) {
-        return false;
-    }
-
-    @Override
-    public boolean canDrain(ForgeDirection from, Fluid fluid) {
-        return false;
-    }
-
-    @Override
-    public FluidTankInfo[] getTankInfo(ForgeDirection from) {
-        return new FluidTankInfo[]{waterTank.getInfo()};
+    public void setRedstoneMode(RedstoneMode mode) {
+        this.redStoneMode = mode;
     }
 }

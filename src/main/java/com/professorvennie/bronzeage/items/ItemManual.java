@@ -51,12 +51,12 @@ public class ItemManual extends ItemBase implements IGuiHandler {
     }
 
     @Override
-    public boolean hasEffect(ItemStack p_77636_1_) {
+    public boolean hasEffect(ItemStack itemStack) {
         return true;
     }
 
     @Override
-    public EnumRarity getRarity(ItemStack p_77613_1_) {
+    public EnumRarity getRarity(ItemStack itemStack) {
         return EnumRarity.rare;
     }
 
