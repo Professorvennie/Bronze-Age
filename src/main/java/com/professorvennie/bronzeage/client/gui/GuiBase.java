@@ -40,7 +40,7 @@ public class GuiBase extends GuiContainer {
     @Override
     public void initGui() {
         super.initGui();
-        buttonList.add(new GuiButtonRedStone(0, guiLeft + xSize + 1, guiTop + ySize - 161, basicMachine));
+        buttonList.add(new GuiButtonRedStone(0, guiLeft + xSize + 1, guiTop + ySize - 160, basicMachine));
     }
 
     @Override
@@ -52,7 +52,7 @@ public class GuiBase extends GuiContainer {
 
         if (basicMachine != null) {
             GL11.glColor4f(0.97F, 0.00F, 0F, 1F);
-            drawTexturedModalRect(guiLeft + 176, guiTop + 3, 0, 94, 28, 28);
+            drawTexturedModalRect(guiLeft + 176, guiTop + 3, 0, 93, 28, 28);
         }
 
         GL11.glColor4f(1F, 1F, 1F, 1F);

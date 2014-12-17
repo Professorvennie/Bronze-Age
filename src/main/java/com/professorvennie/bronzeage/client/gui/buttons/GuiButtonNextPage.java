@@ -1,5 +1,6 @@
-package com.professorvennie.bronzeage.client.gui;
+package com.professorvennie.bronzeage.client.gui.buttons;
 
+import com.professorvennie.bronzeage.client.gui.GuiManual;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;

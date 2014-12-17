@@ -3,6 +3,7 @@ package com.professorvennie.bronzeage.client.gui;
 import com.professorvennie.bronzeage.api.BronzeAgeAPI;
 import com.professorvennie.bronzeage.api.manual.IGuiManual;
 import com.professorvennie.bronzeage.api.manual.IPage;
+import com.professorvennie.bronzeage.client.gui.buttons.GuiButtonNextPage;
 import com.professorvennie.bronzeage.client.gui.pages.Page;
 import com.professorvennie.bronzeage.client.gui.pages.PageCover;
 import com.professorvennie.bronzeage.lib.BookData;
