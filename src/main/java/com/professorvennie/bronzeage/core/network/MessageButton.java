@@ -1,6 +1,6 @@
 package com.professorvennie.bronzeage.core.network;
 
-import com.professorvennie.bronzeage.api.tilesenties.IButtonHandler;
+import com.professorvennie.bronzeage.api.tiles.IButtonHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;

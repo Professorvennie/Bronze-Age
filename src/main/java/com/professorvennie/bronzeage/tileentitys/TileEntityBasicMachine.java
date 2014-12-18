@@ -1,11 +1,6 @@
 package com.professorvennie.bronzeage.tileentitys;
 
-import com.professorvennie.bronzeage.api.tiles.ISteamBoiler;
-import com.professorvennie.bronzeage.api.tiles.ISteamHandler;
-import com.professorvennie.bronzeage.api.tiles.ISteamTank;
-import com.professorvennie.bronzeage.api.tiles.SteamTank;
-import com.professorvennie.bronzeage.api.tilesenties.IButtonHandler;
-import com.professorvennie.bronzeage.api.tilesenties.IRedstoneControlable;
+import com.professorvennie.bronzeage.api.tiles.*;
 import com.professorvennie.bronzeage.client.gui.buttons.RedstoneMode;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;

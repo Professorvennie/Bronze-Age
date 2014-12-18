@@ -1,4 +1,4 @@
-package com.professorvennie.bronzeage.api.tilesenties;
+package com.professorvennie.bronzeage.api.tiles;
 
 import com.professorvennie.bronzeage.client.gui.buttons.RedstoneMode;
 
