@@ -1,11 +1,14 @@
 package com.professorvennie.bronzeage.blocks;
 
+import com.professorvennie.bronzeage.api.tiles.ISteamHandler;
 import com.professorvennie.bronzeage.tileentitys.TileEntitySteamPipe;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * Created by ProfessorVennie on 10/21/2014 at 8:00 PM.
@@ -39,5 +42,42 @@ public class BlockSteamPipe extends BlockBase implements ITileEntityProvider {
     @Override
     public void registerBlockIcons(IIconRegister iconRegister) {
 
+    }
+
+    @Override
+    public void onNeighborChange(IBlockAccess world, int x, int y, int z, int tileX, int tileY, int tileZ) {
+        if (world.getTileEntity(tileX, tileY, tileZ) instanceof ISteamHandler && world.getTileEntity(x, y, z) instanceof TileEntitySteamPipe) {
+            TileEntitySteamPipe steamPipe = (TileEntitySteamPipe) world.getTileEntity(x, y, z);
+            if (y + 1 == tileY)
+                steamPipe.connections[0] = ForgeDirection.UP;
+            else
+                steamPipe.connections[0] = null;
+
+            if (y - 1 == tileY)
+                steamPipe.connections[1] = ForgeDirection.DOWN;
+            else
+                steamPipe.connections[1] = null;
+
+            if (z + 1 == tileZ)
+                steamPipe.connections[2] = ForgeDirection.SOUTH;
+            else
+                steamPipe.connections[2] = null;
+
+            if (z - 1 == tileZ)
+                steamPipe.connections[3] = ForgeDirection.NORTH;
+            else
+                steamPipe.connections[3] = null;
+
+            if (x + 1 == tileX)
+                steamPipe.connections[4] = ForgeDirection.EAST;
+            else
+                steamPipe.connections[4] = null;
+
+            if (x - 1 == tileX)
+                steamPipe.connections[5] = ForgeDirection.WEST;
+            else
+                steamPipe.connections[5] = null;
+        }
+        super.onNeighborChange(world, x, y, z, tileX, tileY, tileZ);
     }
 }

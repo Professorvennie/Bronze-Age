@@ -43,9 +43,7 @@ public class ItemManual extends ItemBase implements IGuiHandler {
         Block block = world.getBlock(x, y, z);
         if (block != null && block instanceof IManualEntry) {
             IManualEntry entry = (IManualEntry) block;
-            if (entry != null) {
-                BronzeAge.proxey.setPageToOpen(entry.getPage(world, x, y, z));
-            }
+            BronzeAge.proxey.setPageToOpen(entry.getPage(world, x, y, z));
         }
         return super.onItemUse(itemStack, player, world, x, y, z, side, hitX, hitY, hitZ);
     }

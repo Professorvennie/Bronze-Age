@@ -127,11 +127,6 @@ public class ItemWrench extends ItemBase implements IWrench {
     }
 
     @Override
-    public void onWrenchUsed(World world, ItemStack wrench, int x, int y, int z) {
-
-    }
-
-    @Override
     public WrenchMaterial getWrenchMaterial(ItemStack itemStack) {
         switch (itemStack.getItemDamage()) {
             case 0:

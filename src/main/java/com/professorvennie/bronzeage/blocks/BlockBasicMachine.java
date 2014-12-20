@@ -2,7 +2,6 @@ package com.professorvennie.bronzeage.blocks;
 
 import com.professorvennie.bronzeage.BronzeAge;
 import com.professorvennie.bronzeage.api.wrench.IWrench;
-import com.professorvennie.bronzeage.api.wrench.IWrenchHUD;
 import com.professorvennie.bronzeage.api.wrench.IWrenchable;
 import com.professorvennie.bronzeage.lib.Reference;
 import com.professorvennie.bronzeage.tileentitys.TileEntityBasicMachine;
@@ -18,7 +17,6 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -32,12 +30,11 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by ProfessorVennie on 10/21/2014 at 7:28 PM.
  */
-public abstract class BlockBasicMachine extends Block implements ITileEntityProvider, IWrenchable, IWrenchHUD, IGuiHandler {
+public abstract class BlockBasicMachine extends Block implements ITileEntityProvider, IWrenchable, IGuiHandler {
 
     private static boolean keepInventory;
     public boolean isActive;
@@ -92,7 +89,9 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
         if (getGuiId() != -1) {
             if (!world.isRemote) {
-                if (!(player.getCurrentEquippedItem().getItem() instanceof IWrench))
+                if (player.getCurrentEquippedItem() == null)
+                    player.openGui(BronzeAge.INSTANSE, getGuiId(), world, x, y, z);
+                else if (!(player.getCurrentEquippedItem().getItem() instanceof IWrench))
                     player.openGui(BronzeAge.INSTANSE, getGuiId(), world, x, y, z);
             }
         }
@@ -178,7 +177,7 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
     }
 
     public void breakBlock(World world, int x, int y, int z, Block block, int side) {
-        if (!keepInventory) {
+        /*if (!keepInventory) {
             TileEntity tileEntity = world.getTileEntity(x, y, z);
 
             if (!(tileEntity instanceof ISidedInventory)) {
@@ -213,7 +212,7 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
                     itemStack.stackSize = 0;
                 }
             }
-        }
+        }*/
         super.breakBlock(world, x, y, z, block, side);
     }
 
@@ -232,6 +231,7 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
                 NBTTagList list = new NBTTagList();
                 for (int i = 0; i < basicMachine.inventory.length; i++) {
                     if (basicMachine.inventory[i] != null) {
+                        System.out.println(basicMachine.inventory[i]);
                         NBTTagCompound compound = new NBTTagCompound();
                         compound.setByte("slot", (byte) i);
                         basicMachine.inventory[i].writeToNBT(compound);
@@ -261,21 +261,30 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
 
         @Override
         public boolean placeBlockAt(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata) {
-            if (world.getTileEntity(x, y, z) instanceof TileEntityBasicMachine) {
-                TileEntityBasicMachine basicMachine = (TileEntityBasicMachine) world.getTileEntity(x, y, z);
-                NBTTagList list = itemStack.getTagCompound().getTagList("items", Constants.NBT.TAG_COMPOUND);
-                basicMachine.inventory = new ItemStack[basicMachine.getSizeInventory()];
+            boolean result = super.placeBlockAt(itemStack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata);
+            if (result) {
+                if (!world.isRemote) {
+                    if (itemStack != null && itemStack.getTagCompound() != null) {
+                        if (world.getTileEntity(x, y, z) instanceof TileEntityBasicMachine) {
+                            System.out.println("Basic Machine");
+                            TileEntityBasicMachine basicMachine = (TileEntityBasicMachine) world.getTileEntity(x, y, z);
+                            NBTTagList list = itemStack.getTagCompound().getTagList("items", Constants.NBT.TAG_COMPOUND);
+                            basicMachine.inventory = new ItemStack[basicMachine.getSizeInventory()];
 
-                for (int i = 0; i < list.tagCount(); i++) {
-                    NBTTagCompound compound = list.getCompoundTagAt(i);
-                    int j = compound.getByte("slot") & 0xff;
+                            for (int i = 0; i < list.tagCount(); i++) {
+                                NBTTagCompound compound = list.getCompoundTagAt(i);
+                                int j = compound.getByte("slot") & 0xff;
 
-                    if (j >= 0 && j < basicMachine.inventory.length) {
-                        basicMachine.inventory[j] = ItemStack.loadItemStackFromNBT(compound);
+                                if (j >= 0 && j < basicMachine.inventory.length) {
+                                    System.out.println(basicMachine.inventory[i]);
+                                    basicMachine.inventory[j] = ItemStack.loadItemStackFromNBT(compound);
+                                }
+                            }
+                        }
                     }
                 }
             }
-            return super.placeBlockAt(itemStack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata);
+            return result;
         }
 
         @Override

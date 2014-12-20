@@ -9,12 +9,11 @@ import net.minecraftforge.common.util.ForgeDirection;
 /**
  * Created by ProfessorVennie on 11/23/2014 at 3:29 PM.
  */
-public class TileEntityBasicMachine extends TileEntityBasicSidedInventory implements ISteamHandler, IButtonHandler, IRedstoneControlable {
+public abstract class TileEntityBasicMachine extends TileEntityBasicSidedInventory implements ISteamHandler, IButtonHandler, IRedstoneControlable {
 
     public boolean canWork;
     private SteamTank steamTank;
     private RedstoneMode redStoneMode;
-
 
     public TileEntityBasicMachine(String name, int capacity) {
         super(name);
@@ -150,4 +149,7 @@ public class TileEntityBasicMachine extends TileEntityBasicSidedInventory implem
     public void setRedstoneMode(RedstoneMode mode) {
         this.redStoneMode = mode;
     }
+
+    @Override
+    public abstract int getSizeInventory();
 }

@@ -9,6 +9,7 @@ import com.professorvennie.bronzeage.lib.Reference;
 import com.professorvennie.bronzeage.tileentitys.TileEntityBasicMachine;
 import com.professorvennie.bronzeage.tileentitys.TileEntityBasicSidedInventory;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
@@ -18,6 +19,8 @@ import net.minecraft.util.StatCollector;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import java.util.List;
+
 /**
  * Created by ProfessorVennie on 10/23/2014 at 9:48 PM.
  */
@@ -25,8 +28,8 @@ public class GuiBase extends GuiContainer {
 
     public ResourceLocation backGround;
     public ResourceLocation elements = new ResourceLocation(Reference.MOD_ID, "textures/gui/guiElements.png");
+    public TileEntityBasicMachine basicMachine;
     protected int mouseX = 0, mouseY = 0;
-    private TileEntityBasicMachine basicMachine;
 
     public GuiBase(Container container, TileEntityBasicSidedInventory tileEntity) {
         this(container, null);
@@ -113,5 +116,22 @@ public class GuiBase extends GuiContainer {
 
     public void drawElement(int x, int y, int u, int v, int width, int height) {
         this.drawTexturedModalRect(guiLeft + x, guiTop + y, u, v, width, height);
+    }
+
+    public void drawSteamTank(int x, int y) {
+        Minecraft.getMinecraft().getTextureManager().bindTexture(elements);
+        int j = getValueScaled(basicMachine.getSteamAmount(), basicMachine.getSteamCapacity(), 66);
+        drawElement(x, y - j, 240, 66 - j, 16, j);
+    }
+
+    public int getValueScaled(int value, int max, int scale) {
+        return (value * scale) / max;
+    }
+
+    public void drawToolTipOverArea(int mouseX, int mouseY, int minX, int minY, int maxX, int maxY, List<String> list, FontRenderer font) {
+        if (list != null && font != null) {
+            if ((mouseX >= minX && mouseX <= maxX) && (mouseY >= minY && mouseY <= maxY))
+                drawHoveringText(list, mouseX, mouseY, font);
+        }
     }
 }

@@ -9,7 +9,7 @@ import net.minecraft.nbt.NBTTagCompound;
 public class SteamTank implements ISteamTank {
 
     private final int capacity;
-    private int steamAmount;
+    public int steamAmount;
 
     public SteamTank(int steamAmount, int capacity) {
         this.steamAmount = steamAmount;

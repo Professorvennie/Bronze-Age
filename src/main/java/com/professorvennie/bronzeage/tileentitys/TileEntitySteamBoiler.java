@@ -4,7 +4,11 @@ import com.professorvennie.bronzeage.api.tiles.ISteamBoiler;
 import com.professorvennie.bronzeage.api.tiles.ISteamHandler;
 import com.professorvennie.bronzeage.api.tiles.ISteamTank;
 import com.professorvennie.bronzeage.api.tiles.SteamTank;
+import com.professorvennie.bronzeage.items.ModItems;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
 
@@ -13,7 +17,9 @@ import net.minecraftforge.fluids.*;
  */
 public class TileEntitySteamBoiler extends TileEntityBasicMachine implements ISteamBoiler {
 
+    public static final int FUELSLOT = 4, WATERSLOT = 2, STEAMEMPTYSLOT = 0;
     public int burnTime, currentItemBurnTime;
+    public int temp, maxTemp = 500;
     private SteamTank steamTank;
     private FluidTank waterTank;
 
@@ -24,8 +30,15 @@ public class TileEntitySteamBoiler extends TileEntityBasicMachine implements ISt
     }
 
     @Override
+    public int getSizeInventory() {
+        return 5;
+    }
+
+    @Override
     public void updateEntity() {
         super.updateEntity();
+
+        if (burnTime > 0) burnTime--;
 
         TileEntity[] tiles = new TileEntity[6];
         tiles[0] = worldObj.getTileEntity(xCoord + 1, yCoord, zCoord);
@@ -54,8 +67,117 @@ public class TileEntitySteamBoiler extends TileEntityBasicMachine implements ISt
             if (waterTank.getFluidAmount() > waterTank.getCapacity())
                 waterTank.getFluid().amount = waterTank.getCapacity();
 
-            if (waterTank.getFluid().getFluid() == FluidRegistry.WATER && waterTank.getFluid().amount > 100) {
+            if (canWork) {
+                if (getWaterAmount() == 0 && temp >= 212) {
+                    worldObj.createExplosion(null, (double) xCoord, (double) yCoord, (double) zCoord, 4.0f, true);
+                }
 
+
+                int time = (int) worldObj.getWorldTime() % 100;
+                if (burnTime > 0) {
+                    if (temp < maxTemp) {
+                        if (time == 0)
+                            temp++;
+                    }
+                } else if (time == 0)
+                    if (temp > 0)
+                        temp--;
+
+                if (temp >= 212 && getWaterAmount() > 0) {
+                    fill(null, 100);
+                    drain(null, 100, true);
+                }
+
+                if (temp < maxTemp) {
+                    if (burnTime == 0) {
+                        currentItemBurnTime = burnTime = TileEntityFurnace.getItemBurnTime(inventory[4]) / 2;
+                        if (inventory[4] != null) {
+                            if (TileEntityFurnace.isItemFuel(inventory[4])) {
+                                inventory[4].stackSize--;
+                                if (inventory[4].stackSize == 0)
+                                    inventory[4] = new ItemStack(inventory[4].getItem().getContainerItem());
+                            }
+                        }
+                    }
+                } else if (temp == maxTemp) {
+                    if (burnTime == 0) {
+                        currentItemBurnTime = burnTime = TileEntityFurnace.getItemBurnTime(inventory[4]) * 10;
+                        if (inventory[4] != null) {
+                            if (TileEntityFurnace.isItemFuel(inventory[4])) {
+                                inventory[4].stackSize--;
+                                if (inventory[4].stackSize == 0)
+                                    inventory[4] = new ItemStack(inventory[4].getItem().getContainerItem());
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (inventory[2] != null) {
+                if (inventory[2].getItem() == Items.water_bucket) {
+                    int temp = getWaterCapacity() - getWaterAmount();
+                    if (inventory[3] == null) {
+                        if (getWaterAmount() < getWaterCapacity()) {
+                            if (temp >= 1000) {
+                                setInventorySlotContents(3, new ItemStack(Items.bucket));
+                            }
+                        }
+                        if (getWaterAmount() < getWaterCapacity()) {
+                            if (getWaterAmount() < getWaterCapacity()) {
+                                if (temp >= 1000)
+                                    waterTank.getFluid().amount += 1000;
+                            }
+                        }
+
+                        if (getWaterAmount() < getWaterCapacity()) {
+                            if (temp >= 1000) {
+                                inventory[2].stackSize--;
+                                if (inventory[2].stackSize == 0)
+                                    inventory[2] = null;
+                            }
+                        }
+
+                    } else if (inventory[3].getItem() == Items.bucket) {
+                        if (getWaterAmount() < getWaterCapacity()) {
+                            if (temp >= 1000) {
+                                inventory[2].stackSize--;
+                                if (inventory[2].stackSize == 0)
+                                    inventory[2] = null;
+                                inventory[3].stackSize++;
+                            }
+                        }
+
+                        if (getWaterAmount() < getWaterCapacity()) {
+                            if (temp >= 1000)
+                                waterTank.getFluid().amount += 1000;
+                        }
+                    }
+
+                } else if (inventory[2].getItem() == Items.bucket) {
+                    if (inventory[3] == null) {
+                        if (getWaterAmount() >= 1000) {
+                            waterTank.getFluid().amount -= 1000;
+                            inventory[2].stackSize--;
+                            if (inventory[2].stackSize == 0)
+                                inventory[2] = null;
+                            setInventorySlotContents(3, new ItemStack(Items.water_bucket));
+                        }
+                    }
+                }
+            }
+
+            if (inventory[0] != null) {
+                if (inventory[0].getItem() == Items.bucket) {
+                    if (inventory[1] == null) {
+                        if (getSteamAmount() >= 1000) {
+                            drain(null, 1000);
+                            inventory[0].stackSize--;
+                            if (inventory[0].stackSize == 0)
+                                inventory[0] = null;
+                            setInventorySlotContents(1, new ItemStack(ModItems.wrench, 1, 5));
+                        }
+                    }
+                }
             }
         }
     }
@@ -142,5 +264,16 @@ public class TileEntitySteamBoiler extends TileEntityBasicMachine implements ISt
     @Override
     public FluidTankInfo[] getTankInfo(ForgeDirection from) {
         return new FluidTankInfo[]{waterTank.getInfo()};
+    }
+
+    public boolean isBurning() {
+        return burnTime > 0;
+    }
+
+    public int getBurnTimeReamingScaled(int i) {
+        if (this.currentItemBurnTime == 0) {
+            this.currentItemBurnTime = 100;
+        }
+        return this.burnTime * i / this.currentItemBurnTime;
     }
 }

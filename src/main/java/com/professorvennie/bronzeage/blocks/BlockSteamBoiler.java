@@ -9,9 +9,7 @@ import com.professorvennie.bronzeage.lib.BookData;
 import com.professorvennie.bronzeage.lib.GuiIds;
 import com.professorvennie.bronzeage.tileentitys.TileEntitySteamBoiler;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -37,11 +35,6 @@ public class BlockSteamBoiler extends BlockBasicMachine implements IManualEntry 
     @Override
     public IPage getPage(World world, int x, int y, int z) {
         return BookData.basics;
-    }
-
-    @Override
-    public void renderHUD(World world, Minecraft minecraft, ItemStack wrench, int x, int y, int z) {
-
     }
 
     @Override
