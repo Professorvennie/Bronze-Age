@@ -266,7 +266,6 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
                 if (!world.isRemote) {
                     if (itemStack != null && itemStack.getTagCompound() != null) {
                         if (world.getTileEntity(x, y, z) instanceof TileEntityBasicMachine) {
-                            System.out.println("Basic Machine");
                             TileEntityBasicMachine basicMachine = (TileEntityBasicMachine) world.getTileEntity(x, y, z);
                             NBTTagList list = itemStack.getTagCompound().getTagList("items", Constants.NBT.TAG_COMPOUND);
                             basicMachine.inventory = new ItemStack[basicMachine.getSizeInventory()];
@@ -276,7 +275,6 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
                                 int j = compound.getByte("slot") & 0xff;
 
                                 if (j >= 0 && j < basicMachine.inventory.length) {
-                                    System.out.println(basicMachine.inventory[i]);
                                     basicMachine.inventory[j] = ItemStack.loadItemStackFromNBT(compound);
                                 }
                             }
