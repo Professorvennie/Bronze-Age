@@ -1,6 +1,7 @@
 package com.professorvennie.bronzeage.api.wrench;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 
 /**
  * Created by ProfessorVennie on 12/1/2014 at 5:04 PM.
@@ -21,8 +22,12 @@ public class WrenchMaterial {
         this.repairStack = reapairStack;
     }
 
-    public String getName() {
-        return name;
+    public String getUnlocalizedName() {
+        return "wrenchMaterial." + name;
+    }
+
+    public String getLocalizedName() {
+        return StatCollector.translateToLocal(getUnlocalizedName());
     }
 
     public float getNumOfUses() {

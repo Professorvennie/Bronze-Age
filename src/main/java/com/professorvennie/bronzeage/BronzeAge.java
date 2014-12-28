@@ -2,6 +2,7 @@ package com.professorvennie.bronzeage;
 
 import com.professorvennie.bronzeage.blocks.ModBlocks;
 import com.professorvennie.bronzeage.client.handlers.HudHandler;
+import com.professorvennie.bronzeage.core.config.ConfigHandler;
 import com.professorvennie.bronzeage.core.creativetab.CreativeTab;
 import com.professorvennie.bronzeage.core.handlers.GuiHandler;
 import com.professorvennie.bronzeage.core.network.PacketHandler;
@@ -9,6 +10,7 @@ import com.professorvennie.bronzeage.core.proxeys.CommonProxey;
 import com.professorvennie.bronzeage.items.ModItems;
 import com.professorvennie.bronzeage.lib.BookData;
 import com.professorvennie.bronzeage.lib.Reference;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -40,6 +42,8 @@ public class BronzeAge {
         ModItems.init();
         BookData.initPages();
         PacketHandler.init();
+        ConfigHandler.init(event.getSuggestedConfigurationFile());
+        FMLCommonHandler.instance().bus().register(new ConfigHandler());
 
         proxey.registerRenders();
     }

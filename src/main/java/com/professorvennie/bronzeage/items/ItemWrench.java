@@ -39,7 +39,7 @@ public class ItemWrench extends ItemBase implements IWrench {
 
     @Override
     public String getUnlocalizedName(ItemStack itemStack) {
-        return super.getUnlocalizedName(itemStack) + "." + getWrenchMaterial(itemStack).getName();
+        return super.getUnlocalizedName(itemStack) + "." + getWrenchMaterial(itemStack).getLocalizedName();
     }
 
     @Override
@@ -66,7 +66,7 @@ public class ItemWrench extends ItemBase implements IWrench {
     public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean b) {
 
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
-            list.add(EnumChatFormatting.GOLD + translate("material") + ": " + EnumChatFormatting.DARK_AQUA + getWrenchMaterial(itemStack).getName());
+            list.add(EnumChatFormatting.GOLD + translate("material") + ": " + EnumChatFormatting.DARK_AQUA + getWrenchMaterial(itemStack).getLocalizedName());
             list.add(EnumChatFormatting.GOLD + translate("numOfUses") + ": " + EnumChatFormatting.DARK_AQUA + getNumOfUsesRemaining(itemStack));
             list.add(EnumChatFormatting.GOLD + translate("rotation") + ": " + EnumChatFormatting.DARK_AQUA + getWrenchMaterial(itemStack).getUsesPerRotation());
             list.add(EnumChatFormatting.GOLD + translate("dismantle") + ": " + EnumChatFormatting.DARK_AQUA + getWrenchMaterial(itemStack).getUsesPerDismantle());
@@ -171,7 +171,7 @@ public class ItemWrench extends ItemBase implements IWrench {
         icons = new IIcon[numOfWrenches];
 
         for (int i = 0; i < icons.length; i++)
-            icons[i] = iconRegister.registerIcon(Reference.MOD_ID + ":" + getWrenchMaterial(new ItemStack(this, 1, i)).getName() + "Wrench");
+            icons[i] = iconRegister.registerIcon(Reference.MOD_ID + ":" + getWrenchMaterial(new ItemStack(this, 1, i)).getLocalizedName() + "Wrench");
     }
 
     @Override

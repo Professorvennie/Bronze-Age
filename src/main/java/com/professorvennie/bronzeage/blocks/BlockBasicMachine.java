@@ -1,6 +1,7 @@
 package com.professorvennie.bronzeage.blocks;
 
 import com.professorvennie.bronzeage.BronzeAge;
+import com.professorvennie.bronzeage.api.manual.IManualEntry;
 import com.professorvennie.bronzeage.api.wrench.IWrench;
 import com.professorvennie.bronzeage.api.wrench.IWrenchable;
 import com.professorvennie.bronzeage.lib.Reference;
@@ -30,36 +31,29 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by ProfessorVennie on 10/21/2014 at 7:28 PM.
  */
-public abstract class BlockBasicMachine extends Block implements ITileEntityProvider, IWrenchable, IGuiHandler {
+public abstract class BlockBasicMachine extends Block implements ITileEntityProvider, IWrenchable, IGuiHandler, IManualEntry {
 
-    private static boolean keepInventory;
     public boolean isActive;
     private String name;
     @SideOnly(Side.CLIENT)
     private IIcon frontIcon, sideIcon, topIcon;
 
-    protected BlockBasicMachine(Material material, String name) {
-        super(material);
+    protected BlockBasicMachine(String name) {
+        super(Material.iron);
         setCreativeTab(BronzeAge.tabMain);
         this.name = name;
         setBlockName(name);
         BronzeAge.guiHandler.registerHandler(getGuiId(), this);
-        /*if (isActive)
-            setBlockName(name + "Active");
-        else {
-            setBlockName(name + "Idle");
-            setCreativeTab(BronzeAge.tabMain);
-        }*/
     }
 
     public static void updateBlockState(boolean active, World worldObj, int xCoord, int yCoord, int zCoord, ItemStack blockActive, ItemStack blockIdle) {
         int i = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
         TileEntity tileentity = worldObj.getTileEntity(xCoord, yCoord, zCoord);
-        keepInventory = true;
 
         if (active) {
             worldObj.setBlock(xCoord, yCoord, zCoord, Block.getBlockFromItem(blockActive.getItem()));
@@ -67,14 +61,16 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
             worldObj.setBlock(xCoord, yCoord, zCoord, Block.getBlockFromItem(blockIdle.getItem()));
         }
 
-        keepInventory = false;
-
         worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, i, 2);
 
         if (tileentity != null) {
             tileentity.validate();
             worldObj.setTileEntity(xCoord, yCoord, zCoord, tileentity);
         }
+    }
+
+    private boolean shouldDisplayInCreative(ItemStack itemStack) {
+        return itemStack.getItemDamage() == 0;
     }
 
     public abstract int getGuiId();
@@ -113,7 +109,7 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
             return topIcon;
         else if (side == meta)
             return frontIcon;
-        else if (meta == 0 && side == 3)
+        else if ((meta == 0 || meta == 1) && side == 3)
             return frontIcon;
         else
             return sideIcon;
@@ -176,46 +172,6 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
         }
     }
 
-    public void breakBlock(World world, int x, int y, int z, Block block, int side) {
-        /*if (!keepInventory) {
-            TileEntity tileEntity = world.getTileEntity(x, y, z);
-
-            if (!(tileEntity instanceof ISidedInventory)) {
-                return;
-            }
-
-            ISidedInventory inventory = (ISidedInventory) tileEntity;
-
-            for (int i = 0; i < inventory.getSizeInventory(); i++) {
-
-                ItemStack itemStack = inventory.getStackInSlot(i);
-
-                if (itemStack != null && itemStack.stackSize > 0) {
-
-                    Random rand = new Random();
-
-                    float dX = rand.nextFloat() * 0.8F + 0.1F;
-                    float dY = rand.nextFloat() * 0.8F + 0.1F;
-                    float dZ = rand.nextFloat() * 0.8F + 0.1F;
-
-                    EntityItem entityItem = new EntityItem(world, x + dX, y + dY, z + dZ, itemStack.copy());
-
-                    if (itemStack.hasTagCompound()) {
-                        entityItem.getEntityItem().setTagCompound((NBTTagCompound) itemStack.getTagCompound().copy());
-                    }
-
-                    float factor = 0.05F;
-                    entityItem.motionX = rand.nextGaussian() * factor;
-                    entityItem.motionY = rand.nextGaussian() * factor + 0.2F;
-                    entityItem.motionZ = rand.nextGaussian() * factor;
-                    world.spawnEntityInWorld(entityItem);
-                    itemStack.stackSize = 0;
-                }
-            }
-        }*/
-        super.breakBlock(world, x, y, z, block, side);
-    }
-
     @Override
     public abstract TileEntity createNewTileEntity(World world, int i);
 
@@ -249,14 +205,23 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
 
     @Override
     public boolean rotateBlock(World worldObj, int x, int y, int z, ForgeDirection axis) {
-        setDefualtDirection(worldObj, x, y, z);
+        int metadata = worldObj.getBlockMetadata(x, y, z) + 1;
+        if (metadata > 5) metadata = 2;
+        worldObj.setBlockMetadataWithNotify(x, y, z, metadata, 2);
         return true;
+    }
+
+    @Override
+    public void randomDisplayTick(World world, int x, int y, int z, Random random) {
+        if (isActive && !world.isRemote) {
+
+        }
     }
 
     public static class ItemBasicMachine extends ItemBlock {
 
-        public ItemBasicMachine(Block p_i45328_1_) {
-            super(p_i45328_1_);
+        public ItemBasicMachine(Block block) {
+            super(block);
         }
 
         @Override
