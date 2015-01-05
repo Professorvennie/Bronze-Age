@@ -18,8 +18,7 @@ import net.minecraftforge.fluids.*;
 public class TileEntitySteamBoiler extends TileEntityBasicMachine implements ISteamBoiler {
 
     public static final int FUELSLOT = 4, WATERSLOT = 2, STEAMEMPTYSLOT = 0;
-    public int burnTime, currentItemBurnTime;
-    public int temp, maxTemp = 500;
+    public int burnTime, currentItemBurnTime, temp, maxTemp = 500;
     private SteamTank steamTank;
     private FluidTank waterTank;
 
@@ -35,10 +34,23 @@ public class TileEntitySteamBoiler extends TileEntityBasicMachine implements ISt
     }
 
     @Override
+    public int[] setInputSlots() {
+        return new int[]{0, 2, 4};
+    }
+
+    @Override
+    public int[] setExportSlots() {
+        return new int[]{1, 3};
+    }
+
+    @Override
     public void updateEntity() {
         super.updateEntity();
 
-        if (burnTime > 0) burnTime--;
+        if (burnTime > 0) {
+            burnTime--;
+            //BlockSteamBoiler.updateBlockState(burnTime > 0, worldObj, xCoord, yCoord, zCoord, new ItemStack(ModBlocks.steamBoilerIdle, 1, 1), new ItemStack(ModBlocks.steamBoilerIdle, 1, 0));
+        }
 
         TileEntity[] tiles = new TileEntity[6];
         tiles[0] = worldObj.getTileEntity(xCoord + 1, yCoord, zCoord);
@@ -79,9 +91,10 @@ public class TileEntitySteamBoiler extends TileEntityBasicMachine implements ISt
                         if (time == 0)
                             temp++;
                     }
-                } else if (time == 0)
+                } else if (time == 0) {
                     if (temp > 0)
                         temp--;
+                }
 
                 if (temp >= 212 && getWaterAmount() > 0) {
                     fill(null, 100);
@@ -275,5 +288,9 @@ public class TileEntitySteamBoiler extends TileEntityBasicMachine implements ISt
             this.currentItemBurnTime = 100;
         }
         return this.burnTime * i / this.currentItemBurnTime;
+    }
+
+    public int getTempScaled(int scale) {
+        return (temp * scale) / maxTemp;
     }
 }

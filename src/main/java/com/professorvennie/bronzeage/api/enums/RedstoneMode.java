@@ -1,4 +1,4 @@
-package com.professorvennie.bronzeage.client.gui.buttons;
+package com.professorvennie.bronzeage.api.enums;
 
 /**
  * Created by ProfessorVennie on 12/14/2014 at 6:23 PM.

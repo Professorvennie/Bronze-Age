@@ -1,5 +1,6 @@
 package com.professorvennie.bronzeage.client.gui.buttons;
 
+import com.professorvennie.bronzeage.api.enums.RedstoneMode;
 import com.professorvennie.bronzeage.client.helpers.RenderHelper;
 import com.professorvennie.bronzeage.lib.Reference;
 import com.professorvennie.bronzeage.tileentitys.TileEntityBasicMachine;

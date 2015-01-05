@@ -1,7 +1,9 @@
 package com.professorvennie.bronzeage.blocks;
 
 import com.professorvennie.bronzeage.BronzeAge;
+import com.professorvennie.bronzeage.api.enums.RedstoneMode;
 import com.professorvennie.bronzeage.api.manual.IManualEntry;
+import com.professorvennie.bronzeage.api.tiles.ISteamBoiler;
 import com.professorvennie.bronzeage.api.wrench.IWrench;
 import com.professorvennie.bronzeage.api.wrench.IWrenchable;
 import com.professorvennie.bronzeage.lib.Reference;
@@ -24,11 +26,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
+import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 import java.util.Random;
@@ -39,9 +43,9 @@ import java.util.Random;
 public abstract class BlockBasicMachine extends Block implements ITileEntityProvider, IWrenchable, IGuiHandler, IManualEntry {
 
     public boolean isActive;
-    private String name;
     @SideOnly(Side.CLIENT)
-    private IIcon frontIcon, sideIcon, topIcon;
+    public IIcon frontIconIdle, frontIconActive, sideIcon, topIcon;
+    private String name;
 
     protected BlockBasicMachine(String name) {
         super(Material.iron);
@@ -69,10 +73,6 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
         }
     }
 
-    private boolean shouldDisplayInCreative(ItemStack itemStack) {
-        return itemStack.getItemDamage() == 0;
-    }
-
     public abstract int getGuiId();
 
     @Override
@@ -98,8 +98,9 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister iconRegister) {
         sideIcon = iconRegister.registerIcon(Reference.MOD_ID + ":blockBronze");
-        frontIcon = iconRegister.registerIcon(Reference.MOD_ID + ":" + name + (isActive ? "_Front_Active" : "_Front_Idle"));
         topIcon = iconRegister.registerIcon(Reference.MOD_ID + ":machines_Top");
+        frontIconIdle = iconRegister.registerIcon(Reference.MOD_ID + ":" + name + "_Front_Idle");
+        frontIconActive = iconRegister.registerIcon(Reference.MOD_ID + ":" + name + "_Front_Active");
     }
 
     @Override
@@ -108,9 +109,11 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
         if (side == 1)
             return topIcon;
         else if (side == meta)
-            return frontIcon;
-        else if ((meta == 0 || meta == 1) && side == 3)
-            return frontIcon;
+            return frontIconIdle;
+        else if (meta == 0 && side == 3)
+            return frontIconIdle;
+        else if (meta == 1 && side == 3)
+            return frontIconActive;
         else
             return sideIcon;
     }
@@ -181,13 +184,18 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
             ItemStack block = new ItemStack(world.getBlock(x, y, z), 1, world.getBlockMetadata(x, y, z));
             if (block.getTagCompound() == null)
                 block.setTagCompound(new NBTTagCompound());
+            if (world.getTileEntity(x, y, z) instanceof ISteamBoiler) {
+                ((ISteamBoiler) world.getTileEntity(x, y, z)).getWaterTank().writeToNBT(block.getTagCompound());
+                ((ISteamBoiler) world.getTileEntity(x, y, z)).getSteamTank().writeToNBT(block.getTagCompound());
+            }
 
             if (world.getTileEntity(x, y, z) instanceof TileEntityBasicMachine) {
                 TileEntityBasicMachine basicMachine = (TileEntityBasicMachine) world.getTileEntity(x, y, z);
+                basicMachine.getSteamTank().writeToNBT(block.getTagCompound());
+                block.getTagCompound().setInteger("RedStoneMode", basicMachine.getRedStoneMode().ordinal());
                 NBTTagList list = new NBTTagList();
                 for (int i = 0; i < basicMachine.inventory.length; i++) {
                     if (basicMachine.inventory[i] != null) {
-                        System.out.println(basicMachine.inventory[i]);
                         NBTTagCompound compound = new NBTTagCompound();
                         compound.setByte("slot", (byte) i);
                         basicMachine.inventory[i].writeToNBT(compound);
@@ -197,6 +205,8 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
                 block.getTagCompound().setTag("items", list);
             }
 
+            if (block.getItemDamage() > 1)
+                block.setItemDamage(0);
             EntityItem item = new EntityItem(world, (double) x, (double) y, (double) z, block);
             world.spawnEntityInWorld(item);
             world.setBlockToAir(x, y, z);
@@ -230,8 +240,15 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
             if (result) {
                 if (!world.isRemote) {
                     if (itemStack != null && itemStack.getTagCompound() != null) {
+                        if (world.getTileEntity(x, y, z) instanceof ISteamBoiler) {
+                            ((ISteamBoiler) world.getTileEntity(x, y, z)).getWaterTank().readFromNBT(itemStack.getTagCompound());
+                            ((ISteamBoiler) world.getTileEntity(x, y, z)).getSteamTank().readFromNBT(itemStack.getTagCompound());
+                        }
+
                         if (world.getTileEntity(x, y, z) instanceof TileEntityBasicMachine) {
                             TileEntityBasicMachine basicMachine = (TileEntityBasicMachine) world.getTileEntity(x, y, z);
+                            basicMachine.getSteamTank().readFromNBT(itemStack.getTagCompound());
+                            basicMachine.setRedstoneMode(RedstoneMode.values()[itemStack.getTagCompound().getInteger("RedStoneMode")]);
                             NBTTagList list = itemStack.getTagCompound().getTagList("items", Constants.NBT.TAG_COMPOUND);
                             basicMachine.inventory = new ItemStack[basicMachine.getSizeInventory()];
 
@@ -251,14 +268,30 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
         }
 
         @Override
+        public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean b) {
+            if (itemStack.getTagCompound() != null) {
+                list.add("Pre Configured");
+                if (!(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))) {
+                    list.add("Hold " + EnumChatFormatting.AQUA + "Shift" + EnumChatFormatting.GRAY + " for more information");
+                } else {
+                    list.add("RedStone Mode: " + RedstoneMode.values()[itemStack.getTagCompound().getInteger("RedStoneMode")]);
+                    list.add("Steam Amount: " + itemStack.getTagCompound().getInteger("SteamAmount") + " mb");
+                    if (itemStack.getTagCompound().getInteger("Amount") != 0)
+                        list.add("Water Amount: " + itemStack.getTagCompound().getInteger("Amount") + " mb");
+                }
+            }
+        }
+
+        @Override
         public String getUnlocalizedName(ItemStack itemStack) {
-            if (itemStack.getItemDamage() == 0)
-                return super.getUnlocalizedName(itemStack) + "Idle";
-            if (itemStack.getItemDamage() == 1)
-                return super.getUnlocalizedName(itemStack) + "Active";
-            else {
-                itemStack.setItemDamage(0);
-                return super.getUnlocalizedName(itemStack) + "Idle";
+            switch (itemStack.getItemDamage()) {
+                case 0:
+                    return super.getUnlocalizedName(itemStack) + "Idle";
+                case 1:
+                    return super.getUnlocalizedName(itemStack) + "Active";
+                default:
+                    itemStack.setItemDamage(0);
+                    return super.getUnlocalizedName(itemStack) + "Idle";
             }
         }
     }

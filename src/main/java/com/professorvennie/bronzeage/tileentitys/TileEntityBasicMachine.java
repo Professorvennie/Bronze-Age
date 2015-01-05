@@ -1,24 +1,33 @@
 package com.professorvennie.bronzeage.tileentitys;
 
+import com.professorvennie.bronzeage.api.enums.RedstoneMode;
+import com.professorvennie.bronzeage.api.enums.SideMode;
 import com.professorvennie.bronzeage.api.tiles.*;
-import com.professorvennie.bronzeage.client.gui.buttons.RedstoneMode;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by ProfessorVennie on 11/23/2014 at 3:29 PM.
  */
-public abstract class TileEntityBasicMachine extends TileEntityBasicSidedInventory implements ISteamHandler, IButtonHandler, IRedstoneControlable {
+public abstract class TileEntityBasicMachine extends TileEntityBasicSidedInventory implements ISteamHandler, IButtonHandler, IRedstoneControlable, ISideConfigurable {
 
     public boolean canWork;
     private SteamTank steamTank;
     private RedstoneMode redStoneMode;
+    private Map<Integer, SideMode> sideModeMap = new HashMap<Integer, SideMode>();
+    private int[] inputSlots, exportSlots;
 
     public TileEntityBasicMachine(String name, int capacity) {
         super(name);
         steamTank = new SteamTank(0, capacity);
         redStoneMode = RedstoneMode.low;
+        this.inputSlots = setInputSlots();
+        this.exportSlots = setExportSlots();
+        sideModeMap.put(0, SideMode.IMPORT);
     }
 
     @Override
@@ -151,5 +160,28 @@ public abstract class TileEntityBasicMachine extends TileEntityBasicSidedInvento
     }
 
     @Override
+    public SideMode getModeOnSide(int side) {
+        return sideModeMap.get(side);
+    }
+
+    @Override
+    public int[] getAccessibleSlotsFromSide(int side) {
+        switch (getModeOnSide(side)) {
+            case IMPORT:
+                return inputSlots;
+            case EXPORT:
+                return exportSlots;
+            case DISABLED:
+                return null;
+            default:
+                return null;
+        }
+    }
+
+    @Override
     public abstract int getSizeInventory();
+
+    public abstract int[] setInputSlots();
+
+    public abstract int[] setExportSlots();
 }

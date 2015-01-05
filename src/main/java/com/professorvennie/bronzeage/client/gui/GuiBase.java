@@ -1,10 +1,12 @@
 package com.professorvennie.bronzeage.client.gui;
 
 import com.professorvennie.bronzeage.BronzeAge;
+import com.professorvennie.bronzeage.api.enums.RedstoneMode;
+import com.professorvennie.bronzeage.client.gui.buttons.GuiButtonConfig;
 import com.professorvennie.bronzeage.client.gui.buttons.GuiButtonRedStone;
-import com.professorvennie.bronzeage.client.gui.buttons.RedstoneMode;
 import com.professorvennie.bronzeage.core.network.MessageButton;
 import com.professorvennie.bronzeage.core.network.PacketHandler;
+import com.professorvennie.bronzeage.lib.GuiIds;
 import com.professorvennie.bronzeage.lib.Reference;
 import com.professorvennie.bronzeage.tileentitys.TileEntityBasicMachine;
 import com.professorvennie.bronzeage.tileentitys.TileEntityBasicSidedInventory;
@@ -44,6 +46,7 @@ public class GuiBase extends GuiContainer {
     public void initGui() {
         super.initGui();
         buttonList.add(new GuiButtonRedStone(0, guiLeft + xSize + 1, guiTop + ySize - 160, basicMachine));
+        buttonList.add(new GuiButtonConfig(1, guiLeft + xSize + 1, guiTop + ySize - 132, basicMachine));
     }
 
     @Override
@@ -51,11 +54,11 @@ public class GuiBase extends GuiContainer {
         GL11.glColor4f(0F, 0.30F, 0.97F, 1F);
 
         Minecraft.getMinecraft().getTextureManager().bindTexture(elements);
-        //drawTexturedModalRect(guiLeft + 176, guiTop + 3, 0, 0, 28, 89);
 
         if (basicMachine != null) {
             GL11.glColor4f(0.97F, 0.00F, 0F, 1F);
             drawTexturedModalRect(guiLeft + 176, guiTop + 3, 0, 93, 28, 28);
+            drawTexturedModalRect(guiLeft + 176, guiTop + 31, 0, 93, 28, 28);
         }
 
         GL11.glColor4f(1F, 1F, 1F, 1F);
@@ -101,6 +104,10 @@ public class GuiBase extends GuiContainer {
                         break;
                     }
                 }
+            case 1:
+                if (button instanceof GuiButtonConfig)
+                    Minecraft.getMinecraft().thePlayer.openGui(BronzeAge.INSTANSE, GuiIds.CONFIG, Minecraft.getMinecraft().theWorld, basicMachine.xCoord, basicMachine.yCoord, basicMachine.zCoord);
+                break;
         }
     }
 

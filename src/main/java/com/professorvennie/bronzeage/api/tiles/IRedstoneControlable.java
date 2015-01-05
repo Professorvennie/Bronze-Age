@@ -1,6 +1,6 @@
 package com.professorvennie.bronzeage.api.tiles;
 
-import com.professorvennie.bronzeage.client.gui.buttons.RedstoneMode;
+import com.professorvennie.bronzeage.api.enums.RedstoneMode;
 
 /**
  * Created by ProfessorVennie on 12/14/2014 at 6:23 PM.
