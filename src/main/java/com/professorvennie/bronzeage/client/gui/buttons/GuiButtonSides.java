@@ -1,5 +1,6 @@
 package com.professorvennie.bronzeage.client.gui.buttons;
 
+import com.professorvennie.bronzeage.api.enums.MachineType;
 import com.professorvennie.bronzeage.api.enums.SideMode;
 import com.professorvennie.bronzeage.client.helpers.RenderHelper;
 import com.professorvennie.bronzeage.lib.Reference;
@@ -16,10 +17,13 @@ import java.util.List;
 public class GuiButtonSides extends GuiButton {
 
     private SideMode mode;
+    private MachineType type;
+    private SideMode.EnumSide side;
 
-    public GuiButtonSides(int id, int x, int y, SideMode mode) {
+    public GuiButtonSides(int id, int x, int y, SideMode mode, MachineType type, SideMode.EnumSide side) {
         super(id, x, y, 16, 16, "");
         this.mode = mode;
+        this.type = type;
     }
 
     @Override
@@ -29,6 +33,18 @@ public class GuiButtonSides extends GuiButton {
         this.field_146123_n = x >= this.xPosition && y >= this.yPosition && x < this.xPosition + this.width && y < this.yPosition + this.height;
         int k = getHoverState(field_146123_n);
         List<String> tooltip = new ArrayList<String>();
+
+        switch (side) {
+            case FRONT:
+                drawTexturedModalRect(xPosition, yPosition, type.getU(), type.getV(), 16, 16);
+                break;
+            case SIDE:
+
+                break;
+            case TOP:
+
+                break;
+        }
 
         switch (mode) {
             case IMPORT:

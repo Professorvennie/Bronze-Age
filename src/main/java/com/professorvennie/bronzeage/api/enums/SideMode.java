@@ -8,4 +8,11 @@ public enum SideMode {
     IMPORT(),
     EXPORT(),
     DISABLED;
+
+    public static enum EnumSide {
+
+        FRONT(),
+        SIDE(),
+        TOP();
+    }
 }
