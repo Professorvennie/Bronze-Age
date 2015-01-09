@@ -3,6 +3,7 @@ package com.professorvennie.bronzeage.client.gui;
 import com.professorvennie.bronzeage.BronzeAge;
 import com.professorvennie.bronzeage.blocks.BlockBasicMachine;
 import com.professorvennie.bronzeage.client.gui.buttons.GuiButtonBack;
+import com.professorvennie.bronzeage.client.gui.buttons.GuiButtonSides;
 import com.professorvennie.bronzeage.common.containers.ContainerFake;
 import com.professorvennie.bronzeage.lib.Reference;
 import com.professorvennie.bronzeage.tileentitys.TileEntityBasicMachine;
@@ -11,6 +12,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
@@ -33,6 +35,14 @@ public class GuiConfig extends GuiContainer {
     public void initGui() {
         super.initGui();
         buttonList.add(new GuiButtonBack(0, guiLeft + xSize + 1, guiTop + ySize - 160));
+        buttonList.add(new GuiButtonSides(1, guiLeft + (xSize / 2 - 8), guiTop + (ySize / 2 - (8 + 80 / 2)), basicMachine.getModeOnSide(ForgeDirection.NORTH), ForgeDirection.NORTH));
+        buttonList.add(new GuiButtonSides(1, guiLeft + (xSize / 2 - 8), guiTop + (ySize / 2 - (8 + 80 / 2 + 18)), basicMachine.getModeOnSide(ForgeDirection.UP), ForgeDirection.UP));
+        buttonList.add(new GuiButtonSides(1, guiLeft + (xSize / 2 - 8), guiTop + (ySize / 2 - (8 + 80 / 2 - 18)), basicMachine.getModeOnSide(ForgeDirection.DOWN), ForgeDirection.DOWN));
+        buttonList.add(new GuiButtonSides(1, guiLeft + (xSize / 2 - 8 - 18), guiTop + (ySize / 2 - (8 + 80 / 2)), basicMachine.getModeOnSide(ForgeDirection.EAST), ForgeDirection.EAST));
+        buttonList.add(new GuiButtonSides(1, guiLeft + (xSize / 2 - 8 + 18), guiTop + (ySize / 2 - (8 + 80 / 2)), basicMachine.getModeOnSide(ForgeDirection.WEST), ForgeDirection.WEST));
+        buttonList.add(new GuiButtonSides(1, guiLeft + (xSize / 2 - 8 + 18), guiTop + (ySize / 2 - (8 + 80 / 2 - 18)), basicMachine.getModeOnSide(ForgeDirection.SOUTH), ForgeDirection.SOUTH));
+
+
     }
 
     @Override
@@ -56,6 +66,9 @@ public class GuiConfig extends GuiContainer {
     protected void actionPerformed(GuiButton button) {
         if (button instanceof GuiButtonBack) {
             Minecraft.getMinecraft().thePlayer.openGui(BronzeAge.INSTANSE, blockBasicMachine.getGuiId(), Minecraft.getMinecraft().theWorld, basicMachine.xCoord, basicMachine.yCoord, basicMachine.zCoord);
+        } else if (button instanceof GuiButtonSides) {
+            basicMachine.changeMode(((GuiButtonSides) button).getDirection());
+            ((GuiButtonSides) button).setMode(basicMachine.getModeOnSide(((GuiButtonSides) button).getDirection()));
         }
     }
 

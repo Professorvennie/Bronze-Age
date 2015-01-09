@@ -1,12 +1,12 @@
 package com.professorvennie.bronzeage.client.gui.buttons;
 
-import com.professorvennie.bronzeage.api.enums.MachineType;
 import com.professorvennie.bronzeage.api.enums.SideMode;
 import com.professorvennie.bronzeage.client.helpers.RenderHelper;
 import com.professorvennie.bronzeage.lib.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,13 +17,12 @@ import java.util.List;
 public class GuiButtonSides extends GuiButton {
 
     private SideMode mode;
-    private MachineType type;
-    private SideMode.EnumSide side;
+    private ForgeDirection direction;
 
-    public GuiButtonSides(int id, int x, int y, SideMode mode, MachineType type, SideMode.EnumSide side) {
+    public GuiButtonSides(int id, int x, int y, SideMode mode, ForgeDirection direction) {
         super(id, x, y, 16, 16, "");
         this.mode = mode;
-        this.type = type;
+        this.direction = direction;
     }
 
     @Override
@@ -34,38 +33,51 @@ public class GuiButtonSides extends GuiButton {
         int k = getHoverState(field_146123_n);
         List<String> tooltip = new ArrayList<String>();
 
-        switch (side) {
-            case FRONT:
-                drawTexturedModalRect(xPosition, yPosition, type.getU(), type.getV(), 16, 16);
+        switch (direction) {
+            case NORTH:
+                drawTexturedModalRect(xPosition, yPosition, 224, 241, 16, 16);
                 break;
-            case SIDE:
-
+            case UP:
+                drawTexturedModalRect(xPosition, yPosition, 240, 240, 16, 16);
                 break;
-            case TOP:
-
+            default:
+                drawTexturedModalRect(xPosition, yPosition, 240, 224, 16, 16);
                 break;
         }
+
 
         switch (mode) {
             case IMPORT:
                 tooltip.clear();
-                tooltip.add("toolTip.config.import");
+                tooltip.add("toolTip.config." + mode.getTooltip());
                 break;
             case EXPORT:
                 tooltip.clear();
-                tooltip.add("toolTip.config.export");
+                tooltip.add("toolTip.config." + mode.getTooltip());
                 break;
             case DISABLED:
                 tooltip.clear();
-                tooltip.add("toolTip.config.disabled");
+                tooltip.add("toolTip.config." + mode.getTooltip());
+                break;
+            case BOTH:
+                tooltip.clear();
+                tooltip.add("toolTip.config." + mode.getTooltip());
                 break;
             default:
                 tooltip.clear();
-                tooltip.add("toolTip.config.unknown");
+                tooltip.add("toolTip.config.Unknown");
                 break;
         }
 
         if (k == 2)
             RenderHelper.renderTooltip(x, y, tooltip);
+    }
+
+    public ForgeDirection getDirection() {
+        return direction;
+    }
+
+    public void setMode(SideMode mode) {
+        this.mode = mode;
     }
 }

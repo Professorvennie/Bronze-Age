@@ -5,14 +5,18 @@ package com.professorvennie.bronzeage.api.enums;
  */
 public enum SideMode {
 
-    IMPORT(),
-    EXPORT(),
-    DISABLED;
+    IMPORT("import"),
+    EXPORT("export"),
+    BOTH("both"),
+    DISABLED("disabled");
 
-    public static enum EnumSide {
+    private String tooltip;
 
-        FRONT(),
-        SIDE(),
-        TOP();
+    private SideMode(String tooltip) {
+        this.tooltip = tooltip;
+    }
+
+    public String getTooltip() {
+        return tooltip;
     }
 }

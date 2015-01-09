@@ -3,6 +3,7 @@ package com.professorvennie.bronzeage.blocks;
 import com.professorvennie.bronzeage.lib.Reference;
 import com.professorvennie.bronzeage.tileentitys.TileEntitySteamBoiler;
 import com.professorvennie.bronzeage.tileentitys.TileEntitySteamController;
+import com.professorvennie.bronzeage.tileentitys.TileEntitySteamFurnace;
 import com.professorvennie.bronzeage.tileentitys.TileEntitySteamPipe;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
@@ -17,7 +18,7 @@ public class ModBlocks {
     public static Block steamPipe;
 
     public static Block steamBoilerIdle;
-    public static Block steamBoilerActive;
+    public static Block steamFurnace;
 
     public static Block ore;
 
@@ -26,7 +27,7 @@ public class ModBlocks {
         steamPipe = new BlockSteamPipe();
 
         steamBoilerIdle = new BlockSteamBoiler();
-        //steamBoilerActive = new BlockSteamBoiler(true);
+        steamFurnace = new BlockSteamFurnace();
 
         ore = new BlockOre();
 
@@ -38,7 +39,7 @@ public class ModBlocks {
         GameRegistry.registerBlock(steamController, steamController.getUnlocalizedName());
         GameRegistry.registerBlock(steamPipe, steamPipe.getUnlocalizedName());
         registerMachine(steamBoilerIdle);
-        //registerMachine(steamBoilerActive);
+        registerMachine(steamFurnace);
         GameRegistry.registerBlock(ore, BlockOre.ItemBlockOre.class, ore.getUnlocalizedName());
     }
 
@@ -46,6 +47,7 @@ public class ModBlocks {
         registerTile(TileEntitySteamBoiler.class, "SteamBoiler");
         registerTile(TileEntitySteamPipe.class, "SteamPipe");
         registerTile(TileEntitySteamController.class, "SteamController");
+        registerTile(TileEntitySteamFurnace.class, "SteamFurnace");
     }
 
     private static void registerTile(Class<? extends TileEntity> tile, String name) {

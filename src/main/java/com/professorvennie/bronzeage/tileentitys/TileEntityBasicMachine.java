@@ -7,9 +7,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Created by ProfessorVennie on 11/23/2014 at 3:29 PM.
  */
@@ -18,7 +15,7 @@ public abstract class TileEntityBasicMachine extends TileEntityBasicSidedInvento
     public boolean canWork;
     private SteamTank steamTank;
     private RedstoneMode redStoneMode;
-    private Map<Integer, SideMode> sideModeMap = new HashMap<Integer, SideMode>();
+    private SideMode[] sideModes;
     private int[] inputSlots, exportSlots;
 
     public TileEntityBasicMachine(String name, int capacity) {
@@ -27,7 +24,14 @@ public abstract class TileEntityBasicMachine extends TileEntityBasicSidedInvento
         redStoneMode = RedstoneMode.low;
         this.inputSlots = setInputSlots();
         this.exportSlots = setExportSlots();
-        sideModeMap.put(0, SideMode.IMPORT);
+        sideModes = new SideMode[6];
+
+        sideModes[ForgeDirection.NORTH.ordinal()] = SideMode.IMPORT;
+        sideModes[ForgeDirection.SOUTH.ordinal()] = SideMode.IMPORT;
+        sideModes[ForgeDirection.EAST.ordinal()] = SideMode.IMPORT;
+        sideModes[ForgeDirection.WEST.ordinal()] = SideMode.IMPORT;
+        sideModes[ForgeDirection.UP.ordinal()] = SideMode.IMPORT;
+        sideModes[ForgeDirection.DOWN.ordinal()] = SideMode.EXPORT;
     }
 
     @Override
@@ -87,6 +91,10 @@ public abstract class TileEntityBasicMachine extends TileEntityBasicSidedInvento
         super.readFromNBT(nbtTagCompound);
 
         redStoneMode = RedstoneMode.values()[nbtTagCompound.getInteger("Mode")];
+
+        for (int i = 0; i <= sideModes.length; i++) {
+            sideModes[i] = SideMode.values()[nbtTagCompound.getInteger("SideMode" + i)];
+        }
     }
 
     @Override
@@ -94,6 +102,10 @@ public abstract class TileEntityBasicMachine extends TileEntityBasicSidedInvento
         super.writeToNBT(nbtTagCompound);
 
         nbtTagCompound.setInteger("Mode", redStoneMode.ordinal());
+
+        for (int i = 0; i <= sideModes.length; i++) {
+            nbtTagCompound.setInteger("SideMode" + i, sideModes[i].ordinal());
+        }
     }
 
     //ISteamHandler
@@ -160,17 +172,41 @@ public abstract class TileEntityBasicMachine extends TileEntityBasicSidedInvento
     }
 
     @Override
-    public SideMode getModeOnSide(int side) {
-        return sideModeMap.get(side);
+    public SideMode getModeOnSide(ForgeDirection side) {
+        return sideModes[side.ordinal()];
+    }
+
+    @Override
+    public void changeMode(ForgeDirection side) {
+        switch (getModeOnSide(side)) {
+            case IMPORT:
+                sideModes[side.ordinal()] = SideMode.EXPORT;
+                break;
+            case EXPORT:
+                sideModes[side.ordinal()] = SideMode.BOTH;
+                break;
+            case BOTH:
+                sideModes[side.ordinal()] = SideMode.DISABLED;
+                break;
+            case DISABLED:
+                sideModes[side.ordinal()] = SideMode.IMPORT;
+                break;
+            default:
+                System.out.println("Unknown side mode. Please report this.");
+                sideModes[side.ordinal()] = SideMode.IMPORT;
+                break;
+        }
     }
 
     @Override
     public int[] getAccessibleSlotsFromSide(int side) {
-        switch (getModeOnSide(side)) {
+        switch (getModeOnSide(ForgeDirection.getOrientation(side))) {
             case IMPORT:
                 return inputSlots;
             case EXPORT:
                 return exportSlots;
+            /*case BOTH:
+                return inputSlots;*/
             case DISABLED:
                 return null;
             default:
