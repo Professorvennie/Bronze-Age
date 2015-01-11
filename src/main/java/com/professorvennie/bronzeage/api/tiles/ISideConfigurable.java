@@ -11,4 +11,6 @@ public interface ISideConfigurable {
     public SideMode getModeOnSide(ForgeDirection side);
 
     public void changeMode(ForgeDirection side);
+
+    public void setModeOnSide(ForgeDirection direction, SideMode mode);
 }

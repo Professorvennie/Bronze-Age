@@ -6,6 +6,7 @@ import com.professorvennie.bronzeage.lib.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.ArrayList;
@@ -49,23 +50,21 @@ public class GuiButtonSides extends GuiButton {
         switch (mode) {
             case IMPORT:
                 tooltip.clear();
-                tooltip.add("toolTip.config." + mode.getTooltip());
+                tooltip.add(direction + ": " + StatCollector.translateToLocal("toolTip.config." + mode.getTooltip()));
                 break;
             case EXPORT:
                 tooltip.clear();
-                tooltip.add("toolTip.config." + mode.getTooltip());
+                tooltip.add(direction + ": " + StatCollector.translateToLocal("toolTip.config." + mode.getTooltip()));
                 break;
             case DISABLED:
                 tooltip.clear();
-                tooltip.add("toolTip.config." + mode.getTooltip());
+                tooltip.add(direction + ": " + StatCollector.translateToLocal("toolTip.config." + mode.getTooltip()));
                 break;
             case BOTH:
                 tooltip.clear();
-                tooltip.add("toolTip.config." + mode.getTooltip());
+                tooltip.add(direction + ": " + StatCollector.translateToLocal("toolTip.config." + mode.getTooltip()));
                 break;
             default:
-                tooltip.clear();
-                tooltip.add("toolTip.config.Unknown");
                 break;
         }
 
@@ -75,6 +74,10 @@ public class GuiButtonSides extends GuiButton {
 
     public ForgeDirection getDirection() {
         return direction;
+    }
+
+    public SideMode getMode() {
+        return mode;
     }
 
     public void setMode(SideMode mode) {

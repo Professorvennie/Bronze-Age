@@ -92,9 +92,9 @@ public abstract class TileEntityBasicMachine extends TileEntityBasicSidedInvento
 
         redStoneMode = RedstoneMode.values()[nbtTagCompound.getInteger("Mode")];
 
-        for (int i = 0; i <= sideModes.length; i++) {
+        /*for (int i = 0; i < sideModes.length; i++) {
             sideModes[i] = SideMode.values()[nbtTagCompound.getInteger("SideMode" + i)];
-        }
+        }*/
     }
 
     @Override
@@ -103,9 +103,9 @@ public abstract class TileEntityBasicMachine extends TileEntityBasicSidedInvento
 
         nbtTagCompound.setInteger("Mode", redStoneMode.ordinal());
 
-        for (int i = 0; i <= sideModes.length; i++) {
-            nbtTagCompound.setInteger("SideMode" + i, sideModes[i].ordinal());
-        }
+        /*for (int i = 0; i < sideModes.length; i++) {
+            setModeOnSide(ForgeDirection.getOrientation(i), SideMode.values()[nbtTagCompound.getInteger("SideMode" + i)]);
+        }*/
     }
 
     //ISteamHandler
@@ -158,6 +158,9 @@ public abstract class TileEntityBasicMachine extends TileEntityBasicSidedInvento
             case 2:
                 setRedstoneMode(RedstoneMode.low);
                 break;
+            case 3:
+                System.out.println("Config");
+                break;
         }
     }
 
@@ -196,6 +199,11 @@ public abstract class TileEntityBasicMachine extends TileEntityBasicSidedInvento
                 sideModes[side.ordinal()] = SideMode.IMPORT;
                 break;
         }
+    }
+
+    @Override
+    public void setModeOnSide(ForgeDirection direction, SideMode mode) {
+        sideModes[direction.ordinal()] = mode;
     }
 
     @Override
