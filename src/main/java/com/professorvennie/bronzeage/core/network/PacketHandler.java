@@ -13,7 +13,7 @@ public class PacketHandler {
     public static SimpleNetworkWrapper INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(Reference.MOD_ID);
 
     public static void init() {
-        INSTANCE.registerMessage(MessageButton.class, MessageButton.class, 0, Side.SERVER);
-        INSTANCE.registerMessage(MessageConfigUpdate.class, MessageConfigUpdate.class, 1, Side.SERVER);
+        INSTANCE.registerMessage(MessageButton.MessageButtonHandler.class, MessageButton.class, 0, Side.SERVER);
+        INSTANCE.registerMessage(MessageConfigUpdate.MessageSideHandler.class, MessageConfigUpdate.class, 1, Side.SERVER);
     }
 }

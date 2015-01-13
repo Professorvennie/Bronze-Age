@@ -71,7 +71,6 @@ public class GuiConfig extends GuiContainer {
             basicMachine.changeMode(buttonSides.getDirection());
             buttonSides.setMode(basicMachine.getModeOnSide(buttonSides.getDirection()));
             PacketHandler.INSTANCE.sendToServer(new MessageConfigUpdate(basicMachine.xCoord, basicMachine.yCoord, basicMachine.zCoord, ((GuiButtonSides) button).getDirection()));
-            //PacketHandler.INSTANCE.sendToServer(new MessageButton(basicMachine.xCoord, basicMachine.yCoord, basicMachine.zCoord, 3));
         }
     }
 

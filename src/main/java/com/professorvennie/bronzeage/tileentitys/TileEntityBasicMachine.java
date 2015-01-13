@@ -16,7 +16,7 @@ public abstract class TileEntityBasicMachine extends TileEntityBasicSidedInvento
     private SteamTank steamTank;
     private RedstoneMode redStoneMode;
     private SideMode[] sideModes;
-    private int[] inputSlots, exportSlots;
+    private int[] inputSlots, exportSlots, bothSlots;
 
     public TileEntityBasicMachine(String name, int capacity) {
         super(name);
@@ -24,6 +24,13 @@ public abstract class TileEntityBasicMachine extends TileEntityBasicSidedInvento
         redStoneMode = RedstoneMode.low;
         this.inputSlots = setInputSlots();
         this.exportSlots = setExportSlots();
+        bothSlots = new int[inputSlots.length + exportSlots.length];
+        for (int i = 0; i < inputSlots.length; i++) {
+            bothSlots[i] = inputSlots[i];
+        }
+        for (int i = 0; i < exportSlots.length; i++) {
+            bothSlots[inputSlots.length + i] = exportSlots[i];
+        }
         sideModes = new SideMode[6];
 
         sideModes[ForgeDirection.NORTH.ordinal()] = SideMode.IMPORT;
@@ -92,7 +99,7 @@ public abstract class TileEntityBasicMachine extends TileEntityBasicSidedInvento
 
         redStoneMode = RedstoneMode.values()[nbtTagCompound.getInteger("Mode")];
 
-        /*for (int i = 0; i < sideModes.length; i++) {
+       /* for (int i = 0; i < sideModes.length; i++) {
             sideModes[i] = SideMode.values()[nbtTagCompound.getInteger("SideMode" + i)];
         }*/
     }
@@ -213,8 +220,8 @@ public abstract class TileEntityBasicMachine extends TileEntityBasicSidedInvento
                 return inputSlots;
             case EXPORT:
                 return exportSlots;
-            /*case BOTH:
-                return inputSlots;*/
+            case BOTH:
+                return bothSlots;
             case DISABLED:
                 return null;
             default:

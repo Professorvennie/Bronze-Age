@@ -10,7 +10,7 @@ import net.minecraft.tileentity.TileEntity;
 /**
  * Created by ProfessorVennie on 12/14/2014 at 7:41 PM.
  */
-public class MessageButton extends MessageCoords implements IMessageHandler<MessageButton, IMessage>, IMessage {
+public class MessageButton extends MessageCoords implements IMessage {
 
     int id;
 
@@ -34,12 +34,15 @@ public class MessageButton extends MessageCoords implements IMessageHandler<Mess
         buf.writeInt(id);
     }
 
-    @Override
-    public IMessage onMessage(MessageButton message, MessageContext ctx) {
-        TileEntity tile = ctx.getServerHandler().playerEntity.worldObj.getTileEntity(message.x, message.y, message.z);
-        if (tile != null && tile instanceof IButtonHandler) {
-            ((IButtonHandler) tile).handleClick(message.id);
+    public static class MessageButtonHandler implements IMessageHandler<MessageButton, IMessage> {
+
+        @Override
+        public IMessage onMessage(MessageButton message, MessageContext ctx) {
+            TileEntity tile = ctx.getServerHandler().playerEntity.worldObj.getTileEntity(message.x, message.y, message.z);
+            if (tile != null && tile instanceof IButtonHandler) {
+                ((IButtonHandler) tile).handleClick(message.id);
+            }
+            return null;
         }
-        return null;
     }
 }
