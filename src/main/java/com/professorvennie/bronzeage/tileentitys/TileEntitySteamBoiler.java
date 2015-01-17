@@ -191,6 +191,8 @@ public class TileEntitySteamBoiler extends TileEntityBasicMachine implements ISt
         super.readFromNBT(nbtTagCompound);
 
         this.temp = nbtTagCompound.getInteger("temp");
+        this.waterTank.readFromNBT(nbtTagCompound);
+
     }
 
     @Override
@@ -198,6 +200,7 @@ public class TileEntitySteamBoiler extends TileEntityBasicMachine implements ISt
         super.writeToNBT(nbtTagCompound);
 
         nbtTagCompound.setInteger("temp", temp);
+        this.waterTank.writeToNBT(nbtTagCompound);
     }
 
     @Override

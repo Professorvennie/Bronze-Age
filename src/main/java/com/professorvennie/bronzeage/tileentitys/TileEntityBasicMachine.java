@@ -86,6 +86,7 @@ public abstract class TileEntityBasicMachine extends TileEntityBasicSidedInvento
         super.readFromNBT(nbtTagCompound);
 
         redStoneMode = RedstoneMode.values()[nbtTagCompound.getInteger("Mode")];
+        steamTank.readFromNBT(nbtTagCompound);
 
        /* for (int i = 0; i < sideModes.length; i++) {
             sideModes[i] = SideMode.values()[nbtTagCompound.getInteger("SideMode" + i)];
@@ -97,6 +98,7 @@ public abstract class TileEntityBasicMachine extends TileEntityBasicSidedInvento
         super.writeToNBT(nbtTagCompound);
 
         nbtTagCompound.setInteger("Mode", redStoneMode.ordinal());
+        steamTank.writeToNBT(nbtTagCompound);
 
         /*for (int i = 0; i < sideModes.length; i++) {
             setModeOnSide(ForgeDirection.getOrientation(i), SideMode.values()[nbtTagCompound.getInteger("SideMode" + i)]);
