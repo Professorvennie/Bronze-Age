@@ -46,27 +46,8 @@ public class GuiButtonSides extends GuiButton {
                 break;
         }
 
-
-        switch (mode) {
-            case IMPORT:
-                tooltip.clear();
-                tooltip.add(direction + ": " + StatCollector.translateToLocal("toolTip.config." + mode.getTooltip()));
-                break;
-            case EXPORT:
-                tooltip.clear();
-                tooltip.add(direction + ": " + StatCollector.translateToLocal("toolTip.config." + mode.getTooltip()));
-                break;
-            case DISABLED:
-                tooltip.clear();
-                tooltip.add(direction + ": " + StatCollector.translateToLocal("toolTip.config." + mode.getTooltip()));
-                break;
-            case BOTH:
-                tooltip.clear();
-                tooltip.add(direction + ": " + StatCollector.translateToLocal("toolTip.config." + mode.getTooltip()));
-                break;
-            default:
-                break;
-        }
+        tooltip.clear();
+        tooltip.add(direction + ": " + StatCollector.translateToLocal("toolTip.config." + mode.getTooltip()));
 
         if (k == 2)
             RenderHelper.renderTooltip(x, y, tooltip);

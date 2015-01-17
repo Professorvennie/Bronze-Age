@@ -2,6 +2,7 @@ package com.professorvennie.bronzeage.core.handlers;
 
 import com.professorvennie.bronzeage.blocks.BlockBasicMachine;
 import com.professorvennie.bronzeage.client.gui.GuiConfig;
+import com.professorvennie.bronzeage.client.gui.GuiManual;
 import com.professorvennie.bronzeage.lib.GuiIds;
 import com.professorvennie.bronzeage.tileentitys.TileEntityBasicMachine;
 import cpw.mods.fml.common.network.IGuiHandler;
@@ -32,11 +33,17 @@ public class GuiHandler implements IGuiHandler {
 
     @Override
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-        if (guiHandlers.get(ID) != null)
-            return guiHandlers.get(ID).getClientGuiElement(ID, player, world, x, y, z);
-
         if (ID == GuiIds.CONFIG && world.getTileEntity(x, y, z) instanceof TileEntityBasicMachine)
             return new GuiConfig(player, (TileEntityBasicMachine) world.getTileEntity(x, y, z), (BlockBasicMachine) world.getBlock(x, y, z));
+        else if (ID == GuiIds.MANUAL) {
+            GuiManual manual = GuiManual.currentOpenManual;
+            GuiManual.currentItemStack = player.getCurrentEquippedItem();
+            if (GuiManual.currentItemStack == null)
+                return null;
+            return manual;
+        }
+        if (guiHandlers.get(ID) != null)
+            return guiHandlers.get(ID).getClientGuiElement(ID, player, world, x, y, z);
         return null;
     }
 }

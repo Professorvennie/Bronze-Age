@@ -3,6 +3,7 @@ package com.professorvennie.bronzeage.tileentitys;
 import com.professorvennie.bronzeage.api.enums.RedstoneMode;
 import com.professorvennie.bronzeage.api.enums.SideMode;
 import com.professorvennie.bronzeage.api.tiles.*;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -16,28 +17,15 @@ public abstract class TileEntityBasicMachine extends TileEntityBasicSidedInvento
     private SteamTank steamTank;
     private RedstoneMode redStoneMode;
     private SideMode[] sideModes;
-    private int[] inputSlots, exportSlots, bothSlots;
 
     public TileEntityBasicMachine(String name, int capacity) {
         super(name);
         steamTank = new SteamTank(0, capacity);
         redStoneMode = RedstoneMode.low;
-        this.inputSlots = setInputSlots();
-        this.exportSlots = setExportSlots();
-        bothSlots = new int[inputSlots.length + exportSlots.length];
-        for (int i = 0; i < inputSlots.length; i++) {
-            bothSlots[i] = inputSlots[i];
-        }
-        for (int i = 0; i < exportSlots.length; i++) {
-            bothSlots[inputSlots.length + i] = exportSlots[i];
-        }
-        sideModes = new SideMode[6];
 
-        sideModes[ForgeDirection.NORTH.ordinal()] = SideMode.IMPORT;
-        sideModes[ForgeDirection.SOUTH.ordinal()] = SideMode.IMPORT;
-        sideModes[ForgeDirection.EAST.ordinal()] = SideMode.IMPORT;
-        sideModes[ForgeDirection.WEST.ordinal()] = SideMode.IMPORT;
-        sideModes[ForgeDirection.UP.ordinal()] = SideMode.IMPORT;
+        sideModes = new SideMode[6];
+        for (int i = 0; i < sideModes.length; i++)
+            sideModes[i] = SideMode.IMPORT;
         sideModes[ForgeDirection.DOWN.ordinal()] = SideMode.EXPORT;
     }
 
@@ -165,9 +153,6 @@ public abstract class TileEntityBasicMachine extends TileEntityBasicSidedInvento
             case 2:
                 setRedstoneMode(RedstoneMode.low);
                 break;
-            case 3:
-                System.out.println("Config");
-                break;
         }
     }
 
@@ -215,24 +200,23 @@ public abstract class TileEntityBasicMachine extends TileEntityBasicSidedInvento
 
     @Override
     public int[] getAccessibleSlotsFromSide(int side) {
-        switch (getModeOnSide(ForgeDirection.getOrientation(side))) {
-            case IMPORT:
-                return inputSlots;
-            case EXPORT:
-                return exportSlots;
-            case BOTH:
-                return bothSlots;
-            case DISABLED:
-                return null;
-            default:
-                return null;
-        }
+        return null;
+    }
+
+    @Override
+    public boolean canInsertItem(int slot, ItemStack itemStack, int side) {
+        if (getModeOnSide(ForgeDirection.getOrientation(side)) == SideMode.IMPORT || getModeOnSide(ForgeDirection.getOrientation(side)) == SideMode.BOTH)
+            return true;
+        return false;
+    }
+
+    @Override
+    public boolean canExtractItem(int slot, ItemStack itemStack, int side) {
+        if (getModeOnSide(ForgeDirection.getOrientation(side)) == SideMode.IMPORT || getModeOnSide(ForgeDirection.getOrientation(side)) == SideMode.BOTH)
+            return true;
+        return false;
     }
 
     @Override
     public abstract int getSizeInventory();
-
-    public abstract int[] setInputSlots();
-
-    public abstract int[] setExportSlots();
 }

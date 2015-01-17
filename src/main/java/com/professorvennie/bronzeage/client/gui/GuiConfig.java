@@ -68,7 +68,7 @@ public class GuiConfig extends GuiContainer {
             Minecraft.getMinecraft().thePlayer.openGui(BronzeAge.INSTANSE, blockBasicMachine.getGuiId(), Minecraft.getMinecraft().theWorld, basicMachine.xCoord, basicMachine.yCoord, basicMachine.zCoord);
         } else if (button instanceof GuiButtonSides) {
             GuiButtonSides buttonSides = (GuiButtonSides) button;
-            basicMachine.changeMode(buttonSides.getDirection());
+            //basicMachine.changeMode(buttonSides.getDirection());
             buttonSides.setMode(basicMachine.getModeOnSide(buttonSides.getDirection()));
             PacketHandler.INSTANCE.sendToServer(new MessageConfigUpdate(basicMachine.xCoord, basicMachine.yCoord, basicMachine.zCoord, ((GuiButtonSides) button).getDirection()));
         }

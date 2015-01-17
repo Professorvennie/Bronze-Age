@@ -37,6 +37,11 @@ public class GuiSteamBoiler extends GuiBase {
         text.add("Steam");
         text.add(steamBoiler.getWaterAmount() + "/" + steamBoiler.getWaterCapacity() + "mB");
         drawToolTipOverArea(mouseX, mouseY, 149, 8, 164, 73, text, fontRendererObj);
+
+        text.clear();
+        text.add("Temperature");
+        text.add(steamBoiler.temp + "F / " + steamBoiler.maxTemp + "F");
+        drawToolTipOverArea(mouseX, mouseY, 53, 63, 122, 68, text, fontRendererObj);
     }
 
     @Override
@@ -52,7 +57,7 @@ public class GuiSteamBoiler extends GuiBase {
         drawElement(11, 74 - j, 176, 80 - j, 16, j);
 
         int k = steamBoiler.getTempScaled(70);
-
+        drawElement(53, 63, 51, 0, k + 1, 6);
 
         drawSteamTank(11, 74);
     }

@@ -7,6 +7,7 @@ import com.professorvennie.bronzeage.api.tiles.SteamTank;
 import com.professorvennie.bronzeage.items.ModItems;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -19,11 +20,13 @@ public class TileEntitySteamBoiler extends TileEntityBasicMachine implements ISt
 
     public static final int FUELSLOT = 4, WATERSLOT = 2, STEAMEMPTYSLOT = 0;
     public int burnTime, currentItemBurnTime, temp, maxTemp = 500;
+    private float efficiency;
     private SteamTank steamTank;
     private FluidTank waterTank;
 
     public TileEntitySteamBoiler() {
         super("container.SteamBoiler", 10000);
+        efficiency = 0.5f;
         steamTank = new SteamTank(0, 10000);
         waterTank = new FluidTank(FluidRegistry.WATER, 0, 10000);
     }
@@ -31,16 +34,6 @@ public class TileEntitySteamBoiler extends TileEntityBasicMachine implements ISt
     @Override
     public int getSizeInventory() {
         return 5;
-    }
-
-    @Override
-    public int[] setInputSlots() {
-        return new int[]{0, 2, 4};
-    }
-
-    @Override
-    public int[] setExportSlots() {
-        return new int[]{1, 3};
     }
 
     @Override
@@ -103,7 +96,7 @@ public class TileEntitySteamBoiler extends TileEntityBasicMachine implements ISt
 
                 if (temp < maxTemp) {
                     if (burnTime == 0) {
-                        currentItemBurnTime = burnTime = TileEntityFurnace.getItemBurnTime(inventory[4]) / 2;
+                        currentItemBurnTime = burnTime = TileEntityFurnace.getItemBurnTime(inventory[4]) / (int) (efficiency * 2);
                         if (inventory[4] != null) {
                             if (TileEntityFurnace.isItemFuel(inventory[4])) {
                                 inventory[4].stackSize--;
@@ -114,7 +107,7 @@ public class TileEntitySteamBoiler extends TileEntityBasicMachine implements ISt
                     }
                 } else if (temp == maxTemp) {
                     if (burnTime == 0) {
-                        currentItemBurnTime = burnTime = TileEntityFurnace.getItemBurnTime(inventory[4]) * 10;
+                        currentItemBurnTime = burnTime = TileEntityFurnace.getItemBurnTime(inventory[4]) * (int) (efficiency * 10);
                         if (inventory[4] != null) {
                             if (TileEntityFurnace.isItemFuel(inventory[4])) {
                                 inventory[4].stackSize--;
@@ -193,6 +186,22 @@ public class TileEntitySteamBoiler extends TileEntityBasicMachine implements ISt
                 }
             }
         }
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound nbtTagCompound) {
+        super.readFromNBT(nbtTagCompound);
+
+        this.temp = nbtTagCompound.getInteger("temp");
+        this.efficiency = nbtTagCompound.getFloat("efficiency");
+    }
+
+    @Override
+    public void writeToNBT(NBTTagCompound nbtTagCompound) {
+        super.writeToNBT(nbtTagCompound);
+
+        nbtTagCompound.setInteger("temp", temp);
+        nbtTagCompound.setFloat("efficiency", efficiency);
     }
 
     @Override
@@ -291,6 +300,6 @@ public class TileEntitySteamBoiler extends TileEntityBasicMachine implements ISt
     }
 
     public int getTempScaled(int scale) {
-        return (temp * scale) / maxTemp;
+        return temp * scale / maxTemp;
     }
 }

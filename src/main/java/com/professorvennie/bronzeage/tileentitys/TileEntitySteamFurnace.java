@@ -14,14 +14,4 @@ public class TileEntitySteamFurnace extends TileEntityBasicMachine {
     public int getSizeInventory() {
         return 5;
     }
-
-    @Override
-    public int[] setInputSlots() {
-        return new int[]{};
-    }
-
-    @Override
-    public int[] setExportSlots() {
-        return new int[]{};
-    }
 }
