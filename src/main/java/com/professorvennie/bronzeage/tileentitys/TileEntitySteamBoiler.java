@@ -20,13 +20,11 @@ public class TileEntitySteamBoiler extends TileEntityBasicMachine implements ISt
 
     public static final int FUELSLOT = 4, WATERSLOT = 2, STEAMEMPTYSLOT = 0;
     public int burnTime, currentItemBurnTime, temp, maxTemp = 500;
-    private float efficiency;
     private SteamTank steamTank;
     private FluidTank waterTank;
 
     public TileEntitySteamBoiler() {
         super("container.SteamBoiler", 10000);
-        efficiency = 0.5f;
         steamTank = new SteamTank(0, 10000);
         waterTank = new FluidTank(FluidRegistry.WATER, 0, 10000);
     }
@@ -96,7 +94,7 @@ public class TileEntitySteamBoiler extends TileEntityBasicMachine implements ISt
 
                 if (temp < maxTemp) {
                     if (burnTime == 0) {
-                        currentItemBurnTime = burnTime = TileEntityFurnace.getItemBurnTime(inventory[4]) / (int) (efficiency * 2);
+                        currentItemBurnTime = burnTime = TileEntityFurnace.getItemBurnTime(inventory[4]) / 2;
                         if (inventory[4] != null) {
                             if (TileEntityFurnace.isItemFuel(inventory[4])) {
                                 inventory[4].stackSize--;
@@ -107,7 +105,7 @@ public class TileEntitySteamBoiler extends TileEntityBasicMachine implements ISt
                     }
                 } else if (temp == maxTemp) {
                     if (burnTime == 0) {
-                        currentItemBurnTime = burnTime = TileEntityFurnace.getItemBurnTime(inventory[4]) * (int) (efficiency * 10);
+                        currentItemBurnTime = burnTime = TileEntityFurnace.getItemBurnTime(inventory[4]) * 10;
                         if (inventory[4] != null) {
                             if (TileEntityFurnace.isItemFuel(inventory[4])) {
                                 inventory[4].stackSize--;
@@ -193,7 +191,6 @@ public class TileEntitySteamBoiler extends TileEntityBasicMachine implements ISt
         super.readFromNBT(nbtTagCompound);
 
         this.temp = nbtTagCompound.getInteger("temp");
-        this.efficiency = nbtTagCompound.getFloat("efficiency");
     }
 
     @Override
@@ -201,7 +198,6 @@ public class TileEntitySteamBoiler extends TileEntityBasicMachine implements ISt
         super.writeToNBT(nbtTagCompound);
 
         nbtTagCompound.setInteger("temp", temp);
-        nbtTagCompound.setFloat("efficiency", efficiency);
     }
 
     @Override
