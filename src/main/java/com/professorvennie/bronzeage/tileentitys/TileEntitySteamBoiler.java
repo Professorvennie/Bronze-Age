@@ -14,7 +14,7 @@ import net.minecraftforge.fluids.*;
 /**
  * Created by ProfessorVennie on 10/22/2014 at 8:39 PM.
  */
-public class TileEntitySteamBoiler extends TileEntityBasicMachine implements ISteamBoiler {
+public class TileEntitySteamBoiler extends TileEntityBasicSteamMachine implements ISteamBoiler {
 
     public static final int FUELSLOT = 4, WATERSLOT = 2, STEAMEMPTYSLOT = 0;
     public int burnTime, currentItemBurnTime, temp, maxTemp = 500;

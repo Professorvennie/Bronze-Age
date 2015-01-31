@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by ProfessorVennie on 11/13/2014 at 3:28 PM.
  */
-public class GuiSteamBoiler extends GuiBase {
+public class GuiSteamBoiler extends GuiBasicSteamMachine {
 
     private TileEntitySteamBoiler steamBoiler;
 

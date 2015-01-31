@@ -3,7 +3,7 @@ package com.professorvennie.bronzeage.tileentitys;
 /**
  * Created by ProfessorVennie on 1/7/2015 at 7:02 PM.
  */
-public class TileEntitySteamFurnace extends TileEntityBasicMachine {
+public class TileEntitySteamFurnace extends TileEntityBasicSteamMachine {
 
     public int burnTime, currentItemBurnTime, cookTime;
 

@@ -7,7 +7,7 @@ import com.professorvennie.bronzeage.api.tiles.ISteamBoiler;
 import com.professorvennie.bronzeage.api.wrench.IWrench;
 import com.professorvennie.bronzeage.api.wrench.IWrenchable;
 import com.professorvennie.bronzeage.lib.Reference;
-import com.professorvennie.bronzeage.tileentitys.TileEntityBasicMachine;
+import com.professorvennie.bronzeage.tileentitys.TileEntityBasicSteamMachine;
 import com.professorvennie.bronzeage.tileentitys.TileEntityMod;
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -192,8 +192,8 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
                 ((ISteamBoiler) world.getTileEntity(x, y, z)).getSteamTank().writeToNBT(block.getTagCompound());
             }
 
-            if (world.getTileEntity(x, y, z) instanceof TileEntityBasicMachine) {
-                TileEntityBasicMachine basicMachine = (TileEntityBasicMachine) world.getTileEntity(x, y, z);
+            if (world.getTileEntity(x, y, z) instanceof TileEntityBasicSteamMachine) {
+                TileEntityBasicSteamMachine basicMachine = (TileEntityBasicSteamMachine) world.getTileEntity(x, y, z);
                 basicMachine.getSteamTank().writeToNBT(block.getTagCompound());
                 block.getTagCompound().setInteger("RedStoneMode", basicMachine.getRedStoneMode().ordinal());
                 NBTTagList list = new NBTTagList();
@@ -248,8 +248,8 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
                             ((ISteamBoiler) world.getTileEntity(x, y, z)).getSteamTank().readFromNBT(itemStack.getTagCompound());
                         }
 
-                        if (world.getTileEntity(x, y, z) instanceof TileEntityBasicMachine) {
-                            TileEntityBasicMachine basicMachine = (TileEntityBasicMachine) world.getTileEntity(x, y, z);
+                        if (world.getTileEntity(x, y, z) instanceof TileEntityBasicSteamMachine) {
+                            TileEntityBasicSteamMachine basicMachine = (TileEntityBasicSteamMachine) world.getTileEntity(x, y, z);
                             basicMachine.getSteamTank().readFromNBT(itemStack.getTagCompound());
                             basicMachine.setRedstoneMode(RedstoneMode.values()[itemStack.getTagCompound().getInteger("RedStoneMode")]);
                             NBTTagList list = itemStack.getTagCompound().getTagList("items", Constants.NBT.TAG_COMPOUND);

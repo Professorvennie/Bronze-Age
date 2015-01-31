@@ -5,7 +5,7 @@ import com.professorvennie.bronzeage.client.gui.GuiConfig;
 import com.professorvennie.bronzeage.client.gui.GuiManual;
 import com.professorvennie.bronzeage.common.containers.ContainerFake;
 import com.professorvennie.bronzeage.lib.GuiIds;
-import com.professorvennie.bronzeage.tileentitys.TileEntityBasicMachine;
+import com.professorvennie.bronzeage.tileentitys.TileEntityBasicSteamMachine;
 import cpw.mods.fml.common.network.IGuiHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
@@ -29,15 +29,15 @@ public class GuiHandler implements IGuiHandler {
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         if (guiHandlers.get(ID) != null)
             return guiHandlers.get(ID).getServerGuiElement(ID, player, world, x, y, z);
-        if (ID == GuiIds.CONFIG && world.getTileEntity(x, y, z) instanceof TileEntityBasicMachine)
-            return new ContainerFake(player.inventory, (TileEntityBasicMachine) world.getTileEntity(x, y, z));
+        if (ID == GuiIds.CONFIG && world.getTileEntity(x, y, z) instanceof TileEntityBasicSteamMachine)
+            return new ContainerFake(player.inventory, (TileEntityBasicSteamMachine) world.getTileEntity(x, y, z));
         return null;
     }
 
     @Override
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-        if (ID == GuiIds.CONFIG && world.getTileEntity(x, y, z) instanceof TileEntityBasicMachine)
-            return new GuiConfig(player, (TileEntityBasicMachine) world.getTileEntity(x, y, z), (BlockBasicMachine) world.getBlock(x, y, z));
+        if (ID == GuiIds.CONFIG && world.getTileEntity(x, y, z) instanceof TileEntityBasicSteamMachine)
+            return new GuiConfig(player, (TileEntityBasicSteamMachine) world.getTileEntity(x, y, z), (BlockBasicMachine) world.getBlock(x, y, z));
         else if (ID == GuiIds.MANUAL) {
             GuiManual manual = GuiManual.currentOpenManual;
             GuiManual.currentItemStack = player.getCurrentEquippedItem();

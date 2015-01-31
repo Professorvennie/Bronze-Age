@@ -8,7 +8,7 @@ import com.professorvennie.bronzeage.common.containers.ContainerFake;
 import com.professorvennie.bronzeage.core.network.MessageConfigUpdate;
 import com.professorvennie.bronzeage.core.network.PacketHandler;
 import com.professorvennie.bronzeage.lib.Reference;
-import com.professorvennie.bronzeage.tileentitys.TileEntityBasicMachine;
+import com.professorvennie.bronzeage.tileentitys.TileEntityBasicSteamMachine;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -25,11 +25,11 @@ import org.lwjgl.opengl.GL11;
 public class GuiConfig extends GuiContainer {
 
     protected int mouseX = 0, mouseY = 0;
-    private TileEntityBasicMachine basicMachine;
+    private TileEntityBasicSteamMachine basicMachine;
     private BlockBasicMachine blockBasicMachine;
     private GuiButtonSides north, south, east, west, up, down;
 
-    public GuiConfig(EntityPlayer player, TileEntityBasicMachine tileEntity, BlockBasicMachine block) {
+    public GuiConfig(EntityPlayer player, TileEntityBasicSteamMachine tileEntity, BlockBasicMachine block) {
         super(new ContainerFake(player.inventory, tileEntity));
         this.basicMachine = tileEntity;
         this.blockBasicMachine = block;
