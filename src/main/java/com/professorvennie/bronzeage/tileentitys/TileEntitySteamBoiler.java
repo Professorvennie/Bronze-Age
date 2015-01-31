@@ -1,14 +1,12 @@
 package com.professorvennie.bronzeage.tileentitys;
 
 import com.professorvennie.bronzeage.api.tiles.ISteamBoiler;
-import com.professorvennie.bronzeage.api.tiles.ISteamHandler;
 import com.professorvennie.bronzeage.api.tiles.ISteamTank;
 import com.professorvennie.bronzeage.api.tiles.SteamTank;
 import com.professorvennie.bronzeage.items.ModItems;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
@@ -35,38 +33,24 @@ public class TileEntitySteamBoiler extends TileEntityBasicMachine implements ISt
     }
 
     @Override
+    public int[] getInputSlots() {
+        return new int[]{0, 4, 2};
+    }
+
+    @Override
+    public int[] getExportSlots() {
+        return new int[]{1, 3};
+    }
+
+    @Override
     public void updateEntity() {
         super.updateEntity();
 
         if (burnTime > 0) {
             burnTime--;
-            //BlockSteamBoiler.updateBlockState(burnTime > 0, worldObj, xCoord, yCoord, zCoord, new ItemStack(ModBlocks.steamBoilerIdle, 1, 1), new ItemStack(ModBlocks.steamBoilerIdle, 1, 0));
         }
 
-        TileEntity[] tiles = new TileEntity[6];
-        tiles[0] = worldObj.getTileEntity(xCoord + 1, yCoord, zCoord);
-        tiles[1] = worldObj.getTileEntity(xCoord - 1, yCoord, zCoord);
-        tiles[2] = worldObj.getTileEntity(xCoord, yCoord + 1, zCoord);
-        tiles[3] = worldObj.getTileEntity(xCoord, yCoord - 1, zCoord);
-        tiles[4] = worldObj.getTileEntity(xCoord, yCoord, zCoord + 1);
-        tiles[5] = worldObj.getTileEntity(xCoord, yCoord, zCoord - 1);
-
         if (!worldObj.isRemote) {
-            for (TileEntity tile : tiles) {
-                if (tile != null) {
-                    if (tile instanceof ISteamHandler) {
-                        int furnaceAmount = ((ISteamHandler) tile).getSteamAmount();
-                        int capactiy = ((ISteamHandler) tile).getSteamCapacity();
-                        if (furnaceAmount < capactiy) {
-                            if (this.canDrain(null, 100)) {
-                                this.drain(null, 100);
-                                ((ISteamHandler) tile).fill(null, 100);
-                            }
-                        }
-                    }
-                }
-            }
-
             if (waterTank.getFluidAmount() > waterTank.getCapacity())
                 waterTank.getFluid().amount = waterTank.getCapacity();
 
@@ -76,7 +60,7 @@ public class TileEntitySteamBoiler extends TileEntityBasicMachine implements ISt
                 }
 
 
-                int time = (int) worldObj.getWorldTime() % 100;
+                int time = (int) worldObj.getWorldTime() % 85;
                 if (burnTime > 0) {
                     if (temp < maxTemp) {
                         if (time == 0)
@@ -247,7 +231,10 @@ public class TileEntitySteamBoiler extends TileEntityBasicMachine implements ISt
 
     @Override
     public int getWaterAmount() {
-        return waterTank.getFluid().amount;
+        if (waterTank.getFluid() != null)
+            return waterTank.getFluid().amount;
+        else
+            return 0;
     }
 
     @Override

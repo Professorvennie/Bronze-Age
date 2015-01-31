@@ -13,4 +13,12 @@ public interface ISideConfigurable {
     public void changeMode(ForgeDirection side);
 
     public void setModeOnSide(ForgeDirection direction, SideMode mode);
+
+    public void overrideConfig(SideMode sideMode[]);
+
+    public SideMode getTankModeOnSide(ForgeDirection side);
+
+    public void changeTankMode(ForgeDirection side);
+
+    public void setTankModeOnSide(ForgeDirection direction, SideMode mode);
 }

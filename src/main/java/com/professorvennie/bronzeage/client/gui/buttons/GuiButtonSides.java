@@ -17,22 +17,20 @@ import java.util.List;
  */
 public class GuiButtonSides extends GuiButton {
 
-    private SideMode mode;
+    private SideMode sideMode;
+    private SideMode tankMode;
     private ForgeDirection direction;
 
-    public GuiButtonSides(int id, int x, int y, SideMode mode, ForgeDirection direction) {
+    public GuiButtonSides(int id, int x, int y, SideMode modeSide, SideMode tankMode, ForgeDirection direction) {
         super(id, x, y, 16, 16, "");
-        this.mode = mode;
+        this.sideMode = modeSide;
+        this.tankMode = tankMode;
         this.direction = direction;
     }
 
     @Override
     public void drawButton(Minecraft minecraft, int x, int y) {
         minecraft.renderEngine.bindTexture(new ResourceLocation(Reference.MOD_ID, "textures/gui/guiElements.png"));
-
-        this.field_146123_n = x >= this.xPosition && y >= this.yPosition && x < this.xPosition + this.width && y < this.yPosition + this.height;
-        int k = getHoverState(field_146123_n);
-        List<String> tooltip = new ArrayList<String>();
 
         switch (direction) {
             case NORTH:
@@ -46,8 +44,19 @@ public class GuiButtonSides extends GuiButton {
                 break;
         }
 
+
+    }
+
+    public void renderToolTip(int x, int y) {
+        this.field_146123_n = x >= this.xPosition && y >= this.yPosition && x < this.xPosition + this.width && y < this.yPosition + this.height;
+        int k = getHoverState(field_146123_n);
+        List<String> tooltip = new ArrayList<String>();
+
         tooltip.clear();
-        tooltip.add(direction + ": " + StatCollector.translateToLocal("toolTip.config." + mode.getTooltip()));
+        tooltip.add("Sides:");
+        tooltip.add(direction + ": " + StatCollector.translateToLocal("toolTip.config." + sideMode.getTooltip()));
+        tooltip.add("Tanks");
+        tooltip.add(direction + ": " + StatCollector.translateToLocal("toolTip.config." + tankMode.getTooltip()));
 
         if (k == 2)
             RenderHelper.renderTooltip(x, y, tooltip);
@@ -57,11 +66,19 @@ public class GuiButtonSides extends GuiButton {
         return direction;
     }
 
-    public SideMode getMode() {
-        return mode;
+    public SideMode getSideMode() {
+        return sideMode;
     }
 
-    public void setMode(SideMode mode) {
-        this.mode = mode;
+    public void setSideMode(SideMode sideMode) {
+        this.sideMode = sideMode;
+    }
+
+    public SideMode getTankMode() {
+        return tankMode;
+    }
+
+    public void setTankMode(SideMode tankMode) {
+        this.tankMode = tankMode;
     }
 }

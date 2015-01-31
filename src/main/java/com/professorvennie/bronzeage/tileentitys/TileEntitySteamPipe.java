@@ -1,5 +1,6 @@
 package com.professorvennie.bronzeage.tileentitys;
 
+import com.professorvennie.bronzeage.api.tiles.ISteamBoiler;
 import com.professorvennie.bronzeage.api.tiles.ISteamHandler;
 import com.professorvennie.bronzeage.api.tiles.ISteamTank;
 import com.professorvennie.bronzeage.api.tiles.SteamTank;
@@ -23,34 +24,13 @@ public class TileEntitySteamPipe extends TileEntityMod implements ISteamHandler 
 
         for (ForgeDirection direction : connections) {
             if (direction != null) {
-                ISteamHandler steamHandler;
                 switch (direction) {
                     case UP:
-                        steamHandler = (ISteamHandler) worldObj.getTileEntity(xCoord, yCoord + 1, zCoord);
-                        if (steamHandler.getSteamAmount() < getSteamAmount()) {
-                            steamHandler.fill(null, 100);
-                            drain(null, 100);
+                        if (worldObj.getTileEntity(xCoord, yCoord + 1, zCoord) instanceof ISteamBoiler) {
+                            ISteamBoiler boiler = (ISteamBoiler) worldObj.getTileEntity(xCoord, yCoord + 1, zCoord);
+                            boiler.drain(direction, 100);
+                            this.fill(direction, 100);
                         }
-                        break;
-
-                    case DOWN:
-                        steamHandler = (ISteamHandler) worldObj.getTileEntity(xCoord, yCoord - 1, zCoord);
-                        break;
-
-                    case NORTH:
-                        steamHandler = (ISteamHandler) worldObj.getTileEntity(xCoord, yCoord, zCoord - 1);
-                        break;
-
-                    case SOUTH:
-                        steamHandler = (ISteamHandler) worldObj.getTileEntity(xCoord, yCoord, zCoord + 1);
-                        break;
-
-                    case EAST:
-                        steamHandler = (ISteamHandler) worldObj.getTileEntity(xCoord + 1, yCoord, zCoord);
-                        break;
-
-                    case WEST:
-                        steamHandler = (ISteamHandler) worldObj.getTileEntity(xCoord - 1, yCoord, zCoord);
                         break;
                 }
             }

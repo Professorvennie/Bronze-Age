@@ -85,6 +85,9 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
         if (getGuiId() != -1) {
             if (!world.isRemote) {
+                if (world.getTileEntity(x, y, z) instanceof ISteamBoiler) {
+                    ((ISteamBoiler) world.getTileEntity(x, y, z)).fill(null, 1000);
+                }
                 if (player.getCurrentEquippedItem() == null)
                     player.openGui(BronzeAge.INSTANSE, getGuiId(), world, x, y, z);
                 else if (!(player.getCurrentEquippedItem().getItem() instanceof IWrench))

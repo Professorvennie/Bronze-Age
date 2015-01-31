@@ -5,7 +5,9 @@ import com.professorvennie.bronzeage.tileentitys.TileEntitySteamPipe;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -42,6 +44,13 @@ public class BlockSteamPipe extends BlockBase implements ITileEntityProvider {
     @Override
     public void registerBlockIcons(IIconRegister iconRegister) {
 
+    }
+
+    @Override
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float p_149727_7_, float p_149727_8_, float p_149727_9_) {
+        if (world.getTileEntity(x, y, z) instanceof TileEntitySteamPipe)
+            player.addChatComponentMessage(new ChatComponentText(((TileEntitySteamPipe) world.getTileEntity(x, y, z)).getSteamAmount() + ""));
+        return true;
     }
 
     @Override

@@ -5,7 +5,6 @@ import com.professorvennie.bronzeage.api.enums.SideMode;
 import com.professorvennie.bronzeage.api.tiles.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
 /**
@@ -14,50 +13,36 @@ import net.minecraftforge.common.util.ForgeDirection;
 public abstract class TileEntityBasicMachine extends TileEntityBasicSidedInventory implements ISteamHandler, IButtonHandler, IRedstoneControlable, ISideConfigurable {
 
     public boolean canWork;
+    protected SideMode[] sideModesSlots, sideModeTanks;
     private SteamTank steamTank;
     private RedstoneMode redStoneMode;
-    private SideMode[] sideModes;
+    private int[] inputSlots, exportSlots;
 
     public TileEntityBasicMachine(String name, int capacity) {
         super(name);
         steamTank = new SteamTank(0, capacity);
         redStoneMode = RedstoneMode.low;
+        inputSlots = getInputSlots();
+        exportSlots = getExportSlots();
 
-        sideModes = new SideMode[6];
-        for (int i = 0; i < sideModes.length; i++)
-            sideModes[i] = SideMode.IMPORT;
-        sideModes[ForgeDirection.DOWN.ordinal()] = SideMode.EXPORT;
+        sideModesSlots = new SideMode[6];
+        for (int i = 0; i < sideModesSlots.length; i++)
+            sideModesSlots[i] = SideMode.IMPORT;
+        sideModesSlots[ForgeDirection.DOWN.ordinal()] = SideMode.EXPORT;
+
+        sideModeTanks = new SideMode[6];
+        for (int i = 0; i < sideModeTanks.length; i++)
+            sideModeTanks[i] = SideMode.IMPORT;
+        sideModeTanks[ForgeDirection.DOWN.ordinal()] = SideMode.EXPORT;
     }
 
     @Override
     public void updateEntity() {
         super.updateEntity();
-
-        TileEntity[] tiles = new TileEntity[6];
-        tiles[0] = worldObj.getTileEntity(xCoord + 1, yCoord, zCoord);
-        tiles[1] = worldObj.getTileEntity(xCoord - 1, yCoord, zCoord);
-        tiles[2] = worldObj.getTileEntity(xCoord, yCoord + 1, zCoord);
-        tiles[3] = worldObj.getTileEntity(xCoord, yCoord - 1, zCoord);
-        tiles[4] = worldObj.getTileEntity(xCoord, yCoord, zCoord + 1);
-        tiles[5] = worldObj.getTileEntity(xCoord, yCoord, zCoord - 1);
-
-        for (TileEntity tile : tiles) {
-            if (!worldObj.isRemote) {
-                if (tile != null && tile instanceof ISteamHandler) {
-                    if (tile instanceof ISteamBoiler)
-                        return;
-
-                    int tankAmount = ((ISteamHandler) tile).getSteamAmount();
-                    int tankCap = ((ISteamHandler) tile).getSteamCapacity();
-                    if (tankAmount < getSteamAmount()) {
-                        if (tankAmount < tankCap) {
-                            ((ISteamHandler) tile).fill(null, 5);
-                            drain(null, -5);
-                        }
-                    }
-                }
-            }
-        }
+        /*if (worldObj.isRemote)
+            System.out.println("Client: " + getModeOnSide(ForgeDirection.DOWN));
+        else
+            System.out.println("Server: " + getModeOnSide(ForgeDirection.DOWN));*/
 
         switch (redStoneMode) {
             case low:
@@ -88,8 +73,8 @@ public abstract class TileEntityBasicMachine extends TileEntityBasicSidedInvento
         redStoneMode = RedstoneMode.values()[nbtTagCompound.getInteger("Mode")];
         steamTank.readFromNBT(nbtTagCompound);
 
-       /* for (int i = 0; i < sideModes.length; i++) {
-            sideModes[i] = SideMode.values()[nbtTagCompound.getInteger("SideMode" + i)];
+       /*for (int i = 0; i < sideModesSlots.length; i++) {
+            sideModesSlots[i] = SideMode.values()[nbtTagCompound.getInteger("SideMode" + i)];
         }*/
     }
 
@@ -100,7 +85,7 @@ public abstract class TileEntityBasicMachine extends TileEntityBasicSidedInvento
         nbtTagCompound.setInteger("Mode", redStoneMode.ordinal());
         steamTank.writeToNBT(nbtTagCompound);
 
-        /*for (int i = 0; i < sideModes.length; i++) {
+        /*for (int i = 0; i < sideModesSlots.length; i++) {
             setModeOnSide(ForgeDirection.getOrientation(i), SideMode.values()[nbtTagCompound.getInteger("SideMode" + i)]);
         }*/
     }
@@ -113,12 +98,18 @@ public abstract class TileEntityBasicMachine extends TileEntityBasicSidedInvento
 
     @Override
     public boolean canFill(ForgeDirection direction, int amount) {
-        return steamTank.getAmount() + amount <= steamTank.getCapacity();
+        if (getTankModeOnSide(direction.getOpposite()) == SideMode.IMPORT || getTankModeOnSide(direction.getOpposite()) == SideMode.BOTH)
+            return steamTank.getAmount() + amount <= steamTank.getCapacity();
+        else
+            return false;
     }
 
     @Override
     public boolean canDrain(ForgeDirection direction, int amount) {
-        return steamTank.getAmount() - amount >= 0;
+        if (getTankModeOnSide(direction.getOpposite()) == SideMode.DISABLED || getTankModeOnSide(direction.getOpposite()) == SideMode.BOTH)
+            return steamTank.getAmount() - amount >= 0;
+        else
+            return false;
     }
 
     @Override
@@ -170,39 +161,99 @@ public abstract class TileEntityBasicMachine extends TileEntityBasicSidedInvento
 
     @Override
     public SideMode getModeOnSide(ForgeDirection side) {
-        return sideModes[side.ordinal()];
+        return sideModesSlots[side.ordinal()];
     }
 
     @Override
     public void changeMode(ForgeDirection side) {
         switch (getModeOnSide(side)) {
             case IMPORT:
-                sideModes[side.ordinal()] = SideMode.EXPORT;
+                sideModesSlots[side.ordinal()] = SideMode.EXPORT;
+                //System.out.println(sideModesSlots[side.ordinal()]);
+                worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
                 break;
             case EXPORT:
-                sideModes[side.ordinal()] = SideMode.BOTH;
+                sideModesSlots[side.ordinal()] = SideMode.BOTH;
+                //System.out.println(sideModesSlots[side.ordinal()]);
+                worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
                 break;
             case BOTH:
-                sideModes[side.ordinal()] = SideMode.DISABLED;
+                sideModesSlots[side.ordinal()] = SideMode.DISABLED;
+                //System.out.println(sideModesSlots[side.ordinal()]);
+                worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
                 break;
             case DISABLED:
-                sideModes[side.ordinal()] = SideMode.IMPORT;
+                sideModesSlots[side.ordinal()] = SideMode.IMPORT;
+                //System.out.println(sideModesSlots[side.ordinal()]);
+                worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
                 break;
             default:
                 System.out.println("Unknown side mode. Please report this.");
-                sideModes[side.ordinal()] = SideMode.IMPORT;
+                sideModesSlots[side.ordinal()] = SideMode.IMPORT;
+                worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
                 break;
         }
     }
 
     @Override
     public void setModeOnSide(ForgeDirection direction, SideMode mode) {
-        sideModes[direction.ordinal()] = mode;
+        sideModesSlots[direction.ordinal()] = mode;
+    }
+
+    @Override
+    public SideMode getTankModeOnSide(ForgeDirection side) {
+        return sideModeTanks[side.ordinal()];
+    }
+
+    @Override
+    public void changeTankMode(ForgeDirection side) {
+        switch (getTankModeOnSide(side)) {
+            case IMPORT:
+                sideModeTanks[side.ordinal()] = SideMode.EXPORT;
+                //System.out.println(sideModesSlots[side.ordinal()]);
+                worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+                break;
+            case EXPORT:
+                sideModeTanks[side.ordinal()] = SideMode.BOTH;
+                //System.out.println(sideModesSlots[side.ordinal()]);
+                worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+                break;
+            case BOTH:
+                sideModeTanks[side.ordinal()] = SideMode.DISABLED;
+                //System.out.println(sideModesSlots[side.ordinal()]);
+                worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+                break;
+            case DISABLED:
+                sideModeTanks[side.ordinal()] = SideMode.IMPORT;
+                //System.out.println(sideModesSlots[side.ordinal()]);
+                worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+                break;
+            default:
+                System.out.println("Unknown side mode. Please report this.");
+                sideModeTanks[side.ordinal()] = SideMode.IMPORT;
+                worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+                break;
+        }
+    }
+
+    @Override
+    public void setTankModeOnSide(ForgeDirection direction, SideMode mode) {
+        sideModeTanks[direction.ordinal()] = mode;
+    }
+
+    @Override
+    public void overrideConfig(SideMode[] sideMode) {
+        this.sideModesSlots = sideMode;
+        this.sideModeTanks = sideMode;
     }
 
     @Override
     public int[] getAccessibleSlotsFromSide(int side) {
-        return null;
+        if (getModeOnSide(ForgeDirection.getOrientation(side)) == SideMode.IMPORT || getModeOnSide(ForgeDirection.getOrientation(side)) == SideMode.BOTH)
+            return inputSlots;
+        else if (getModeOnSide(ForgeDirection.getOrientation(side)) != SideMode.DISABLED && getModeOnSide(ForgeDirection.getOrientation(side)) != SideMode.IMPORT)
+            return exportSlots;
+        return new int[0];
     }
 
     @Override
@@ -214,11 +265,16 @@ public abstract class TileEntityBasicMachine extends TileEntityBasicSidedInvento
 
     @Override
     public boolean canExtractItem(int slot, ItemStack itemStack, int side) {
-        if (getModeOnSide(ForgeDirection.getOrientation(side)) == SideMode.IMPORT || getModeOnSide(ForgeDirection.getOrientation(side)) == SideMode.BOTH)
+        if (getModeOnSide(ForgeDirection.getOrientation(side)) == SideMode.EXPORT || getModeOnSide(ForgeDirection.getOrientation(side)) == SideMode.BOTH) {
             return true;
+        }
         return false;
     }
 
     @Override
     public abstract int getSizeInventory();
+
+    public abstract int[] getInputSlots();
+
+    public abstract int[] getExportSlots();
 }

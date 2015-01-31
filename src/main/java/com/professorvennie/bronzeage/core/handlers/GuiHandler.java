@@ -3,6 +3,7 @@ package com.professorvennie.bronzeage.core.handlers;
 import com.professorvennie.bronzeage.blocks.BlockBasicMachine;
 import com.professorvennie.bronzeage.client.gui.GuiConfig;
 import com.professorvennie.bronzeage.client.gui.GuiManual;
+import com.professorvennie.bronzeage.common.containers.ContainerFake;
 import com.professorvennie.bronzeage.lib.GuiIds;
 import com.professorvennie.bronzeage.tileentitys.TileEntityBasicMachine;
 import cpw.mods.fml.common.network.IGuiHandler;
@@ -28,6 +29,8 @@ public class GuiHandler implements IGuiHandler {
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         if (guiHandlers.get(ID) != null)
             return guiHandlers.get(ID).getServerGuiElement(ID, player, world, x, y, z);
+        if (ID == GuiIds.CONFIG && world.getTileEntity(x, y, z) instanceof TileEntityBasicMachine)
+            return new ContainerFake(player.inventory, (TileEntityBasicMachine) world.getTileEntity(x, y, z));
         return null;
     }
 

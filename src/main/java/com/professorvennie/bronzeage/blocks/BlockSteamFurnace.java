@@ -1,6 +1,9 @@
 package com.professorvennie.bronzeage.blocks;
 
 import com.professorvennie.bronzeage.api.manual.IPage;
+import com.professorvennie.bronzeage.client.gui.GuiSteamFurnace;
+import com.professorvennie.bronzeage.common.containers.ContainerSteamFurnace;
+import com.professorvennie.bronzeage.lib.GuiIds;
 import com.professorvennie.bronzeage.tileentitys.TileEntitySteamFurnace;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -17,7 +20,7 @@ public class BlockSteamFurnace extends BlockBasicMachine {
 
     @Override
     public int getGuiId() {
-        return 0;
+        return GuiIds.STEAM_FURNACE;
     }
 
     @Override
@@ -27,11 +30,15 @@ public class BlockSteamFurnace extends BlockBasicMachine {
 
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+        if (world.getTileEntity(x, y, z) instanceof TileEntitySteamFurnace)
+            return new ContainerSteamFurnace(player.inventory, (TileEntitySteamFurnace) world.getTileEntity(x, y, z));
         return null;
     }
 
     @Override
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+        if (world.getTileEntity(x, y, z) instanceof TileEntitySteamFurnace)
+            return new GuiSteamFurnace(new ContainerSteamFurnace(player.inventory, (TileEntitySteamFurnace) world.getTileEntity(x, y, z)), (TileEntitySteamFurnace) world.getTileEntity(x, y, z));
         return null;
     }
 
