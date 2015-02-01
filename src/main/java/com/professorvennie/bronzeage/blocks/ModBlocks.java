@@ -11,26 +11,27 @@ import net.minecraft.tileentity.TileEntity;
  */
 public class ModBlocks {
 
-    public static Block steamController;
-    public static Block steamPipe;
-
     public static Block steamBoilerIdle;
     public static Block steamFurnace;
 
     public static Block well;
     public static Block wellPipe;
 
+    public static Block steamReceiver;
+    public static Block steamTransmitter;
+
     public static Block ore;
 
     public static void init() {
-        steamController = new BlockSteamController();
-        steamPipe = new BlockSteamPipe();
 
         steamBoilerIdle = new BlockSteamBoiler();
         steamFurnace = new BlockSteamFurnace();
 
         well = new BlockWell();
         wellPipe = new BlockWellPipe();
+
+        steamReceiver = new BlockSteamReceiver();
+        steamTransmitter = new BlockSteamTransmitter();
 
         ore = new BlockOre();
 
@@ -39,8 +40,8 @@ public class ModBlocks {
     }
 
     private static void register() {
-        GameRegistry.registerBlock(steamController, steamController.getUnlocalizedName());
-        GameRegistry.registerBlock(steamPipe, steamPipe.getUnlocalizedName());
+        GameRegistry.registerBlock(steamReceiver, steamReceiver.getUnlocalizedName());
+        GameRegistry.registerBlock(steamTransmitter, steamTransmitter.getUnlocalizedName());
         registerMachine(steamBoilerIdle);
         registerMachine(steamFurnace);
         registerMachine(well);
@@ -55,6 +56,8 @@ public class ModBlocks {
         registerTile(TileEntitySteamFurnace.class, "SteamFurnace");
         registerTile(TileEntityWell.class, "Well");
         registerTile(TileEntityWellPipe.class, "WellPipe");
+        registerTile(TileEntitySteamTransmitter.class, "SteamTransmitter");
+        registerTile(TileEntitySteamReceiver.class, "SteamReceiver");
     }
 
     private static void registerTile(Class<? extends TileEntity> tile, String name) {

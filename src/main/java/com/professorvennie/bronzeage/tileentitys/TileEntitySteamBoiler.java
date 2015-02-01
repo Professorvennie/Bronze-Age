@@ -199,6 +199,7 @@ public class TileEntitySteamBoiler extends TileEntityBasicSteamMachine implement
 
     @Override
     public boolean canDrain(ForgeDirection direction, int amount) {
+        System.out.println(steamTank.getAmount() - amount >= 0);
         return steamTank.getAmount() - amount >= 0;
     }
 

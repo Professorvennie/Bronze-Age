@@ -16,6 +16,6 @@ public class CreativeTab extends CreativeTabs {
 
     @Override
     public Item getTabIconItem() {
-        return Item.getItemFromBlock(ModBlocks.steamController);
+        return Item.getItemFromBlock(ModBlocks.steamBoilerIdle);
     }
 }

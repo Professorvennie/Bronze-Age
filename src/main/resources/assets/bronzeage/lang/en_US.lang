@@ -1,0 +1,81 @@
+#- Item Localizations
+item.manual.name=Bronze Age Manual
+
+item.material.ingotCopper.name=Copper Ingot
+item.material.ingotTin.name=Tin Ingot
+item.material.ingotSilver.name=Silver Ingot
+item.material.ingotLead.name=Lead Ingot
+item.material.ingotBronze.name=Bronze Ingot
+
+item.material.dirtyChunkCopper.name=Dirty Copper Chunk
+item.material.dirtyChunkTin.name=Dirty Tin Chunk
+item.material.dirtyChunkIron.name=Dirty Iron Chunk
+item.material.dirtyChunkGold.name=Dirty Gold Chunk
+item.material.dirtyChunkSilver.name=Dirty Silver Chunk
+item.material.dirtyChunkLead.name=Dirty Lead Chunk
+
+item.material.cleanChunkCopper.name=Clean Copper Chunk
+item.material.cleanChunkTin.name=Clean Tin Chunk
+item.material.cleanChunkIron.name=Clean Iron Chunk
+item.material.cleanChunkGold.name=Clean Gold Chunk
+item.material.cleanChunkSilver.name=Clean Silver Chunk
+item.material.cleanChunkLead.name=Clean Lead Chunk
+
+item.material.dustCopper.name=Copper Dust
+item.material.dustTin.name=Tin Dust
+item.material.dustIron.name=Iron Dust
+item.material.dustGold.name=Gold Dust
+item.material.dustSilver.name=Silver Dust
+item.material.dustLead.name=Lead Dust
+item.material.dustBronze.name=Bronze Dust
+
+item.wrench.Stone.name=Stone Wrench
+item.wrench.Tin.name=Tin Wrench
+item.wrench.Copper.name=Copper Wrench
+item.wrench.Iron.name=Iron Wrench
+item.wrench.Bronze.name=Bronze Wrench
+item.wrench.Diamond.name=Diamond Wrench
+
+#- ToolTip Localizations
+tooltip.wrench.material=Material Name
+tooltip.wrench.numOfUses=Number of Uses Remaining
+tooltip.wrench.rotation=Number of Uses Per Rotation
+tooltip.wrench.dismantle=Number of Uses Per Dismantle
+tooltip.wrench.durability=Max Durability
+tooltip.wrench.hold=Hold
+tooltip.wrench.shift=Shift
+tooltip.wrench.shiftandh=Shift and H
+tooltip.wrench.moreInfo=for more info
+tooltip.wrench.helpInfo=for how to use info
+tooltip.wrench.info.0=Right click on a Machine to rotate it.
+tooltip.wrench.info.1=Shift Right Click on a Machine to Dismantle it
+tooltip.wrench.info.2=If you Shift Right Click on a non machine
+tooltip.wrench.info.3=the block will rotate
+tooltip.wrench.info.4=The Number of Uses is Determined By
+tooltip.wrench.info.5=Dividing The Max Durability By 100
+
+tooltip.redStone.low=RedStone Mode: Low
+tooltip.redStone.high=RedStone Mode: High
+tooltip.redStone.disabled=RedStone Mode: Disabled
+
+toolTip.config.import=Import
+toolTip.config.export=Export
+toolTip.config.both=Both
+toolTip.config.disabled=Disabled
+
+wrenchMaterial.stone=Stone
+wrenchMaterial.tin=Tin
+wrenchMaterial.copper=Copper
+wrenchMaterial.iron=Iron
+wrenchMaterial.bronze=Bronze
+wrenchMaterial.diamond=Diamond
+
+#- Manual Localizations
+bronzeAge.title=Bronze Age Manual
+bronzeAge.author=By. ProfessorVennie
+bronzeAge.book.smeltingRecipe=Smelting Recipe
+bronzeAge.book.prevPage=Previous Page
+bronzeAge.book.nextPage=Next Page
+
+#- Container Localizations
+container.SteamBoiler=Steam Boiler
