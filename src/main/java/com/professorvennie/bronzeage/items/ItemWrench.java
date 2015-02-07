@@ -51,6 +51,16 @@ public class ItemWrench extends ItemBase implements IWrench {
     }
 
     @Override
+    public boolean showDurabilityBar(ItemStack stack) {
+        return true;
+    }
+
+    @Override
+    public double getDurabilityForDisplay(ItemStack stack) {
+        return ((double)getWrenchMaterial(stack).getNumOfUses() - getNumOfUsesRemaining(stack)) / (double)getWrenchMaterial(stack).getNumOfUses();
+    }
+
+    @Override
     public int getDurability(ItemStack itemStack) {
         return getWrenchMaterial(itemStack).getDurability();
     }
@@ -94,12 +104,13 @@ public class ItemWrench extends ItemBase implements IWrench {
 
     @Override
     public boolean onItemUseFirst(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
-        float dismanlt = getWrenchMaterial(itemStack).getUsesPerRotation();
+        float dismanlt = getWrenchMaterial(itemStack).getUsesPerDismantle();
+        float rotate = getWrenchMaterial(itemStack).getUsesPerRotation();
         float usesRemaining = getNumOfUsesRemaining(itemStack);
         if (!player.isSneaking()) {
             if (world.getBlock(x, y, z) instanceof IWrenchable) {
-                if (usesRemaining - dismanlt >= 0 && !world.isRemote) {
-                    subtractUse(itemStack, dismanlt);
+                if (usesRemaining - rotate >= 0 && !world.isRemote && world.getBlock(x, y, z).rotateBlock(world, x, y, z, ForgeDirection.getOrientation(side).getOpposite())) {
+                    subtractUse(itemStack, rotate);
                     Block block = world.getBlock(x, y, z);
                     block.rotateBlock(world, x, y, z, ForgeDirection.getOrientation(side).getOpposite());
                     player.swingItem();
@@ -115,11 +126,6 @@ public class ItemWrench extends ItemBase implements IWrench {
                         player.swingItem();
                         wrenchable.dismantle(world, player, itemStack, x, y, z);
                     }
-                }
-            } else {
-                if (usesRemaining - dismanlt >= 0 && !world.isRemote && world.getBlock(x, y, z).rotateBlock(world, x, y, z, ForgeDirection.getOrientation(side).getOpposite())) {
-                    subtractUse(itemStack, dismanlt);
-                    world.getBlock(x, y, z).rotateBlock(world, x, y, z, ForgeDirection.getOrientation(side).getOpposite());
                 }
             }
         }

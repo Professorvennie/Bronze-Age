@@ -30,7 +30,7 @@ public class WrenchMaterial {
         return StatCollector.translateToLocal(getUnlocalizedName());
     }
 
-    public float getNumOfUses() {
+    public float  getNumOfUses() {
         return numOfUses;
     }
 

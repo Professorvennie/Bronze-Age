@@ -30,7 +30,7 @@ public class HudHandler {
             Block block = minecraft.theWorld.getBlock(pos.blockX, pos.blockY, pos.blockZ);
 
             if (minecraft.thePlayer != null && minecraft.thePlayer.getCurrentEquippedItem() != null) {
-                if (minecraft.thePlayer.getCurrentEquippedItem().getItem() == ModItems.manual && block != null && block instanceof IManualEntry) {
+                if (minecraft.thePlayer.getCurrentEquippedItem().getItem() == ModItems.manual && block != null && block instanceof IManualEntry && ((IManualEntry)block).getPage(minecraft.theWorld, pos.blockX, pos.blockY, pos.blockZ) != null) {
                     drawManualHud(((IManualEntry) block).getPage(minecraft.theWorld, pos.blockX, pos.blockY, pos.blockZ), event.resolution);
                 }
             }

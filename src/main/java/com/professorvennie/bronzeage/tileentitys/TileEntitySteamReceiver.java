@@ -15,8 +15,8 @@ public class TileEntitySteamReceiver extends TileEntityBasicSteamMachine {
     @Override
     public void updateEntity() {
         super.updateEntity();
-
-        for(ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS){
+        System.out.println(getSteamAmount());
+        for(ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS) {
             if(worldObj.getTileEntity(xCoord = direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ) instanceof ISteamHandler){
                 ISteamHandler steamHandler = (ISteamHandler)worldObj.getTileEntity(xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ);
                 if(steamHandler.getSteamAmount() + 100 <= steamHandler.getSteamCapacity() && getSteamAmount() >= 100){

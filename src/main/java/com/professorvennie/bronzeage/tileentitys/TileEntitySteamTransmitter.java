@@ -1,29 +1,66 @@
 package com.professorvennie.bronzeage.tileentitys;
 
-
 import com.professorvennie.bronzeage.api.tiles.ISteamBoiler;
 import com.professorvennie.bronzeage.api.tiles.ISteamHandler;
+import net.minecraft.init.Blocks;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ProfessorVennie on 1/31/2015 at 9:07 PM.
  */
 public class TileEntitySteamTransmitter extends TileEntityBasicSteamMachine {
 
+    public int range, transmitAmount;
+    private List<TileEntitySteamReceiver> receivers = new ArrayList<TileEntitySteamReceiver>();
+
     public TileEntitySteamTransmitter() {
         super("steamTransmitter", 10000);
+        range = 32;
+        transmitAmount = 100;
     }
 
     @Override
     public void updateEntity() {
         super.updateEntity();
 
-        for(ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS){
-            if(worldObj.getTileEntity(xCoord = direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ) instanceof TileEntitySteamBoiler){
-                TileEntitySteamBoiler steamBoiler = (TileEntitySteamBoiler)worldObj.getTileEntity(xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ);
-                if(steamBoiler.getSteamAmount() >= 100 && getSteamAmount() + 100 <= getSteamCapacity()){
-                    steamBoiler.drain(direction, 100);
-                    fill(direction, 100);
+        if(!worldObj.isRemote) {
+            for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS) {
+                // System.out.println(worldObj.getTileEntity(xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ));
+                //System.out.println("X: " + direction.offsetX + " Y: " + direction.offsetY + " Z: " + direction.offsetZ);
+                //System.out.println("TRUE");
+                TileEntity tileEntity = worldObj.getTileEntity(xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ);
+                if (tileEntity instanceof ISteamBoiler) {
+                    //System.out.println(tileEntity);
+                    ISteamBoiler steamBoiler = (ISteamBoiler) tileEntity;
+                    if (steamBoiler.getSteamAmount() >= transmitAmount && getSteamAmount() + transmitAmount <= getSteamCapacity()) {
+                        steamBoiler.drain(direction, transmitAmount);
+                        fill(direction, transmitAmount);
+                    }
+                }
+            }
+        }
+
+        if (!worldObj.isRemote) {
+             for (int i = 0; i < range * 2 + 1; i++) {
+                for (int j = 0; j < range * 2 + 1; j++) {
+                    for (int k = 0; k < range * 2 + 1; k++) {
+                        int x = xCoord + i - range;
+                        int y = yCoord + j - range;
+                        int z = zCoord + k - range;
+                        //System.out.println("X: " + x + "Y: " + y + "Z: " + z);
+
+                        if(worldObj.getTileEntity(x, y, z) instanceof TileEntitySteamReceiver) {
+                            TileEntitySteamReceiver receiver = (TileEntitySteamReceiver)worldObj.getTileEntity(x, y, z);
+                            if(receiver.getSteamAmount() + transmitAmount <= receiver.getSteamCapacity() && getSteamAmount() - transmitAmount >= getSteamCapacity()){
+                                receiver.fill(ForgeDirection.UP, transmitAmount);
+                                drain(ForgeDirection.DOWN, transmitAmount);
+                            }
+                        }
+                    }
                 }
             }
         }

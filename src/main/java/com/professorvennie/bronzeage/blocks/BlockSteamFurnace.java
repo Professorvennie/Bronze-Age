@@ -38,7 +38,7 @@ public class BlockSteamFurnace extends BlockBasicMachine {
     @Override
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         if (world.getTileEntity(x, y, z) instanceof TileEntitySteamFurnace)
-            return new GuiSteamFurnace(new ContainerSteamFurnace(player.inventory, (TileEntitySteamFurnace) world.getTileEntity(x, y, z)), (TileEntitySteamFurnace) world.getTileEntity(x, y, z));
+            return new GuiSteamFurnace(player, (TileEntitySteamFurnace) world.getTileEntity(x, y, z));
         return null;
     }
 
