@@ -4,6 +4,7 @@ import com.professorvennie.bronzeage.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockColored;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -45,10 +46,7 @@ public class BlockOre extends BlockBase {
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int meta) {
-        if (meta == 0)
-            return icons[0];
-        else
-            return icons[1];
+        return icons[meta % icons.length];
     }
 
     public static class ItemBlockOre extends ItemBlock {

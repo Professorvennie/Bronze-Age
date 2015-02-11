@@ -10,6 +10,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -39,6 +40,8 @@ public class ItemWrench extends ItemBase implements IWrench {
 
     @Override
     public String getUnlocalizedName(ItemStack itemStack) {
+        if(itemStack.getTagCompound().getBoolean("isBroken"))
+            return super.getUnlocalizedName(itemStack) + "." + getWrenchMaterial(itemStack).getLocalizedName() + ".broken";
         return super.getUnlocalizedName(itemStack) + "." + getWrenchMaterial(itemStack).getLocalizedName();
     }
 
@@ -74,7 +77,6 @@ public class ItemWrench extends ItemBase implements IWrench {
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean b) {
-
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
             list.add(EnumChatFormatting.GOLD + translate("material") + ": " + EnumChatFormatting.DARK_AQUA + getWrenchMaterial(itemStack).getLocalizedName());
             list.add(EnumChatFormatting.GOLD + translate("numOfUses") + ": " + EnumChatFormatting.DARK_AQUA + getNumOfUsesRemaining(itemStack));
@@ -114,6 +116,9 @@ public class ItemWrench extends ItemBase implements IWrench {
                     Block block = world.getBlock(x, y, z);
                     block.rotateBlock(world, x, y, z, ForgeDirection.getOrientation(side).getOpposite());
                     player.swingItem();
+                }else if(usesRemaining == 0){
+                    initNBT(itemStack);
+                    itemStack.getTagCompound().setBoolean("isBroken", true);
                 }
             }
         } else {
@@ -126,10 +131,21 @@ public class ItemWrench extends ItemBase implements IWrench {
                         player.swingItem();
                         wrenchable.dismantle(world, player, itemStack, x, y, z);
                     }
+                }else if(usesRemaining == 0){
+                    initNBT(itemStack);
+                    itemStack.getTagCompound().setBoolean("isBroken", true);
                 }
             }
         }
         return super.onItemUseFirst(itemStack, player, world, x, y, z, side, hitX, hitY, hitZ);
+    }
+
+    @Override
+    public void onUpdate(ItemStack itemStack, World world, Entity entity, int i, boolean b) {
+        initNBT(itemStack);
+        if(getNumOfUsesRemaining(itemStack) == 0)
+            itemStack.getTagCompound().setBoolean("isBroken", true);
+        super.onUpdate(itemStack, world, entity, i, b);
     }
 
     @Override

@@ -22,6 +22,8 @@ public class ModBlocks {
 
     public static Block ore;
 
+    public static Block wrenchRepair;
+
     public static void init() {
 
         steamBoilerIdle = new BlockSteamBoiler();
@@ -32,6 +34,8 @@ public class ModBlocks {
 
         steamReceiver = new BlockSteamReceiver();
         steamTransmitter = new BlockSteamTransmitter();
+
+        wrenchRepair = new BlockWrenchRepairer();
 
         ore = new BlockOre();
 
@@ -45,6 +49,7 @@ public class ModBlocks {
         registerMachine(steamBoilerIdle);
         registerMachine(steamFurnace);
         registerMachine(well);
+        registerMachine(wrenchRepair);
         GameRegistry.registerBlock(wellPipe, wellPipe.getUnlocalizedName());
         GameRegistry.registerBlock(ore, BlockOre.ItemBlockOre.class, ore.getUnlocalizedName());
     }
@@ -58,6 +63,7 @@ public class ModBlocks {
         registerTile(TileEntityWellPipe.class, "WellPipe");
         registerTile(TileEntitySteamTransmitter.class, "SteamTransmitter");
         registerTile(TileEntitySteamReceiver.class, "SteamReceiver");
+        registerTile(TileEntityWrenchRepairer.class, "wrenchRepairer");
     }
 
     private static void registerTile(Class<? extends TileEntity> tile, String name) {

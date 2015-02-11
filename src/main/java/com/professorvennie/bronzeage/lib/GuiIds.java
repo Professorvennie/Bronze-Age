@@ -9,6 +9,7 @@ public final class GuiIds {
     public static final int STEAM_BOILER = 1;
     public static final int STEAM_FURNACE = 2;
     public static final int WELL = 3;
+    public static final int WRENCHREPAIRER = 4;
 
 
     public static final int CONFIG = 100;
