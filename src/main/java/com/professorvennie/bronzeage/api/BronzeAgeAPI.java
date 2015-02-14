@@ -17,7 +17,7 @@ public class BronzeAgeAPI {
     public static WrenchMaterial stoneWrenchMaterial = new WrenchMaterial("stone", new ItemStack(Blocks.stone), 1000, 2f, 3f);
     public static WrenchMaterial tinWrenchMaterial = new WrenchMaterial("tin", null, 1500, 2f, 2f);
     public static WrenchMaterial copperWrenchMaterial = new WrenchMaterial("copper", null, 2500, 1f, 2f);
-    public static WrenchMaterial ironWrenchMaterial = new WrenchMaterial("iron", new ItemStack(Items.iron_ingot), 3500, 1f, 1f);
+    public static WrenchMaterial ironWrenchMaterial = new WrenchMaterial("iron", new ItemStack(Items.iron_ingot, 0, 1), 3500, 1f, 1f);
     public static WrenchMaterial bronzeWrenchMaterial = new WrenchMaterial("bronze", null, 5000, 1f, 0.5f);
     public static WrenchMaterial diamondWrenchMaterial = new WrenchMaterial("diamond", new ItemStack(Items.diamond), 10000, 0.5f, 0.5f);
 

@@ -75,7 +75,7 @@ public class GuiBase extends GuiContainer {
         this.fontRendererObj.drawString(I18n.format("container.inventory", BronzeAge.INSTANSE), 8, this.ySize - 96 + 2, 4210752);
         String name = "";
         if (basicSteamMachine != null)
-            name = StatCollector.translateToLocal(basicSteamMachine.getInventoryName());
+            name = StatCollector.translateToLocal("container." + basicSteamMachine.getInventoryName());
         this.fontRendererObj.drawString(name, this.xSize / 2 - this.fontRendererObj.getStringWidth(name) / 2, 6, 4210752);
     }
 
@@ -106,10 +106,6 @@ public class GuiBase extends GuiContainer {
                         break;
                     }
                 }
-            /*case 1:
-                if (button instanceof GuiButtonConfig)
-                    Minecraft.getMinecraft().thePlayer.openGui(BronzeAge.INSTANSE, GuiIds.CONFIG, Minecraft.getMinecraft().theWorld, basicSteamMachine.xCoord, basicSteamMachine.yCoord, basicSteamMachine.zCoord);
-                break;*/
         }
     }
 
