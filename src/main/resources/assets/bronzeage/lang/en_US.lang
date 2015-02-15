@@ -36,6 +36,13 @@ item.wrench.Iron.name=Iron Wrench
 item.wrench.Bronze.name=Bronze Wrench
 item.wrench.Diamond.name=Diamond Wrench
 
+item.wrench.Stone.broken.name=Stone Wrench (Broken)
+item.wrench.Tin.broken.name=Tin Wrench (Broken)
+item.wrench.Copper.broken.name=Copper Wrench (Broken)
+item.wrench.Iron.broken.name=Iron Wrench (Broken)
+item.wrench.Bronze.broken.name=Bronze Wrench (Broken)
+item.wrench.Diamond.broken.name=Diamond Wrench (Broken)
+
 #- ToolTip Localizations
 tooltip.wrench.material=Material Name
 tooltip.wrench.numOfUses=Number of Uses Remaining

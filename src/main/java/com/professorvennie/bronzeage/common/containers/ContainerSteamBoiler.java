@@ -16,31 +16,20 @@ import net.minecraft.tileentity.TileEntityFurnace;
 /**
  * Created by ProfessorVennie on 10/23/2014 at 9:46 PM.
  */
-public class ContainerSteamBoiler extends Container {
+public class ContainerSteamBoiler extends ContainerBasicMachine {
 
-    public int lastBurnTime, lastItemBurnTime, lastTemp, lastTank1, lastTank2;
+    public int lastBurnTime, lastItemBurnTime, lastTemp, lastTank2;
     private TileEntitySteamBoiler entity;
 
     public ContainerSteamBoiler(InventoryPlayer inventory, TileEntitySteamBoiler tile) {
+        super(tile);
         this.entity = tile;
-
         addSlotToContainer(new Slot(tile, 0, 127, 9));
         addSlotToContainer(new Slot(tile, 1, 127, 58));
-
         addSlotToContainer(new Slot(tile, 2, 33, 9));
         addSlotToContainer(new Slot(tile, 3, 33, 58));
-
         addSlotToContainer(new Slot(tile, 4, 80, 41));
-
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 9; j++) {
-                this.addSlotToContainer(new Slot(inventory, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
-            }
-        }
-
-        for (int i = 0; i < 9; i++) {
-            this.addSlotToContainer(new Slot(inventory, i, 8 + i * 18, 142));
-        }
+        addPlayersInv(inventory);
     }
 
     @Override
@@ -51,19 +40,15 @@ public class ContainerSteamBoiler extends Container {
             ICrafting icrafting = (ICrafting) this.crafters.get(i);
 
             if (this.lastBurnTime != this.entity.burnTime) {
-                icrafting.sendProgressBarUpdate(this, 0, this.entity.burnTime);
+                icrafting.sendProgressBarUpdate(this, 1, this.entity.burnTime);
             }
 
             if (this.lastItemBurnTime != this.entity.currentItemBurnTime) {
-                icrafting.sendProgressBarUpdate(this, 1, this.entity.currentItemBurnTime);
+                icrafting.sendProgressBarUpdate(this, 2, this.entity.currentItemBurnTime);
             }
 
             if (lastTemp != entity.temp) {
-                icrafting.sendProgressBarUpdate(this, 2, entity.temp);
-            }
-
-            if (lastTank1 != entity.getSteamAmount()) {
-                icrafting.sendProgressBarUpdate(this, 3, entity.getSteamAmount());
+                icrafting.sendProgressBarUpdate(this, 3, entity.temp);
             }
 
             if (lastTank2 != entity.getWaterAmount()) {
@@ -73,20 +58,15 @@ public class ContainerSteamBoiler extends Container {
         this.lastBurnTime = this.entity.burnTime;
         this.lastItemBurnTime = this.entity.currentItemBurnTime;
         this.lastTemp = this.entity.temp;
-        this.lastTank1 = this.entity.getSteamAmount();
         this.lastTank2 = this.entity.getWaterAmount();
     }
 
     @SideOnly(Side.CLIENT)
     public void updateProgressBar(int slot, int par2) {
-        if (slot == 0) this.entity.burnTime = par2;
-        if (slot == 1) this.entity.currentItemBurnTime = par2;
-        if (slot == 2) this.entity.temp = par2;
-        if (slot == 3) {
-            if (entity.getSteamTank() != null)
-                ((SteamTank) entity.getSteamTank()).steamAmount = par2;
-
-        }
+        super.updateProgressBar(slot, par2);
+        if (slot == 1) this.entity.burnTime = par2;
+        if (slot == 2) this.entity.currentItemBurnTime = par2;
+        if (slot == 3) this.entity.temp = par2;
         if (slot == 4) {
             if (entity.getWaterTank() != null)
                 entity.getWaterTank().getFluid().amount = par2;
@@ -101,10 +81,9 @@ public class ContainerSteamBoiler extends Container {
     @Override
     public void addCraftingToCrafters(ICrafting iCrafting) {
         super.addCraftingToCrafters(iCrafting);
-        iCrafting.sendProgressBarUpdate(this, 0, this.entity.burnTime);
-        iCrafting.sendProgressBarUpdate(this, 1, this.entity.currentItemBurnTime);
-        iCrafting.sendProgressBarUpdate(this, 2, this.entity.temp);
-        iCrafting.sendProgressBarUpdate(this, 3, lastTank1);
+        iCrafting.sendProgressBarUpdate(this, 1, this.entity.burnTime);
+        iCrafting.sendProgressBarUpdate(this, 2, this.entity.currentItemBurnTime);
+        iCrafting.sendProgressBarUpdate(this, 3, this.entity.temp);
         iCrafting.sendProgressBarUpdate(this, 4, lastTank2);
     }
 

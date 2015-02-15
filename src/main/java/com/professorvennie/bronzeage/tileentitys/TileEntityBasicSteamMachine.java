@@ -51,9 +51,12 @@ public abstract class TileEntityBasicSteamMachine extends TileEntityBasicMachine
 
         steamTank.readFromNBT(nbtTagCompound);
 
-       /*for (int i = 0; i < sideModesSlots.length; i++) {
+       for (int i = 0; i < sideModesSlots.length; i++)
             sideModesSlots[i] = SideMode.values()[nbtTagCompound.getInteger("SideMode" + i)];
-        }*/
+
+        for (int i = 0; i < sideModeTanks.length; i++)
+            sideModeTanks[i] = SideMode.values()[nbtTagCompound.getInteger("TankMode" + i)];
+
     }
 
     @Override
@@ -62,9 +65,12 @@ public abstract class TileEntityBasicSteamMachine extends TileEntityBasicMachine
 
         steamTank.writeToNBT(nbtTagCompound);
 
-        /*for (int i = 0; i < sideModesSlots.length; i++) {
-            setModeOnSide(ForgeDirection.getOrientation(i), SideMode.values()[nbtTagCompound.getInteger("SideMode" + i)]);
-        }*/
+        for (int i = 0; i < sideModesSlots.length; i++)
+            nbtTagCompound.setInteger("SideMode" + i, sideModesSlots[i].ordinal());
+
+        for (int i = 0; i < sideModeTanks.length; i++)
+            nbtTagCompound.setInteger("TankMode" + i, sideModeTanks[i].ordinal());
+
     }
 
     //ISteamHandler
@@ -225,7 +231,7 @@ public abstract class TileEntityBasicSteamMachine extends TileEntityBasicMachine
 
     @Override
     public boolean canInsertItem(int slot, ItemStack itemStack, int side) {
-        if (getModeOnSide(ForgeDirection.getOrientation(side)) == SideMode.IMPORT || getModeOnSide(ForgeDirection.getOrientation(side)) == SideMode.BOTH)
+        if ((getModeOnSide(ForgeDirection.getOrientation(side)) == SideMode.IMPORT || getModeOnSide(ForgeDirection.getOrientation(side)) == SideMode.BOTH) && isItemValidForSlot(slot, itemStack))
             return true;
         return false;
     }

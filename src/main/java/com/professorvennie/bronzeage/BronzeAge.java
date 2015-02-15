@@ -4,6 +4,7 @@ import com.professorvennie.bronzeage.blocks.ModBlocks;
 import com.professorvennie.bronzeage.client.handlers.HudHandler;
 import com.professorvennie.bronzeage.core.config.ConfigHandler;
 import com.professorvennie.bronzeage.core.creativetab.CreativeTab;
+import com.professorvennie.bronzeage.core.handlers.EventHandler;
 import com.professorvennie.bronzeage.core.handlers.GuiHandler;
 import com.professorvennie.bronzeage.core.network.PacketHandler;
 import com.professorvennie.bronzeage.core.proxeys.CommonProxey;
@@ -52,6 +53,8 @@ public class BronzeAge {
     public static void init(FMLInitializationEvent event) {
         NetworkRegistry.INSTANCE.registerGuiHandler(Reference.MOD_ID, guiHandler);
         MinecraftForge.EVENT_BUS.register(new HudHandler());
+        FMLCommonHandler.instance().bus().register(new EventHandler());
+        MinecraftForge.EVENT_BUS.register(new EventHandler());
     }
 
     @Mod.EventHandler

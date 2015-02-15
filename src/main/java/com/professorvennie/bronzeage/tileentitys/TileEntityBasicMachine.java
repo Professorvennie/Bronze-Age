@@ -12,6 +12,7 @@ public class TileEntityBasicMachine extends TileEntityBasicSidedInventory implem
 
     public boolean canWork;
     private RedstoneMode redStoneMode;
+    public boolean isActive;
 
     public TileEntityBasicMachine(String name) {
         super(name);

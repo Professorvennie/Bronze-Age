@@ -7,6 +7,7 @@ import com.professorvennie.bronzeage.api.tiles.ISteamBoiler;
 import com.professorvennie.bronzeage.api.wrench.IWrench;
 import com.professorvennie.bronzeage.api.wrench.IWrenchable;
 import com.professorvennie.bronzeage.lib.Reference;
+import com.professorvennie.bronzeage.tileentitys.TileEntityBasicMachine;
 import com.professorvennie.bronzeage.tileentitys.TileEntityBasicSteamMachine;
 import com.professorvennie.bronzeage.tileentitys.TileEntityMod;
 import cpw.mods.fml.common.network.IGuiHandler;
@@ -29,6 +30,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -75,11 +77,11 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
 
     public abstract int getGuiId();
 
-    @Override
+    /*@Override
     public void getSubBlocks(Item item, CreativeTabs tabs, List list) {
         list.add(new ItemStack(item, 1, 0));//Idle
         list.add(new ItemStack(item, 1, 1));//Active
-    }
+    }*/
 
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
@@ -115,10 +117,18 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
             return frontIconIdle;
         else if (meta == 0 && side == 3)
             return frontIconIdle;
-        else if (meta == 1 && side == 3)
-            return frontIconActive;
         else
             return sideIcon;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public IIcon getIcon(IBlockAccess block, int x, int y, int z, int side) {
+        int meta = block.getBlockMetadata(x, y, z);
+        TileEntityBasicMachine tile = (TileEntityBasicMachine)block.getTileEntity(x, y, z);
+        if(side == meta && tile.isActive)
+            return frontIconActive;
+        return getIcon(side, meta);
     }
 
     private void setDefualtDirection(World world, int x, int y, int z) {
@@ -208,8 +218,6 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
                 block.getTagCompound().setTag("items", list);
             }
 
-            if (block.getItemDamage() > 1)
-                block.setItemDamage(0);
             EntityItem item = new EntityItem(world, (double) x, (double) y, (double) z, block);
             world.spawnEntityInWorld(item);
             world.setBlockToAir(x, y, z);
@@ -225,9 +233,21 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void randomDisplayTick(World world, int x, int y, int z, Random random) {
-        if (isActive && !world.isRemote) {
+        if (((TileEntityBasicMachine)world.getTileEntity(x, y, z)).isActive && !world.isRemote) {
+            System.out.println("ACTIVE");
+            float x1 = (float) x + 0.5f;
+            float y1 = (float) y + 1.0f;
+            float z1 = (float) z + 0.5f;
+            float f1 = random.nextFloat() * 0.6F - 0.3F;
 
+            world.spawnParticle("smoke", (double) (x1 + f1), (double) y1, (double) (z1 + f1), 0.0D, 0.0D, 0.0D);
+            world.spawnParticle("smoke", (double) (x1 - f1), (double) y1, (double) (z1 + f1), 0.0D, 0.0D, 0.0D);
+            world.spawnParticle("smoke", (double) (x1 + f1), (double) y1, (double) (z1 - f1), 0.0D, 0.0D, 0.0D);
+            world.spawnParticle("smoke", (double) (x1 - f1), (double) y1, (double) (z1 - f1), 0.0D, 0.0D, 0.0D);
+            world.spawnParticle("smoke", (double) x1, (double) (y1 + f1), (double) z1, 0.0D, 0.0D, 0.0D);
+            world.spawnParticle("smoke", (double) (x1 + f1), (double) (y1 + f1), (double) z1, 0.0D, 0.0D, 0.0D);
         }
     }
 
@@ -287,15 +307,15 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
 
         @Override
         public String getUnlocalizedName(ItemStack itemStack) {
-            switch (itemStack.getItemDamage()) {
+            /*switch (itemStack.getItemDamage()) {
                 case 0:
                     return super.getUnlocalizedName(itemStack) + "Idle";
                 case 1:
                     return super.getUnlocalizedName(itemStack) + "Active";
                 default:
-                    itemStack.setItemDamage(0);
-                    return super.getUnlocalizedName(itemStack) + "Idle";
-            }
+                    itemStack.setItemDamage(0);*/
+                    return super.getUnlocalizedName(itemStack) /*+ "Idle"*/;
+            //}
         }
     }
 }

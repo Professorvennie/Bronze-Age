@@ -18,6 +18,7 @@ public class ItemMaterials extends ItemBase {
 
     private final String[] NAMES = new String[]{"ingotCopper", "ingotTin", "ingotSilver", "ingotLead", "ingotBronze", "dirtyChunkCopper", "dirtyChunkTin", "dirtyChunkIron", "dirtyChunkGold", "dirtyChunkSilver", "dirtyChunkLead", "cleanChunkCopper", "cleanChunkTin", "cleanChunkIron", "cleanChunkGold", "cleanChunkSilver", "cleanChunkLead", "dustCopper", "dustTin", "dustIron", "dustGold", "dustSilver", "dustLead", "dustBronze"};
     private IIcon[] icons;
+    public static final int COPPER = 0, TIN = 1, SILVER = 2, LEAD = 3, BRONZE = 4;
 
     public ItemMaterials() {
         super("material");

@@ -137,6 +137,12 @@ public class ItemWrench extends ItemBase implements IWrench {
                 }
             }
         }
+
+        if(!(usesRemaining - dismanlt >= 0 && usesRemaining - rotate >= 0)){
+            initNBT(itemStack);
+            itemStack.getTagCompound().setBoolean("isBroken", true);
+        }
+
         return super.onItemUseFirst(itemStack, player, world, x, y, z, side, hitX, hitY, hitZ);
     }
 

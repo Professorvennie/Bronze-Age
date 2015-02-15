@@ -87,6 +87,7 @@ public class GuiConfig extends GuiContainer {
     @Override
     protected void actionPerformed(GuiButton button) {
         if (button instanceof GuiButtonBack) {
+            Minecraft.getMinecraft().thePlayer.closeScreen();
             Minecraft.getMinecraft().thePlayer.openGui(BronzeAge.INSTANSE, blockBasicMachine.getGuiId(), Minecraft.getMinecraft().theWorld, basicMachine.xCoord, basicMachine.yCoord, basicMachine.zCoord);
         } else if (button instanceof GuiButtonSides) {
             if (!(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {

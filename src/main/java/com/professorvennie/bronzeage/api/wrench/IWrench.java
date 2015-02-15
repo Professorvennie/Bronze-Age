@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
  */
 public interface IWrench {
 
+
     public int getDurability(ItemStack itemStack);
 
     public float getNumOfUsesRemaining(ItemStack itemStack);

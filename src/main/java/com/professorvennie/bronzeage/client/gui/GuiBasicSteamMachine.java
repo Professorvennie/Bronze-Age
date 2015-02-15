@@ -9,6 +9,9 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.inventory.Container;
 import org.lwjgl.opengl.GL11;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by ProfessorVennie on 1/31/2015 at 6:22 PM.
  */
@@ -37,6 +40,18 @@ public class GuiBasicSteamMachine extends GuiBase {
             drawTexturedModalRect(guiLeft + 176, guiTop + 31, 0, 93, 28, 28);
         }
         GL11.glColor4f(1F, 1F, 1F, 1F);
+    }
+
+    @Override
+    protected void drawGuiContainerForegroundLayer(int p_146979_1_, int p_146979_2_) {
+        super.drawGuiContainerForegroundLayer(p_146979_1_, p_146979_2_);
+
+        List<String> text = new ArrayList<String>();
+        text.clear();
+        text.add("Steam");
+        text.add(basicSteamMachine.getSteamAmount() + "/" + basicSteamMachine.getSteamCapacity() + "mB");
+        drawToolTipOverArea(mouseX, mouseY, 11, 8, 26, 73, text, fontRendererObj);
+
     }
 
     @Override

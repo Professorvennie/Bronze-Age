@@ -18,7 +18,6 @@ public class TileEntityWrenchRepairer extends TileEntityBasicSteamMachine {
 
         if(!worldObj.isRemote){
             if(getStackInSlot(0) != null && getStackInSlot(0).getItem() instanceof IWrench){
-                //System.out.println(((IWrench)getStackInSlot(0).getItem()).getWrenchMaterial(getStackInSlot(0)).getRepairStack().getUnlocalizedName());
                 if(getStackInSlot(1) != null && getStackInSlot(1).getItem() == ((IWrench)getStackInSlot(0).getItem()).getWrenchMaterial(getStackInSlot(0)).getRepairStack().getItem()){
                     if(getStackInSlot(0).getTagCompound().getBoolean("isBroken") && getStackInSlot(2) == null){
                         ItemStack wrench = getStackInSlot(0);
@@ -38,17 +37,26 @@ public class TileEntityWrenchRepairer extends TileEntityBasicSteamMachine {
     }
 
     @Override
+    public boolean isItemValidForSlot(int slot, ItemStack itemStack) {
+        if(slot == 0 && itemStack.getItem() instanceof IWrench)
+            return true;
+        else if(slot == 1)
+            return true;
+        return false;
+    }
+
+    @Override
     public int getSizeInventory() {
         return 3;
     }
 
     @Override
     public int[] getInputSlots() {
-        return new int[0];
+        return new int[]{0, 1};
     }
 
     @Override
     public int[] getExportSlots() {
-        return new int[0];
+        return new int[]{2};
     }
 }

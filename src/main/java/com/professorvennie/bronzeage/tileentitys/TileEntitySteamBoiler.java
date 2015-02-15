@@ -48,6 +48,11 @@ public class TileEntitySteamBoiler extends TileEntityBasicSteamMachine implement
 
         if (burnTime > 0) {
             burnTime--;
+            isActive = true;
+            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        }else {
+            isActive = false;
+            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
         }
 
         if (!worldObj.isRemote) {
