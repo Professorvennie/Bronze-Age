@@ -16,7 +16,7 @@ import net.minecraft.inventory.Slot;
 public class ContainerBasicMachine extends Container {
 
     protected TileEntityBasicSteamMachine tile;
-    private int lastSteamAmount;
+    private int lastSteamAmount, lastProgress;
 
     public ContainerBasicMachine(TileEntityBasicSteamMachine tile){
         this.tile = tile;
@@ -54,8 +54,12 @@ public class ContainerBasicMachine extends Container {
             if (lastSteamAmount != tile.getSteamAmount()) {
                 icrafting.sendProgressBarUpdate(this, 0, tile.getSteamAmount());
             }
+
+            if(lastProgress != tile.getProgress())
+                icrafting.sendProgressBarUpdate(this, 1, tile.getProgress());
         }
         this.lastSteamAmount = this.tile.getSteamAmount();
+        this.lastProgress = this.tile.getProgress();
     }
 
     @SideOnly(Side.CLIENT)
@@ -63,13 +67,14 @@ public class ContainerBasicMachine extends Container {
         if (slot == 0) {
             if (tile.getSteamTank() != null)
                 ((SteamTank) tile.getSteamTank()).steamAmount = par2;
-
         }
+        if(slot == 1)tile.setProgress(par2);
     }
 
     @Override
     public void addCraftingToCrafters(ICrafting iCrafting) {
         super.addCraftingToCrafters(iCrafting);
         iCrafting.sendProgressBarUpdate(this, 0, lastSteamAmount);
+        iCrafting.sendProgressBarUpdate(this, 1, lastProgress);
     }
 }

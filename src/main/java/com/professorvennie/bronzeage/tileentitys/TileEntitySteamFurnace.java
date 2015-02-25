@@ -13,10 +13,9 @@ public class TileEntitySteamFurnace extends TileEntityBasicSteamMachine {
 
     @Override
     public void updateEntity() {
-        super.updateEntity();
-
+    super.updateEntity();
         if (canWork) {
-            System.out.println(getSteamAmount());
+
         }
     }
 

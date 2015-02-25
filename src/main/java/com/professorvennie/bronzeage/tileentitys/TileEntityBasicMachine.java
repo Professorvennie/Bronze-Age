@@ -22,6 +22,10 @@ public class TileEntityBasicMachine extends TileEntityBasicSidedInventory implem
     @Override
     public void updateEntity() {
         super.updateEntity();
+        updateRedStone();
+    }
+
+    public void updateRedStone(){
 
         switch (redStoneMode) {
             case low:

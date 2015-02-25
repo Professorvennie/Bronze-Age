@@ -18,10 +18,16 @@ import java.util.List;
 public class GuiBasicSteamMachine extends GuiBase {
 
     private TileEntityBasicSteamMachine basicSteamMachine;
+    private boolean drawSteam;
 
-    public GuiBasicSteamMachine(Container container, TileEntityBasicSteamMachine basicMachine) {
+    public GuiBasicSteamMachine(Container container, TileEntityBasicSteamMachine basicMachine, boolean drawSteamTank) {
         super(container, basicMachine);
         this.basicSteamMachine = basicMachine;
+        this.drawSteam = drawSteamTank;
+    }
+
+    public GuiBasicSteamMachine(Container container, TileEntityBasicSteamMachine basicMachine){
+        this(container, basicMachine, true);
     }
 
     @Override
@@ -40,17 +46,22 @@ public class GuiBasicSteamMachine extends GuiBase {
             drawTexturedModalRect(guiLeft + 176, guiTop + 31, 0, 93, 28, 28);
         }
         GL11.glColor4f(1F, 1F, 1F, 1F);
+
+        if(drawSteam)
+            drawSteamTank(11, 74);
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int p_146979_1_, int p_146979_2_) {
         super.drawGuiContainerForegroundLayer(p_146979_1_, p_146979_2_);
 
-        List<String> text = new ArrayList<String>();
-        text.clear();
-        text.add("Steam");
-        text.add(basicSteamMachine.getSteamAmount() + "/" + basicSteamMachine.getSteamCapacity() + "mB");
-        drawToolTipOverArea(mouseX, mouseY, 11, 8, 26, 73, text, fontRendererObj);
+        if(drawSteam) {
+            List<String> text = new ArrayList<String>();
+            text.clear();
+            text.add("Steam");
+            text.add(basicSteamMachine.getSteamAmount() + "/" + basicSteamMachine.getSteamCapacity() + "mB");
+            drawToolTipOverArea(mouseX, mouseY, 11, 8, 26, 73, text, fontRendererObj);
+        }
 
     }
 
@@ -70,5 +81,10 @@ public class GuiBasicSteamMachine extends GuiBase {
         Minecraft.getMinecraft().getTextureManager().bindTexture(elements);
         int j = getValueScaled(basicSteamMachine.getSteamAmount(), basicSteamMachine.getSteamCapacity(), 66);
         drawElement(x, y - j, 240, 66 - j, 16, j);
+    }
+
+    public void drawProgressArrow(int x, int y){
+        int j = basicSteamMachine.getProgressScaled(24);
+        drawElement(x, y, 51, 6, j + 1, 16);
     }
 }

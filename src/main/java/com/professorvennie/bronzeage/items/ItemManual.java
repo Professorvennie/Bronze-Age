@@ -11,7 +11,10 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+
+import java.util.List;
 
 /**
  * Created by ProfessorVennie on 10/23/2014 at 4:59 PM.
@@ -43,6 +46,17 @@ public class ItemManual extends ItemBase {
             BronzeAge.proxey.setPageToOpen(entry.getPage(world, x, y, z));
         }
         return super.onItemUse(itemStack, player, world, x, y, z, side, hitX, hitY, hitZ);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean b) {
+        if(itemStack.getTagCompound() != null){
+            if (itemStack.getTagCompound().getInteger("CurrentPage") == 0)
+                list.add(StatCollector.translateToLocal("tooltip.manual.cover"));
+            else
+                 list.add(StatCollector.translateToLocal("tooltip.manual.currentPage") + " " + itemStack.getTagCompound().getInteger("CurrentPage"));
+        }
     }
 
     @Override

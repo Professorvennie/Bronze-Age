@@ -10,26 +10,29 @@ public class TileEntityWrenchRepairer extends TileEntityBasicSteamMachine {
 
     public TileEntityWrenchRepairer() {
         super("wrenchRepairer", 10000);
+        setMachineSpeed(100);
     }
 
     @Override
     public void updateEntity() {
         super.updateEntity();
-
         if(!worldObj.isRemote){
             if(getStackInSlot(0) != null && getStackInSlot(0).getItem() instanceof IWrench){
                 if(getStackInSlot(1) != null && getStackInSlot(1).getItem() == ((IWrench)getStackInSlot(0).getItem()).getWrenchMaterial(getStackInSlot(0)).getRepairStack().getItem()){
                     if(getStackInSlot(0).getTagCompound().getBoolean("isBroken") && getStackInSlot(2) == null){
-                        ItemStack wrench = getStackInSlot(0);
-                        wrench.getTagCompound().setBoolean("isBroken", false);
-                        wrench.getTagCompound().setFloat("NumOfUsesRemaining", ((IWrench)getStackInSlot(0).getItem()).getWrenchMaterial(getStackInSlot(0)).getNumOfUses());
-                        setInventorySlotContents(2, wrench);
-                        setInventorySlotContents(0, null);
-                        if(getStackInSlot(1).stackSize > 1)
-                            getStackInSlot(1).stackSize--;
-                        else
-                            setInventorySlotContents(1, null);
-
+                        if (getProgress() == getMachineSpeed()){
+                            setProgress(0);
+                            ItemStack wrench = getStackInSlot(0);
+                            wrench.getTagCompound().setBoolean("isBroken", false);
+                            wrench.getTagCompound().setFloat("NumOfUsesRemaining", ((IWrench) getStackInSlot(0).getItem()).getWrenchMaterial(getStackInSlot(0)).getNumOfUses());
+                            setInventorySlotContents(2, wrench);
+                            setInventorySlotContents(0, null);
+                            if (getStackInSlot(1).stackSize > 1)
+                                getStackInSlot(1).stackSize--;
+                            else
+                                setInventorySlotContents(1, null);
+                        }else
+                            setProgress(getProgress() + 1);
                     }
                 }
             }

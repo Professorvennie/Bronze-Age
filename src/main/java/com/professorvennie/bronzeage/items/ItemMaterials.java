@@ -18,7 +18,10 @@ public class ItemMaterials extends ItemBase {
 
     private final String[] NAMES = new String[]{"ingotCopper", "ingotTin", "ingotSilver", "ingotLead", "ingotBronze", "dirtyChunkCopper", "dirtyChunkTin", "dirtyChunkIron", "dirtyChunkGold", "dirtyChunkSilver", "dirtyChunkLead", "cleanChunkCopper", "cleanChunkTin", "cleanChunkIron", "cleanChunkGold", "cleanChunkSilver", "cleanChunkLead", "dustCopper", "dustTin", "dustIron", "dustGold", "dustSilver", "dustLead", "dustBronze"};
     private IIcon[] icons;
-    public static final int COPPER = 0, TIN = 1, SILVER = 2, LEAD = 3, BRONZE = 4;
+    public static final int COPPER = 0, TIN = 1, SILVER = 2, LEAD = 3, BRONZE = 4, DIRTY_CHUNK_COPPER = 5, DIRTY_CHUNK_TIN = 6, DIRTY_CHUNK_IRON = 7, DIRTY_CHUNK_GOLD = 8, DIRTY_CHUNK_SILVER = 9, DIRTY_CHUNK_LEAD = 10,
+                                                                                   CLEAN_CHUNK_COPPER = 11, CLEAN_CHUNK_TIN = 12, CLEAN_CHUNK_IRON = 13, CLEAN_CHUNK_GOLD = 14, CLEAN_CHUNK_SILVER = 15, CLEAN_CHUNK_LEAD = 16,
+                                                                                   DIRTY_DUST_COPPER = 17, DIRTY_DUST_TIN = 18, DIRTY_DUST_IRON = 19, DIRTY_DUST_GOLD = 20, DIRTY_DUST_SILVER = 21, DIRTY_DUST_LEAD = 22,
+                                                                                   DUST_COPPER = 23, DUST_TIN = 24, DUST_IRON = 25, DUST_GOLD = 26, DUST_SILVER = 27, DUST_LEAD = 28;
 
     public ItemMaterials() {
         super("material");

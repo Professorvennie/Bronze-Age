@@ -12,4 +12,8 @@ public interface IGuiManual {
     public int getWidth();
 
     public int getHeight();
+
+    public int getMouseX();
+
+    public int getMouseY();
 }

@@ -9,11 +9,14 @@ import com.professorvennie.bronzeage.client.gui.pages.PageCover;
 import com.professorvennie.bronzeage.lib.BookData;
 import com.professorvennie.bronzeage.lib.Reference;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,13 +31,17 @@ public class GuiManual extends GuiScreen implements IGuiManual {
     public static GuiManual currentOpenManual = new GuiManual(BookData.pageCover);
     private List<IPage> pages = new ArrayList<IPage>();
     private Page currentPage;
-    private int currentPageNumber, guiWidth = 146, guiHeight = 180, left, top;
+    private int currentPageNumber, guiWidth = 146, guiHeight = 180, left, top, mouseX, mouseY;
     private GuiButtonNextPage buttonNextPage, buttonPerviousPage;
 
     public GuiManual(IPage currentPage) {
         this.pages = BronzeAgeAPI.getPages();
         this.currentPage = (Page) currentPage;
         this.currentPageNumber = currentPage.getPageNumber();
+        if(currentItemStack != null && currentItemStack.getTagCompound() != null) {
+            this.currentPageNumber = currentItemStack.getTagCompound().getInteger("CurrentPage");
+            this.currentPage = (Page) pages.get(currentPageNumber);
+        }
     }
 
     @Override
@@ -54,23 +61,20 @@ public class GuiManual extends GuiScreen implements IGuiManual {
         drawTexturedModalRect(left, top, 0, 0, guiWidth, guiHeight);
         for (IPage p : pages) {
             Page page = (Page) p;
-            if (currentPage instanceof PageCover && page == currentPage) {
+            if (currentPageNumber > 0) {
+                buttonNextPage.drawButton(mc, mx, my);
+                buttonPerviousPage.drawButton(mc, mx, my);
+            } else if (currentPageNumber == 0) {
+                buttonNextPage.drawButton(mc, mx, my);
+            }
+            if (page == currentPage) {
                 page.drawScreen(this, mx, my);
-                if (currentPageNumber > 0) {
-                    buttonNextPage.drawButton(mc, mx, my);
-                    buttonPerviousPage.drawButton(mc, mx, my);
-                } else if (currentPageNumber == 0) {
-                    buttonNextPage.drawButton(mc, mx, my);
+                int x = getLeft() + (146 / 2);
+                int y = getTop();
+                String pageNumber = currentPageNumber + "";
+                if (!(page instanceof PageCover)) {
+                    fontRendererObj.drawString(pageNumber, x - (fontRendererObj.getStringWidth(pageNumber) / 2), y + 163, 0xFF5D00);
                 }
-            } else {
-                if (currentPageNumber > 0) {
-                    buttonNextPage.drawButton(mc, mx, my);
-                    buttonPerviousPage.drawButton(mc, mx, my);
-                } else if (currentPageNumber == 0) {
-                    buttonNextPage.drawButton(mc, mx, my);
-                }
-                if (page == currentPage)
-                    page.drawScreen(this, mx, my);
             }
         }
     }
@@ -102,6 +106,23 @@ public class GuiManual extends GuiScreen implements IGuiManual {
     }
 
     @Override
+    public void handleMouseInput() {
+        super.handleMouseInput();
+        int x = Mouse.getEventX() * this.width / this.mc.displayWidth;
+        int y = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
+
+        mouseX = x - left;
+        mouseY = y - top;
+    }
+
+    public void drawToolTipOverArea(int mouseX, int mouseY, int minX, int minY, int maxX, int maxY, List<String> list, FontRenderer font) {
+        if (list != null && font != null) {
+            if ((mouseX >= minX && mouseX <= maxX) && (mouseY >= minY && mouseY <= maxY))
+                drawHoveringText(list, mouseX, mouseY, font);
+        }
+    }
+
+    @Override
     public void updateScreen() {
         pages.get(currentPageNumber).update();
     }
@@ -125,5 +146,15 @@ public class GuiManual extends GuiScreen implements IGuiManual {
 
     public int getHeight() {
         return guiHeight;
+    }
+
+    @Override
+    public int getMouseX() {
+        return mouseX;
+    }
+
+    @Override
+    public int getMouseY() {
+        return mouseY;
     }
 }

@@ -11,6 +11,7 @@ import com.professorvennie.bronzeage.core.proxeys.CommonProxey;
 import com.professorvennie.bronzeage.items.ModItems;
 import com.professorvennie.bronzeage.lib.BookData;
 import com.professorvennie.bronzeage.lib.Reference;
+import com.professorvennie.bronzeage.recipes.ModRecipes;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
@@ -41,7 +42,6 @@ public class BronzeAge {
     public static void preInit(FMLPreInitializationEvent event) {
         ModBlocks.init();
         ModItems.init();
-        BookData.initPages();
         PacketHandler.init();
         ConfigHandler.init(event.getSuggestedConfigurationFile());
         FMLCommonHandler.instance().bus().register(new ConfigHandler());
@@ -59,6 +59,8 @@ public class BronzeAge {
 
     @Mod.EventHandler
     public static void postInit(FMLPostInitializationEvent event) {
+        ModRecipes.init();
 
+        BookData.initPages();
     }
 }

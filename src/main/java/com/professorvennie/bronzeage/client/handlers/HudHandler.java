@@ -35,6 +35,7 @@ public class HudHandler {
                 }
             }
         }
+        GL11.glColor4f(1F, 1F, 1F, 1F);
     }
 
     private void drawManualHud(IPage page, ScaledResolution resolution) {
@@ -50,10 +51,9 @@ public class HudHandler {
         renderItem.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.renderEngine, manual, x - 64, y - 13);
         fontRenderer.drawString(manual.getDisplayName(), x - (fontRenderer.getStringWidth(manual.getDisplayName()) / 2), y - 10, color);
         String string = StatCollector.translateToLocal("bronzeAge.book.shifttoread");
-        fontRenderer.drawString(page.getUnlocalizedName(), x - (fontRenderer.getStringWidth(page.getUnlocalizedName()) / 2), y + 8, color);
+        fontRenderer.drawString(StatCollector.translateToLocal(page.getUnlocalizedName()), x - (fontRenderer.getStringWidth(StatCollector.translateToLocal(page.getUnlocalizedName())) / 2), y + 8, color);
         fontRenderer.drawString(string, x - (fontRenderer.getStringWidth(string) / 2), y + 18, color);
-        GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_BLEND);
-        GL11.glColor4f(1F, 1F, 1F, 1F);
+        GL11.glDisable(GL11.GL_LIGHTING);
     }
 }

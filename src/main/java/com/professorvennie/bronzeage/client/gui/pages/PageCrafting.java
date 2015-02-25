@@ -49,49 +49,51 @@ public class PageCrafting extends Page {
         if (items.length > 0) {
             renderSlot(screen, screen.getWidth() / 2 - 9, 15);
             renderItem(output, screen.getLeft() + screen.getWidth() / 2 - 8, screen.getTop() + 16);
-            FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
+            FontRenderer fontRenderer = minecraft.fontRenderer;
             if (items[0] != null) {
                 renderSlot(screen, screen.getWidth() / 2 - (9 + 18), 15 + 20);
                 renderItem(items[0], screen.getLeft() + screen.getWidth() / 2 - (8 + 18), screen.getTop() + 36);
             }
             if (items[1] != null) {
                 renderSlot(screen, screen.getWidth() / 2 - 9, 15 + 20);
-                renderItem(items[0], screen.getLeft() + screen.getWidth() / 2 - (8), screen.getTop() + 36);
+                renderItem(items[1], screen.getLeft() + screen.getWidth() / 2 - (8), screen.getTop() + 36);
             }
             if (items[2] != null) {
                 renderSlot(screen, screen.getWidth() / 2 + 9, 15 + 20);
-                renderItem(items[0], screen.getLeft() + screen.getWidth() / 2 + (10), screen.getTop() + 36);
+                renderItem(items[2], screen.getLeft() + screen.getWidth() / 2 + (10), screen.getTop() + 36);
             }
             if (items[3] != null) {
                 renderSlot(screen, screen.getWidth() / 2 - (9 + 18), 15 + 38);
-                renderItem(items[0], screen.getLeft() + screen.getWidth() / 2 - (8 + 18), screen.getTop() + (38 + 16));
+                renderItem(items[3], screen.getLeft() + screen.getWidth() / 2 - (8 + 18), screen.getTop() + (38 + 16));
             }
             if (items[4] != null) {
                 renderSlot(screen, screen.getWidth() / 2 - 9, 15 + 38);
-                renderItem(items[0], screen.getLeft() + screen.getWidth() / 2 - (8), screen.getTop() + (38 + 16));
+                renderItem(items[4], screen.getLeft() + screen.getWidth() / 2 - (8), screen.getTop() + (38 + 16));
             }
             if (items[5] != null) {
                 renderSlot(screen, screen.getWidth() / 2 + 9, 15 + 38);
-                renderItem(items[0], screen.getLeft() + screen.getWidth() / 2 + 10, screen.getTop() + (38 + 16));
+                renderItem(items[5], screen.getLeft() + screen.getWidth() / 2 + 10, screen.getTop() + (38 + 16));
             }
             if (items[6] != null) {
                 renderSlot(screen, screen.getWidth() / 2 - (9 + 18), 15 + (38 + 18));
-                renderItem(items[0], screen.getLeft() + screen.getWidth() / 2 - (8 + 18), screen.getTop() + (15 + (38 + 19)));
+                renderItem(items[6], screen.getLeft() + screen.getWidth() / 2 - (8 + 18), screen.getTop() + (15 + (38 + 19)));
             }
             if (items[7] != null) {
                 renderSlot(screen, screen.getWidth() / 2 - 9, 15 + (38 + 18));
-                renderItem(items[0], screen.getLeft() + screen.getWidth() / 2 - (8), screen.getTop() + (15 + (38 + 19)));
+                renderItem(items[7], screen.getLeft() + screen.getWidth() / 2 - (8), screen.getTop() + (15 + (38 + 19)));
             }
             if (items[8] != null) {
                 renderSlot(screen, screen.getWidth() / 2 + 9, 15 + (38 + 18));
-                renderItem(items[0], screen.getLeft() + screen.getWidth() / 2 + 10, screen.getTop() + (15 + (38 + 19)));
+                renderItem(items[8], screen.getLeft() + screen.getWidth() / 2 + 10, screen.getTop() + (15 + (38 + 19)));
             }
-            fontRenderer.drawStringWithShadow(output.getDisplayName(), screen.getLeft() + screen.getWidth() / 2 - fontRenderer.getStringWidth(output.getDisplayName()) / 2, screen.getTop() + 100, Color.BLUE.getRGB());
+            fontRenderer.drawString(output.getDisplayName(), screen.getLeft() + screen.getWidth() / 2 - fontRenderer.getStringWidth(output.getDisplayName()) / 2, screen.getTop() + 100, 0x0026FF);
+            GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         }
     }
 
     private void renderSlot(GuiManual gui, int x, int y) {
         GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         bindTexture(new ResourceLocation(Reference.MOD_ID, "textures/gui/guiElements.png"));
         drawElement(gui, gui.getLeft() + x, gui.getTop() + y, 0, 225, 18, 18);
         GL11.glEnable(GL11.GL_LIGHTING);
@@ -99,6 +101,7 @@ public class PageCrafting extends Page {
 
     private void renderItem(Object obj, int x, int y) {
         GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         RenderItem itemRenderer = new RenderItem();
         FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
         if (obj != null) {

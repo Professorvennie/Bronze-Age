@@ -17,7 +17,7 @@ public abstract class TileEntityBasicSteamMachine extends TileEntityBasicMachine
 
     protected SideMode[] sideModesSlots, sideModeTanks;
     private SteamTank steamTank;
-    private int[] inputSlots, exportSlots;
+    private int inputSlots[], exportSlots[], machineSpeed, progress;
 
     public TileEntityBasicSteamMachine(String name, int capacity) {
         super(name);
@@ -43,6 +43,8 @@ public abstract class TileEntityBasicSteamMachine extends TileEntityBasicMachine
             System.out.println("Client: " + getModeOnSide(ForgeDirection.DOWN));
         else
             System.out.println("Server: " + getModeOnSide(ForgeDirection.DOWN));*/
+
+
     }
 
     @Override
@@ -250,4 +252,24 @@ public abstract class TileEntityBasicSteamMachine extends TileEntityBasicMachine
     public abstract int[] getInputSlots();
 
     public abstract int[] getExportSlots();
+
+    public int getMachineSpeed() {
+        return machineSpeed;
+    }
+
+    public void setMachineSpeed(int machineSpeed) {
+        this.machineSpeed = machineSpeed;
+    }
+
+    public int getProgress() {
+        return progress;
+    }
+
+    public void setProgress(int progress) {
+        this.progress = progress;
+    }
+
+    public int getProgressScaled(int scale){
+        return progress * scale / machineSpeed;
+    }
 }
