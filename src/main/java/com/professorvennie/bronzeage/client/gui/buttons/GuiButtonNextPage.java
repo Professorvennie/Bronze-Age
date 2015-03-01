@@ -109,6 +109,7 @@ public class GuiButtonNextPage extends GuiButton {
 
     @Override
     public void drawButton(Minecraft minecraft, int x, int y) {
+        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         if (enabled) {
             field_146123_n = x >= xPosition && y >= yPosition && x < xPosition + width && y < yPosition + height;
             int k = getHoverState(field_146123_n);

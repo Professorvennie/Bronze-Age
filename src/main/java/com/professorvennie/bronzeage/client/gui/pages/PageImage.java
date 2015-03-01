@@ -16,7 +16,7 @@ public class PageImage extends Page {
     private String text;
 
     public PageImage(int pageNumber, ResourceLocation image, String text) {
-        super(pageNumber, "image." + pageNumber);
+        super(GuiManual.currentOpenManual, pageNumber, "image." + pageNumber);
         this.image = image;
         this.text = text;
     }

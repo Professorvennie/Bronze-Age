@@ -13,7 +13,7 @@ public class PageText extends Page {
     private String text;
 
     public PageText(int pageNumber, String unlocalizedText) {
-        super(pageNumber, "text." + pageNumber);
+        super(GuiManual.currentOpenManual, pageNumber, "text." + pageNumber);
         this.text = unlocalizedText;
     }
 

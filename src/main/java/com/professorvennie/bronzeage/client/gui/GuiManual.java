@@ -107,19 +107,13 @@ public class GuiManual extends GuiScreen implements IGuiManual {
 
     @Override
     public void handleMouseInput() {
-        super.handleMouseInput();
         int x = Mouse.getEventX() * this.width / this.mc.displayWidth;
         int y = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
 
-        mouseX = x - left;
-        mouseY = y - top;
-    }
+        mouseX = x;
+        mouseY = y;
 
-    public void drawToolTipOverArea(int mouseX, int mouseY, int minX, int minY, int maxX, int maxY, List<String> list, FontRenderer font) {
-        if (list != null && font != null) {
-            if ((mouseX >= minX && mouseX <= maxX) && (mouseY >= minY && mouseY <= maxY))
-                drawHoveringText(list, mouseX, mouseY, font);
-        }
+        super.handleMouseInput();
     }
 
     @Override

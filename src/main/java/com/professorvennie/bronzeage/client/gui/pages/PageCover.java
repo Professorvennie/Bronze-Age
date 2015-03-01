@@ -17,8 +17,8 @@ public class PageCover extends Page {
 
     private String title, author;
 
-    public PageCover(int pageNumber, String title, String author) {
-        super(pageNumber, null);
+    public PageCover(IGuiManual gui, int pageNumber, String title, String author) {
+        super(gui, pageNumber, null);
         this.title = title;
         this.author = author;
     }

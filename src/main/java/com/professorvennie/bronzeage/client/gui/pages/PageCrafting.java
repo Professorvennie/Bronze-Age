@@ -2,6 +2,7 @@ package com.professorvennie.bronzeage.client.gui.pages;
 
 import com.professorvennie.bronzeage.api.manual.IGuiManual;
 import com.professorvennie.bronzeage.client.gui.GuiManual;
+import com.professorvennie.bronzeage.client.helpers.RenderHelper;
 import com.professorvennie.bronzeage.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -35,7 +36,7 @@ public class PageCrafting extends Page {
     private Object[] items;
 
     public PageCrafting(int pageNumber, ItemStack output) {
-        super(pageNumber, "crafting." + pageNumber);
+        super(GuiManual.currentOpenManual, pageNumber, "crafting." + pageNumber);
         this.output = output;
         items = getItemShapedRecipe(output);
     }
@@ -89,30 +90,9 @@ public class PageCrafting extends Page {
             fontRenderer.drawString(output.getDisplayName(), screen.getLeft() + screen.getWidth() / 2 - fontRenderer.getStringWidth(output.getDisplayName()) / 2, screen.getTop() + 100, 0x0026FF);
             GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         }
-    }
-
-    private void renderSlot(GuiManual gui, int x, int y) {
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-        bindTexture(new ResourceLocation(Reference.MOD_ID, "textures/gui/guiElements.png"));
-        drawElement(gui, gui.getLeft() + x, gui.getTop() + y, 0, 225, 18, 18);
-        GL11.glEnable(GL11.GL_LIGHTING);
-    }
-
-    private void renderItem(Object obj, int x, int y) {
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-        RenderItem itemRenderer = new RenderItem();
-        FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
-        if (obj != null) {
-            if (obj instanceof ItemStack)
-                itemRenderer.renderItemAndEffectIntoGUI(fontRenderer, minecraft.renderEngine, (ItemStack) obj, x, y);
-            if (obj instanceof Item)
-                itemRenderer.renderItemAndEffectIntoGUI(fontRenderer, minecraft.renderEngine, new ItemStack((Item) obj), x, y);
-            if (obj instanceof Block)
-                itemRenderer.renderItemAndEffectIntoGUI(fontRenderer, minecraft.renderEngine, new ItemStack((Block) obj), x, y);
-        }
-        GL11.glEnable(GL11.GL_LIGHTING);
+        if(toolTipStack != null)
+            RenderHelper.renderTooltip(gui.getMouseX(), gui.getMouseY(), toolTipStack);
+        toolTipStack = null;
     }
 
     private Object[] getItemShapedRecipe(ItemStack stack) {

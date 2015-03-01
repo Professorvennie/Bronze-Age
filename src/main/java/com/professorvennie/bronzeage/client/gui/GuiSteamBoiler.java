@@ -55,8 +55,8 @@ public class GuiSteamBoiler extends GuiBasicSteamMachine {
         int j = getValueScaled(steamBoiler.getWaterAmount(), steamBoiler.getWaterCapacity(), 66);
         drawElement(11, 74 - j, 176, 80 - j, 16, j);
 
-        int k = steamBoiler.getTempScaled(70);
-        drawElement(53, 63, 51, 0, k + 1, 6);
+        j = steamBoiler.getTempScaled(70);
+        drawElement(53, 63, 51, 0, j + 1, 6);
 
         drawSteamTank(149, 74);
     }

@@ -43,6 +43,16 @@ item.wrench.Iron.broken.name=Iron Wrench (Broken)
 item.wrench.Bronze.broken.name=Bronze Wrench (Broken)
 item.wrench.Diamond.broken.name=Diamond Wrench (Broken)
 
+#- Blocks Localizations
+tile.ore.0.name=Copper Ore
+tile.ore.1.name=Tin Ore
+tile.steamBoiler.name=Steam Boiler
+tile.well.name=Well
+tile.wellPipe.name=Wooden Well Pipe
+tile.wrenchRepairer.name=Wrench Repairer
+tile.steamFurnace.name=Steam Furnace
+tile.steamCharger.name=Steam Charger
+
 #- ToolTip Localizations
 tooltip.wrench.material=Material Name
 tooltip.wrench.numOfUses=Number of Uses Remaining
@@ -89,7 +99,7 @@ bronzeAge.book.nextPage=Next Page
 bronzeAge.book.shifttoread=Shift Right Click For More Info
 
 bronzeAge.page.text.1=Basics
-bronzeAge.book.page.basics=Bronze Age is all about bringing back the old times into the modern age.  To start off with this mod you will need a steam boiler.  This steam boiler generates steam with any burnable and water. For more info check out the steam boiler page.
+bronzeAge.book.page.basics=Bronze Age is all about bringing back the old times into the modern age.  To start off you will have to find copper and tin ore through out the world.  Uses this ore to make copper and tin ingots and then bronze ingots.  Bronze is used through out the entire mod to craft everything.
 
 bronzeAge.page.text.2=SteamBoiler
 bronzeAge.book.page.steamBoiler=This is the most basic Steam boiler. This runs off of any burnable objects and uses water to generate steam.  It will start to generate steam once the it reaches 212 degrees fahrenheit.  If it reaches this temperature without water or loses water during, it will explode.

@@ -3,14 +3,34 @@ package com.professorvennie.bronzeage.client.helpers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import org.lwjgl.opengl.GL11;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by ProfessorVennie on 12/14/2014 at 7:19 PM.
  */
 public class RenderHelper {
+
+    public static void renderTooltip(int x, int y, ItemStack itemStack){
+        int color = 0x505000ff;
+        int color2 = 0xf0100010;
+        List<String> toolTipData = itemStack.getTooltip(Minecraft.getMinecraft().thePlayer, false);
+        List<String> pharsedTooltip = new ArrayList();
+        boolean first = true;
+
+        for (String s : toolTipData){
+            String s1 = s;
+            if(!first)
+                s1 = EnumChatFormatting.GRAY + s;
+            pharsedTooltip.add(s1);
+            first = false;
+        }
+        renderTooltip(x, y, pharsedTooltip, color, color2);
+    }
 
     public static void renderTooltip(int x, int y, List<String> tooltipData) {
         int color = 0x505000ff;

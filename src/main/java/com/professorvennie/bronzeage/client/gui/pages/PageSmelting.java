@@ -2,16 +2,20 @@ package com.professorvennie.bronzeage.client.gui.pages;
 
 import com.professorvennie.bronzeage.api.manual.IGuiManual;
 import com.professorvennie.bronzeage.client.gui.GuiManual;
+import com.professorvennie.bronzeage.client.helpers.RenderHelper;
 import com.professorvennie.bronzeage.lib.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
+import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 
@@ -20,13 +24,14 @@ import java.awt.*;
  */
 public class PageSmelting extends Page {
 
-    private ItemStack input;
-    @SideOnly(Side.CLIENT)
-    private int burnTime, cookTime, speed = 100;
+    private ItemStack input, fuels[];
+    private int fuelAt, ticksElapsed = 0;
 
     public PageSmelting(int pageNumber, ItemStack input) {
-        super(pageNumber, "smelting." + pageNumber);
+        super(GuiManual.currentOpenManual, pageNumber, "smelting." + pageNumber);
         this.input = input;
+        fuelAt = 0;
+        fuels = new ItemStack[]{new ItemStack(Items.coal, 1, 0), new ItemStack(Items.coal, 1, 1), new ItemStack(Items.blaze_rod), new ItemStack(Items.lava_bucket), new ItemStack(Blocks.log, 1, 0), new ItemStack(Blocks.log, 1, 1), new ItemStack(Blocks.log, 1, 2), new ItemStack(Blocks.log, 1, 3), new ItemStack(Blocks.log2, 1, 0), new ItemStack(Blocks.log2, 1, 1), new ItemStack(Blocks.planks, 1, 0), new ItemStack(Blocks.planks, 1, 1), new ItemStack(Blocks.planks, 1, 2), new ItemStack(Blocks.planks, 1, 3), new ItemStack(Blocks.planks, 1, 4), new ItemStack(Blocks.planks, 1, 5)};
     }
 
     @Override
@@ -36,52 +41,54 @@ public class PageSmelting extends Page {
         GuiManual screen = (GuiManual) gui;
         if (input != null) {
             FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
-            fontRenderer.drawStringWithShadow(input.getDisplayName(), screen.getLeft() + screen.getWidth() / 2 - (fontRenderer.getStringWidth(input.getDisplayName()) / 2), screen.getTop() + 10, Color.BLUE.getRGB());
-            bindTexture(new ResourceLocation(Reference.MOD_ID, "textures/gui/guiElements.png"));
-            screen.drawTexturedModalRect(screen.getLeft() + 13, screen.getTop() + 38, 35, 236, 20, 20);
-            RenderItem renderItem = new RenderItem();
-            renderItem.renderItemAndEffectIntoGUI(fontRenderer, minecraft.renderEngine, input, screen.getLeft() + screen.getWidth() / 2 - 34, screen.getTop() + 40);
+            fontRenderer.drawString(input.getDisplayName(), screen.getLeft() + screen.getWidth() / 2 - (fontRenderer.getStringWidth(input.getDisplayName()) / 2), screen.getTop() + 10, Color.BLUE.getRGB());
+
+            //render input
+            renderSlot(screen, screen.getWidth() / 2 - 34, 40);
+            renderItem(input, screen.getLeft() + screen.getWidth() / 2 - 33, screen.getTop() + 41);
+
             ItemStack output = FurnaceRecipes.smelting().getSmeltingResult(input);
             if (output != null) {
                 bindTexture(new ResourceLocation(Reference.MOD_ID, "textures/gui/guiElements.png"));
-                int k = getBurnTimeReamingScaled(14);
-                screen.drawTexturedModalRect(screen.getLeft() + screen.getWidth() / 2 - 34, screen.getTop() + 60 + 14 - k, 0, 206 - k, 14, k + 2);
 
-                int j = getCookProgressScaled(22);
-                screen.drawTexturedModalRect(screen.getLeft() + screen.getWidth() / 2 - 13, screen.getTop() + 40, 0, 208, 22, 22);
-                renderItem.renderItemAndEffectIntoGUI(fontRenderer, minecraft.renderEngine, output, screen.getLeft() + screen.getWidth() / 2 + 15, screen.getTop() + 40);
+                //fire
+                drawElement(screen, screen.getWidth() / 2 - 33, 59, 0, 193, 14, 14);
+
+                //arrow
+                drawElement(screen, screen.getWidth() / 2 - 13, +40, 0, 208, 22, 16);
+
+                //fuel
+                renderSlot(screen, screen.getWidth() / 2 - 34, 58 + 18);
+                if(fuels[fuelAt].getItem() instanceof ItemBlock)
+                    renderItem(fuels[fuelAt], screen.getLeft() + screen.getWidth() / 2 - 33, screen.getTop() + 58 + 19);
+                else
+                    renderItem(fuels[fuelAt], screen.getLeft() + screen.getWidth() / 2 - 33, screen.getTop() + 58 + 18);
+
+                //output
+                renderSlot(screen, screen.getWidth() / 2 + 14, 41);
+                renderItem(output, screen.getLeft() + screen.getWidth() / 2 + 15, screen.getTop() + 42);
 
                 String local = StatCollector.translateToLocal("bronzeAge.book.smeltingRecipe");
-                fontRenderer.drawStringWithShadow(local, screen.getLeft() + screen.getWidth() / 2 - (fontRenderer.getStringWidth(local) / 2), screen.getTop() + 100, 0x0026FF);
+                GL11.glColor4f(1.0f, 1.0f, 1.0f,1.0f);
+                fontRenderer.drawString(local, screen.getLeft() + screen.getWidth() / 2 - (fontRenderer.getStringWidth(local) / 2), screen.getTop() + 100, Color.BLUE.getRGB());
             } else
                 fontRenderer.drawStringWithShadow("Invalid recipe", screen.getLeft(), screen.getTop() + 95, Color.BLUE.getRGB());
         }
+        if(toolTipStack != null)
+            RenderHelper.renderTooltip(gui.getMouseX(), gui.getMouseY(), toolTipStack);
+        toolTipStack = null;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void update() {
         super.update();
-        if (burnTime == 0)
-            burnTime = 100;
-        if (burnTime > 0)
-            burnTime--;
-        if (cookTime == 0)
-            cookTime++;
-        if (cookTime == speed)
-            cookTime = 0;
-    }
+        if(ticksElapsed % 20 == 0) {
+            fuelAt++;
 
-    public int getBurnTimeReamingScaled(int i) {
-        if (this.burnTime == 0) {
-            this.burnTime = speed;
+            if(fuelAt == fuels.length)
+                fuelAt = 0;
         }
-        return this.burnTime * i / this.burnTime;
-    }
-
-    public int getCookProgressScaled(int scale) {
-        if (cookTime != 0)
-            return this.cookTime * scale / this.speed;
-        return 0;
+        ticksElapsed++;
     }
 }
