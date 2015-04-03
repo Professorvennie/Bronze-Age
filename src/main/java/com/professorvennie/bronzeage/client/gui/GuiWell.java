@@ -6,6 +6,7 @@ import com.professorvennie.bronzeage.tileentitys.TileEntityWell;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,12 +39,14 @@ public class GuiWell extends GuiBase {
             text.add("Empty");
             drawToolTipOverArea(mouseX, mouseY, 11, 8, 26, 73, text, fontRendererObj);
         }
+
+        this.fontRendererObj.drawString("Water per tick: " + entity.getAmountOfPipes(), 88, 34 , Color.WHITE.getRGB());
     }
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int p_146976_2_, int p_146976_3_) {
         super.drawGuiContainerBackgroundLayer(p_146976_1_, p_146976_2_, p_146976_3_);
 
-        drawTanks(entity.tank, 66, 11, 74, 16);
+        drawTank(entity.tank, 66, 11, 74, 16);
     }
 }

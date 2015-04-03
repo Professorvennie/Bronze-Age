@@ -11,6 +11,9 @@ public final class GuiIds {
     public static final int WELL = 3;
     public static final int WRENCHREPAIRER = 4;
     public static final int STEAMCHARGER = 5;
+    public static final int STEAMWASHPLANT = 6;
+    public static final int STEAMGRINDER = 7;
+    public static final int STEAMEXTRACTOR = 8;
 
     public static final int CONFIG = 100;
 }

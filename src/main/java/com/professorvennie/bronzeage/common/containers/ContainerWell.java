@@ -14,7 +14,7 @@ import net.minecraft.inventory.Slot;
  */
 public class ContainerWell extends Container {
 
-    public int lastTankAmount;
+    public int lastTankAmount, lastPipes;
     private TileEntityWell tile;
 
     public ContainerWell(InventoryPlayer inventory, TileEntityWell entity) {
@@ -22,7 +22,7 @@ public class ContainerWell extends Container {
 
         addSlotToContainer(new Slot(entity, 0, 33, 9));
         addSlotToContainer(new Slot(entity, 1, 33, 58));
-        addSlotToContainer(new Slot(entity, 2, 88, 34));
+        addSlotToContainer(new Slot(entity, 2, 69, 34));
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {
@@ -39,6 +39,7 @@ public class ContainerWell extends Container {
     public void addCraftingToCrafters(ICrafting icrafting) {
         super.addCraftingToCrafters(icrafting);
         icrafting.sendProgressBarUpdate(this, 0, lastTankAmount);
+        icrafting.sendProgressBarUpdate(this, 1, lastPipes);
     }
 
     @Override
@@ -48,11 +49,14 @@ public class ContainerWell extends Container {
         for (int i = 0; i < this.crafters.size(); i++) {
             ICrafting icrafting = (ICrafting) this.crafters.get(i);
 
-            if (lastTankAmount != tile.tank.getFluidAmount()) {
+            if (lastTankAmount != tile.tank.getFluidAmount())
                 icrafting.sendProgressBarUpdate(this, 0, tile.tank.getFluidAmount());
-            }
+
+            if (lastPipes != tile.getAmountOfPipes())
+                icrafting.sendProgressBarUpdate(this, 1, tile.getAmountOfPipes());
         }
         lastTankAmount = tile.tank.getFluidAmount();
+        lastPipes = tile.getAmountOfPipes();
     }
 
     @SideOnly(Side.CLIENT)
@@ -63,6 +67,7 @@ public class ContainerWell extends Container {
                 tile.tank.getFluid().amount = par2;
 
         }
+        if (slot == 1)tile.setAmountOfPipes(par2);
     }
 
     @Override

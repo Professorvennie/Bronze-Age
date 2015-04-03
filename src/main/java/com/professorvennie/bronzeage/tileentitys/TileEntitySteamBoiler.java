@@ -1,8 +1,6 @@
 package com.professorvennie.bronzeage.tileentitys;
 
-import com.professorvennie.bronzeage.api.tiles.ISteamBoiler;
-import com.professorvennie.bronzeage.api.tiles.ISteamTank;
-import com.professorvennie.bronzeage.api.tiles.SteamTank;
+import com.professorvennie.bronzeage.api.steam.ISteamBoiler;
 import com.professorvennie.bronzeage.items.ModItems;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -18,12 +16,10 @@ public class TileEntitySteamBoiler extends TileEntityBasicSteamMachine implement
 
     public static final int FUELSLOT = 4, WATERSLOT = 2, STEAMEMPTYSLOT = 0;
     public int burnTime, currentItemBurnTime, temp, maxTemp = 500;
-    private SteamTank steamTank;
     private FluidTank waterTank;
 
     public TileEntitySteamBoiler() {
         super("container.SteamBoiler", 10000);
-        steamTank = new SteamTank(0, 10000);
         waterTank = new FluidTank(FluidRegistry.WATER, 0, 10000);
     }
 
@@ -56,6 +52,13 @@ public class TileEntitySteamBoiler extends TileEntityBasicSteamMachine implement
         }
 
         if (!worldObj.isRemote) {
+
+            if (burnTime > 0) {
+                isActive = true;
+            }else {
+                isActive = false;
+            }
+
             if (waterTank.getFluidAmount() > waterTank.getCapacity())
                 waterTank.getFluid().amount = waterTank.getCapacity();
 
@@ -77,8 +80,10 @@ public class TileEntitySteamBoiler extends TileEntityBasicSteamMachine implement
                 }
 
                 if (temp >= 212 && getWaterAmount() > 0) {
-                    fill(null, 100);
-                    drain(null, 100, true);
+                    if(getSteamTank().getAmount() + 100 <= getSteamTank().getCapacity()) {
+                        getSteamTank().fill(100);
+                        drain(null, 100, true);
+                    }
                 }
 
                 if (temp < maxTemp) {
@@ -193,44 +198,6 @@ public class TileEntitySteamBoiler extends TileEntityBasicSteamMachine implement
     }
 
     @Override
-    public ISteamTank getSteamTank() {
-        return steamTank;
-    }
-
-    @Override
-    public boolean canFill(ForgeDirection direction, int amount) {
-        return steamTank.getAmount() + amount <= steamTank.getCapacity();
-    }
-
-    @Override
-    public boolean canDrain(ForgeDirection direction, int amount) {
-        System.out.println(steamTank.getAmount() - amount >= 0);
-        return steamTank.getAmount() - amount >= 0;
-    }
-
-    @Override
-    public void fill(ForgeDirection direction, int amount) {
-        if (canFill(direction, amount))
-            steamTank.fill(amount);
-    }
-
-    @Override
-    public void drain(ForgeDirection direction, int amount) {
-        if (canDrain(direction, amount))
-            steamTank.drain(amount);
-    }
-
-    @Override
-    public int getSteamAmount() {
-        return steamTank.getAmount();
-    }
-
-    @Override
-    public int getSteamCapacity() {
-        return steamTank.getCapacity();
-    }
-
-    @Override
     public FluidTank getWaterTank() {
         return waterTank;
     }
@@ -241,6 +208,16 @@ public class TileEntitySteamBoiler extends TileEntityBasicSteamMachine implement
             return waterTank.getFluid().amount;
         else
             return 0;
+    }
+
+    @Override
+    public int getTemperature() {
+        return temp;
+    }
+
+    @Override
+    public void setTemperature(int temperature) {
+        this.temp = temperature;
     }
 
     @Override

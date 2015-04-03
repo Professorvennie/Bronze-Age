@@ -86,6 +86,7 @@ public class Page implements IPage {
 
         if((gui.getMouseX() >= x && gui.getMouseX() <= x + 16) && (gui.getMouseY() >= y && gui.getMouseY() <= y + 16))
             toolTipStack = itemStack;
+        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
     }
 
     public void renderItem(Object obj, int x, int y){

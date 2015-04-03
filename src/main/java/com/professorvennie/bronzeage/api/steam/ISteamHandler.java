@@ -1,4 +1,4 @@
-package com.professorvennie.bronzeage.api.tiles;
+package com.professorvennie.bronzeage.api.steam;
 
 import net.minecraftforge.common.util.ForgeDirection;
 

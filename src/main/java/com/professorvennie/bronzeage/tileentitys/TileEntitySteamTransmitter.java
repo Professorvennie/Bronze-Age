@@ -1,13 +1,13 @@
 package com.professorvennie.bronzeage.tileentitys;
 
-import com.professorvennie.bronzeage.api.tiles.ISteamBoiler;
-import com.professorvennie.bronzeage.api.tiles.ISteamHandler;
-import net.minecraft.init.Blocks;
+import com.professorvennie.bronzeage.api.steam.ISteamBoiler;
+import com.professorvennie.bronzeage.api.steam.SteamNetwork;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by ProfessorVennie on 1/31/2015 at 9:07 PM.
@@ -16,6 +16,7 @@ public class TileEntitySteamTransmitter extends TileEntityBasicSteamMachine {
 
     public int range, transmitAmount;
     private List<TileEntitySteamReceiver> receivers = new ArrayList<TileEntitySteamReceiver>();
+    public UUID owner;
 
     public TileEntitySteamTransmitter() {
         super("steamTransmitter", 10000);
@@ -66,6 +67,22 @@ public class TileEntitySteamTransmitter extends TileEntityBasicSteamMachine {
         }
     }
 
+    public void deregisterWithField()
+    {
+        if (worldObj != null && !worldObj.isRemote)
+        {
+            SteamNetwork.removeLink(this);
+        }
+    }
+
+    public void registerWithField()
+    {
+        if (worldObj != null && !worldObj.isRemote)
+        {
+            SteamNetwork.registerLink(this);
+        }
+    }
+
     @Override
     public int getSizeInventory() {
         return 0;
@@ -79,5 +96,11 @@ public class TileEntitySteamTransmitter extends TileEntityBasicSteamMachine {
     @Override
     public int[] getExportSlots() {
         return new int[0];
+    }
+
+    public String getOwner(){
+        if (this.owner == null)
+            return null;
+        return this.owner.toString();
     }
 }

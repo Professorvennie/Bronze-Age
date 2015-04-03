@@ -1,6 +1,6 @@
 package com.professorvennie.bronzeage.common.containers;
 
-import com.professorvennie.bronzeage.api.tiles.SteamTank;
+import com.professorvennie.bronzeage.api.steam.SteamTank;
 import com.professorvennie.bronzeage.tileentitys.TileEntityBasicSteamMachine;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

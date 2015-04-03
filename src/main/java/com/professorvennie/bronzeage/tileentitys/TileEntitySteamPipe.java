@@ -1,9 +1,9 @@
 package com.professorvennie.bronzeage.tileentitys;
 
-import com.professorvennie.bronzeage.api.tiles.ISteamBoiler;
-import com.professorvennie.bronzeage.api.tiles.ISteamHandler;
-import com.professorvennie.bronzeage.api.tiles.ISteamTank;
-import com.professorvennie.bronzeage.api.tiles.SteamTank;
+import com.professorvennie.bronzeage.api.steam.ISteamBoiler;
+import com.professorvennie.bronzeage.api.steam.ISteamHandler;
+import com.professorvennie.bronzeage.api.steam.ISteamTank;
+import com.professorvennie.bronzeage.api.steam.SteamTank;
 import net.minecraftforge.common.util.ForgeDirection;
 
 /**

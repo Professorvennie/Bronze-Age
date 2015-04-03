@@ -13,6 +13,9 @@ public class ModBlocks {
 
     public static Block steamBoilerIdle;
     public static Block steamFurnace;
+    public static Block steamExtractor;
+    public static Block steamGrinder;
+    public static Block steamWashPlant;
 
     public static Block well;
     public static Block wellPipe;
@@ -29,6 +32,9 @@ public class ModBlocks {
 
         steamBoilerIdle = new BlockSteamBoiler();
         steamFurnace = new BlockSteamFurnace();
+        steamExtractor = new BlockSteamExtractor();
+        steamGrinder = new BlockSteamGrinder();
+        steamWashPlant = new BlockSteamWashPlant();
 
         well = new BlockWell();
         wellPipe = new BlockWellPipe();
@@ -53,6 +59,9 @@ public class ModBlocks {
         registerMachine(well);
         registerMachine(wrenchRepair);
         registerMachine(charger);
+        registerMachine(steamExtractor);
+        registerMachine(steamGrinder);
+        registerMachine(steamWashPlant);
         GameRegistry.registerBlock(wellPipe, wellPipe.getUnlocalizedName());
         GameRegistry.registerBlock(ore, BlockOre.ItemBlockOre.class, ore.getUnlocalizedName());
     }
@@ -68,6 +77,9 @@ public class ModBlocks {
         registerTile(TileEntitySteamReceiver.class, "SteamReceiver");
         registerTile(TileEntityWrenchRepairer.class, "wrenchRepairer");
         registerTile(TileEntitySteamCharger.class, "steamCharger");
+        registerTile(TileEntitySteamWashPlant.class, "washPlant");
+        registerTile(TileEntitySteamGrinder.class, "steamGrinder");
+        registerTile(TileEntitySteamExtractor.class, "steamExtractor");
     }
 
     private static void registerTile(Class<? extends TileEntity> tile, String name) {

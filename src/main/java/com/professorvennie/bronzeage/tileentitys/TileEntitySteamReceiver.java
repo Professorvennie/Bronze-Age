@@ -1,6 +1,6 @@
 package com.professorvennie.bronzeage.tileentitys;
 
-import com.professorvennie.bronzeage.api.tiles.ISteamHandler;
+import com.professorvennie.bronzeage.api.steam.ISteamHandler;
 import net.minecraftforge.common.util.ForgeDirection;
 
 /**

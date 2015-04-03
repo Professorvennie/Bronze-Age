@@ -27,10 +27,14 @@ public class HudHandler {
         if (event.type == RenderGameOverlayEvent.ElementType.ALL) {
             Minecraft minecraft = Minecraft.getMinecraft();
             MovingObjectPosition pos = minecraft.objectMouseOver;
-            Block block = minecraft.theWorld.getBlock(pos.blockX, pos.blockY, pos.blockZ);
+            Block block;
+            if (minecraft.theWorld.getBlock(pos.blockX, pos.blockY, pos.blockZ) != null)
+                block = minecraft.theWorld.getBlock(pos.blockX, pos.blockY, pos.blockZ);
+            else
+                block = null;
 
-            if (minecraft.thePlayer != null && minecraft.thePlayer.getCurrentEquippedItem() != null) {
-                if (minecraft.thePlayer.getCurrentEquippedItem().getItem() == ModItems.manual && block != null && block instanceof IManualEntry && ((IManualEntry)block).getPage(minecraft.theWorld, pos.blockX, pos.blockY, pos.blockZ) != null) {
+            if (minecraft.thePlayer != null && minecraft.thePlayer.getCurrentEquippedItem() != null && block != null) {
+                if (minecraft.thePlayer.getCurrentEquippedItem().getItem() == ModItems.manual && block instanceof IManualEntry && ((IManualEntry)block).getPage(minecraft.theWorld, pos.blockX, pos.blockY, pos.blockZ) != null) {
                     drawManualHud(((IManualEntry) block).getPage(minecraft.theWorld, pos.blockX, pos.blockY, pos.blockZ), event.resolution);
                 }
             }
@@ -39,6 +43,7 @@ public class HudHandler {
     }
 
     private void drawManualHud(IPage page, ScaledResolution resolution) {
+        GL11.glColor4f(1F, 1F, 1F, 1F);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         Minecraft mc = Minecraft.getMinecraft();
@@ -55,5 +60,6 @@ public class HudHandler {
         fontRenderer.drawString(string, x - (fontRenderer.getStringWidth(string) / 2), y + 18, color);
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glColor4f(1F, 1F, 1F, 1F);
     }
 }

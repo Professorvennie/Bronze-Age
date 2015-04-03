@@ -22,6 +22,7 @@ public class ModRecipes {
     }
 
     private static void registerRecipes() {
+        addOreDictRecipe(new ItemStack(ModItems.materials, 2, ItemMaterials.BRONZE), "CC ", "CT ", "   ", 'C', new ItemStack(ModItems.materials, 1, ItemMaterials.COPPER), 'T', new ItemStack(ModItems.materials, 1, ItemMaterials.TIN));
         addOreDictRecipe(new ItemStack(ModBlocks.steamBoilerIdle), "BBB", "bFb", "BBB", 'B', new ItemStack(ModItems.materials, 1, ItemMaterials.BRONZE), 'b', new ItemStack(Items.bucket), 'F', new ItemStack(Blocks.furnace));
     }
 

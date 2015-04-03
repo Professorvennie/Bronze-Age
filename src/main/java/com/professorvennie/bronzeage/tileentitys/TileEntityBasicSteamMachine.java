@@ -3,11 +3,12 @@ package com.professorvennie.bronzeage.tileentitys;
 import com.professorvennie.bronzeage.api.enums.RedstoneMode;
 import com.professorvennie.bronzeage.api.enums.SideMode;
 import com.professorvennie.bronzeage.api.tiles.ISideConfigurable;
-import com.professorvennie.bronzeage.api.tiles.ISteamHandler;
-import com.professorvennie.bronzeage.api.tiles.ISteamTank;
-import com.professorvennie.bronzeage.api.tiles.SteamTank;
+import com.professorvennie.bronzeage.api.steam.ISteamHandler;
+import com.professorvennie.bronzeage.api.steam.ISteamTank;
+import com.professorvennie.bronzeage.api.steam.SteamTank;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
 /**
@@ -39,12 +40,19 @@ public abstract class TileEntityBasicSteamMachine extends TileEntityBasicMachine
     @Override
     public void updateEntity() {
         super.updateEntity();
-        /*if (worldObj.isRemote)
-            System.out.println("Client: " + getModeOnSide(ForgeDirection.DOWN));
-        else
-            System.out.println("Server: " + getModeOnSide(ForgeDirection.DOWN));*/
 
-
+        if(!worldObj.isRemote){
+            for(ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS){
+                TileEntity tile = worldObj.getTileEntity(xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ);
+                if(tile != null && tile instanceof ISteamHandler){
+                    ISteamHandler steamHandler = (ISteamHandler)tile;
+                    if(steamHandler.canFill(direction, 100) && canDrain(direction, 100)){
+                        steamHandler.fill(direction, 100);
+                        drain(direction, 100);
+                    }
+                }
+            }
+        }
     }
 
     @Override

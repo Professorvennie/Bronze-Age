@@ -23,6 +23,7 @@ import net.minecraftforge.fluids.FluidTank;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,6 +35,7 @@ public class GuiBase extends GuiContainer {
     public ResourceLocation elements = new ResourceLocation(Reference.MOD_ID, "textures/gui/guiElements.png");
     public TileEntityBasicMachine basicSteamMachine;
     protected int mouseX = 0, mouseY = 0;
+    protected List tabList = new ArrayList();
 
     public GuiBase(Container container, TileEntityBasicSidedInventory tileEntity) {
         this(container, null);
@@ -48,7 +50,6 @@ public class GuiBase extends GuiContainer {
     public void initGui() {
         super.initGui();
         buttonList.add(new GuiButtonRedStone(0, guiLeft + xSize + 1, guiTop + ySize - 160, basicSteamMachine));
-        //buttonList.add(new GuiButtonConfig(1, guiLeft + xSize + 1, guiTop + ySize - 132, basicSteamMachine));
     }
 
     @Override
@@ -134,7 +135,7 @@ public class GuiBase extends GuiContainer {
         }
     }
 
-    public void drawTanks(FluidTank tank, int scale, int x, int y, int width) {
+    public void drawTank(FluidTank tank, int scale, int x, int y, int width) {
         int j;
         if (tank.getFluid() != null) {
             j = getValueScaled(tank.getFluidAmount(), tank.getCapacity(), scale);

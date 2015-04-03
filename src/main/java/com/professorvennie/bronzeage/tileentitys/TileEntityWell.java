@@ -24,30 +24,26 @@ public class TileEntityWell extends TileEntityBasicMachine implements IFluidHand
     @Override
     public void updateEntity() {
         super.updateEntity();
-        TileEntity[] tiles = new TileEntity[6];
-        tiles[0] = worldObj.getTileEntity(xCoord + 1, yCoord, zCoord);
-        tiles[1] = worldObj.getTileEntity(xCoord - 1, yCoord, zCoord);
-        tiles[2] = worldObj.getTileEntity(xCoord, yCoord + 1, zCoord);
-        tiles[3] = worldObj.getTileEntity(xCoord, yCoord - 1, zCoord);
-        tiles[4] = worldObj.getTileEntity(xCoord, yCoord, zCoord + 1);
-        tiles[5] = worldObj.getTileEntity(xCoord, yCoord, zCoord - 1);
 
-        for (TileEntity tile : tiles) {
+        for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS) {
             if (!worldObj.isRemote) {
-                if (tile instanceof IFluidHandler) {
-                    for (int i = 0; i < ((IFluidHandler) tile).getTankInfo(ForgeDirection.UP).length; i++) {
-                        FluidTankInfo info = ((IFluidHandler) tile).getTankInfo(ForgeDirection.UP)[i];
-                        int amount = info.fluid.amount;
-                        int cap = info.capacity;
-                        if (info.fluid.getFluid() == FluidRegistry.WATER) {
-                            if (amount + 100 <= cap) {
-                                if (tank.getFluidAmount() >= 100) {
-                                    tank.getFluid().amount -= 100;
-                                    ((IFluidHandler) tile).fill(ForgeDirection.UP, new FluidStack(FluidRegistry.WATER, 100), true);
-                                }
-                            }
-                        }
-                    }
+                if (worldObj.getTileEntity(xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ) != null && worldObj.getTileEntity(xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ) instanceof IFluidHandler) {
+                   TileEntity tile = worldObj.getTileEntity(xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ);
+                   for (int i = 0; i < ((IFluidHandler) tile).getTankInfo(ForgeDirection.UP).length; i++) {
+                       FluidTankInfo info = ((IFluidHandler) tile).getTankInfo(ForgeDirection.UP)[i];
+                       if (info != null) {
+                           int amount = info.fluid.amount;
+                           int cap = info.capacity;
+                           if (info.fluid.getFluid() == FluidRegistry.WATER) {
+                               if (amount + 1 <= cap) {
+                                   if (tank.getFluidAmount() >= 1) {
+                                       tank.getFluid().amount -= 1;
+                                       ((IFluidHandler) tile).fill(ForgeDirection.UP, new FluidStack(FluidRegistry.WATER, 1), true);
+                                   }
+                               }
+                           }
+                       }
+                   }
                 }
             }
         }
@@ -71,6 +67,9 @@ public class TileEntityWell extends TileEntityBasicMachine implements IFluidHand
                             if (worldObj.getBlock(xCoord, yCoord - i - 1, zCoord) == Blocks.bedrock) {
                                 worldObj.setBlock(xCoord, yCoord - i, zCoord, Blocks.water);
                             }
+                        }else {
+                            if (worldObj.getBlock(xCoord, yCoord - i, zCoord) != Blocks.water)
+                            worldObj.setBlock(xCoord, yCoord - i, zCoord, Blocks.water);
                         }
                     }
                 }
@@ -143,5 +142,13 @@ public class TileEntityWell extends TileEntityBasicMachine implements IFluidHand
     @Override
     public FluidTankInfo[] getTankInfo(ForgeDirection from) {
         return new FluidTankInfo[]{tank.getInfo()};
+    }
+
+    public int getAmountOfPipes() {
+        return amountOfPipes;
+    }
+
+    public void setAmountOfPipes(int amountOfPipes) {
+        this.amountOfPipes = amountOfPipes;
     }
 }

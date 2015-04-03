@@ -1,7 +1,7 @@
 package com.professorvennie.bronzeage.items;
 
 import com.professorvennie.bronzeage.api.BronzeAgeAPI;
-import com.professorvennie.bronzeage.api.ISteamUsingItem;
+import com.professorvennie.bronzeage.api.steam.ISteamUsingItem;
 import com.professorvennie.bronzeage.api.wrench.IWrench;
 import com.professorvennie.bronzeage.api.wrench.WrenchMaterial;
 import com.professorvennie.bronzeage.lib.Reference;

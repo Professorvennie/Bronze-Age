@@ -18,7 +18,7 @@ public class GuiSteamBoiler extends GuiBasicSteamMachine {
     private TileEntitySteamBoiler steamBoiler;
 
     public GuiSteamBoiler(EntityPlayer player, TileEntitySteamBoiler tile) {
-        super(new ContainerSteamBoiler(player.inventory, tile), tile);
+        super(new ContainerSteamBoiler(player.inventory, tile), tile, false);
         backGround = new ResourceLocation(Reference.MOD_ID, "textures/gui/steamBoiler.png");
         steamBoiler = tile;
     }

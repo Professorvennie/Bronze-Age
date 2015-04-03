@@ -1,7 +1,7 @@
 package com.professorvennie.bronzeage.tileentitys;
 
 
-import com.professorvennie.bronzeage.api.ISteamUsingItem;
+import com.professorvennie.bronzeage.api.steam.ISteamUsingItem;
 
 /**
  * Created by ProfessorVennie on 2/15/2015 at 3:25 PM.

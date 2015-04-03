@@ -1,4 +1,4 @@
-package com.professorvennie.bronzeage.api.tiles;
+package com.professorvennie.bronzeage.api.steam;
 
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.IFluidHandler;
@@ -13,4 +13,8 @@ public interface ISteamBoiler extends IFluidHandler, ISteamHandler {
     public int getWaterAmount();
 
     public int getWaterCapacity();
+
+    public int getTemperature();
+
+    public void setTemperature(int temperature);
 }

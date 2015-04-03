@@ -57,6 +57,7 @@ public class GuiManual extends GuiScreen implements IGuiManual {
 
     @Override
     public void drawScreen(int mx, int my, float idk) {
+        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         Minecraft.getMinecraft().renderEngine.bindTexture(texture);
         drawTexturedModalRect(left, top, 0, 0, guiWidth, guiHeight);
         for (IPage p : pages) {

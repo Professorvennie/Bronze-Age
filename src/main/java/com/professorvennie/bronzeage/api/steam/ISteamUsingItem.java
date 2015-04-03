@@ -1,4 +1,4 @@
-package com.professorvennie.bronzeage.api;
+package com.professorvennie.bronzeage.api.steam;
 
 import net.minecraft.item.ItemStack;
 

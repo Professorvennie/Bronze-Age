@@ -46,53 +46,52 @@ public class PageCrafting extends Page {
     public void drawScreen(IGuiManual gui, int mx, int my) {
         super.drawScreen(gui, mx, my);
         GuiManual screen = (GuiManual) gui;
+        GL11.glDisable(GL11.GL_LIGHTING);
 
         if (items.length > 0) {
             renderSlot(screen, screen.getWidth() / 2 - 9, 15);
             renderItem(output, screen.getLeft() + screen.getWidth() / 2 - 8, screen.getTop() + 16);
             FontRenderer fontRenderer = minecraft.fontRenderer;
-            if (items[0] != null) {
-                renderSlot(screen, screen.getWidth() / 2 - (9 + 18), 15 + 20);
+
+            if (output.stackSize > 1)
+                fontRenderer.drawString("" + output.stackSize, screen.getLeft() + screen.getWidth() / 2 - 8, screen.getTop() + 16, 0x0026FF);
+
+            renderSlot(screen, screen.getWidth() / 2 - (9 + 18), 15 + 20);
+            renderSlot(screen, screen.getWidth() / 2 - 9, 15 + 20);
+            renderSlot(screen, screen.getWidth() / 2 + 9, 15 + 20);
+            renderSlot(screen, screen.getWidth() / 2 - (9 + 18), 15 + 38);
+            renderSlot(screen, screen.getWidth() / 2 - 9, 15 + 38);
+            renderSlot(screen, screen.getWidth() / 2 + 9, 15 + 38);
+            renderSlot(screen, screen.getWidth() / 2 - (9 + 18), 15 + (38 + 18));
+            renderSlot(screen, screen.getWidth() / 2 - 9, 15 + (38 + 18));
+            renderSlot(screen, screen.getWidth() / 2 + 9, 15 + (38 + 18));
+
+            if (items[0] != null)
                 renderItem(items[0], screen.getLeft() + screen.getWidth() / 2 - (8 + 18), screen.getTop() + 36);
-            }
-            if (items[1] != null) {
-                renderSlot(screen, screen.getWidth() / 2 - 9, 15 + 20);
+            if (items[1] != null)
                 renderItem(items[1], screen.getLeft() + screen.getWidth() / 2 - (8), screen.getTop() + 36);
-            }
-            if (items[2] != null) {
-                renderSlot(screen, screen.getWidth() / 2 + 9, 15 + 20);
+            if (items[2] != null)
                 renderItem(items[2], screen.getLeft() + screen.getWidth() / 2 + (10), screen.getTop() + 36);
-            }
-            if (items[3] != null) {
-                renderSlot(screen, screen.getWidth() / 2 - (9 + 18), 15 + 38);
+            if (items[3] != null)
                 renderItem(items[3], screen.getLeft() + screen.getWidth() / 2 - (8 + 18), screen.getTop() + (38 + 16));
-            }
-            if (items[4] != null) {
-                renderSlot(screen, screen.getWidth() / 2 - 9, 15 + 38);
+            if (items[4] != null)
                 renderItem(items[4], screen.getLeft() + screen.getWidth() / 2 - (8), screen.getTop() + (38 + 16));
-            }
-            if (items[5] != null) {
-                renderSlot(screen, screen.getWidth() / 2 + 9, 15 + 38);
+            if (items[5] != null)
                 renderItem(items[5], screen.getLeft() + screen.getWidth() / 2 + 10, screen.getTop() + (38 + 16));
-            }
-            if (items[6] != null) {
-                renderSlot(screen, screen.getWidth() / 2 - (9 + 18), 15 + (38 + 18));
+            if (items[6] != null)
                 renderItem(items[6], screen.getLeft() + screen.getWidth() / 2 - (8 + 18), screen.getTop() + (15 + (38 + 19)));
-            }
-            if (items[7] != null) {
-                renderSlot(screen, screen.getWidth() / 2 - 9, 15 + (38 + 18));
+            if (items[7] != null)
                 renderItem(items[7], screen.getLeft() + screen.getWidth() / 2 - (8), screen.getTop() + (15 + (38 + 19)));
-            }
-            if (items[8] != null) {
-                renderSlot(screen, screen.getWidth() / 2 + 9, 15 + (38 + 18));
+            if (items[8] != null)
                 renderItem(items[8], screen.getLeft() + screen.getWidth() / 2 + 10, screen.getTop() + (15 + (38 + 19)));
-            }
+
             fontRenderer.drawString(output.getDisplayName(), screen.getLeft() + screen.getWidth() / 2 - fontRenderer.getStringWidth(output.getDisplayName()) / 2, screen.getTop() + 100, 0x0026FF);
             GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         }
         if(toolTipStack != null)
             RenderHelper.renderTooltip(gui.getMouseX(), gui.getMouseY(), toolTipStack);
         toolTipStack = null;
+        GL11.glEnable(GL11.GL_LIGHTING);
     }
 
     private Object[] getItemShapedRecipe(ItemStack stack) {
@@ -126,7 +125,7 @@ public class PageCrafting extends Page {
                         if (List.class.isAssignableFrom(inputs.getType())) {
                             inputs.setAccessible(true);
                             @SuppressWarnings("unchecked")
-                            List<ItemStack> items = getField(ShapelessRecipes.class, List.class, main, 1);
+                            List<ItemStack> items = getField(ShapelessRecipes.class, main, 1);
                             if (items != null) {
                                 for (int i = 0; i < items.size(); i++) {
                                     if (i < finalRecipe.length)
@@ -135,7 +134,7 @@ public class PageCrafting extends Page {
                             }
                         }
                     } else if (main instanceof ShapedOreRecipe || main instanceof ShapelessOreRecipe) {
-                        Object[] inputs = null;
+                        Object[] inputs;
                         if (main instanceof ShapedOreRecipe)
                             inputs = ((ShapedOreRecipe) main).getInput();
                         else
@@ -148,15 +147,6 @@ public class PageCrafting extends Page {
                             else
                                 finalRecipe[i] = obj;
                         }
-                    } else if (Class.forName("ic2.core.AdvRecipe").isAssignableFrom(main.getClass())
-                            || Class.forName("ic2.core.AdvShapelessRecipe").isAssignableFrom(main.getClass())) {
-                        Field inputs = fields[2];
-                        if (inputs.getType().isArray()) {
-                            for (int i = 0; i < Array.getLength(inputs.get(main)); i++) {
-                                if (i < finalRecipe.length)
-                                    finalRecipe[i] = Array.get(inputs.get(main), i);
-                            }
-                        }
                     }
                 } catch (Exception e) {
                 }
@@ -165,7 +155,7 @@ public class PageCrafting extends Page {
         return finalRecipe;
     }
 
-    private <T> T getField(Class<?> class1, Class<T> fieldType, Object instance, int i) {
+    private <T> T getField(Class<?> class1, Object instance, int i) {
         try {
             Field[] fields = class1.getDeclaredFields();
             Field field = fields[i];

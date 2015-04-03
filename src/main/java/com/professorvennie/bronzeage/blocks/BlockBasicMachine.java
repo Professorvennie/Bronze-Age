@@ -3,7 +3,7 @@ package com.professorvennie.bronzeage.blocks;
 import com.professorvennie.bronzeage.BronzeAge;
 import com.professorvennie.bronzeage.api.enums.RedstoneMode;
 import com.professorvennie.bronzeage.api.manual.IManualEntry;
-import com.professorvennie.bronzeage.api.tiles.ISteamBoiler;
+import com.professorvennie.bronzeage.api.steam.ISteamBoiler;
 import com.professorvennie.bronzeage.api.wrench.IWrench;
 import com.professorvennie.bronzeage.api.wrench.IWrenchable;
 import com.professorvennie.bronzeage.lib.Reference;
@@ -17,11 +17,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -44,9 +42,6 @@ import java.util.Random;
  */
 public abstract class BlockBasicMachine extends Block implements ITileEntityProvider, IWrenchable, IGuiHandler, IManualEntry {
 
-    public boolean isActive;
-    @SideOnly(Side.CLIENT)
-    public IIcon frontIconIdle, frontIconActive, sideIcon, topIcon;
     private String name;
 
     protected BlockBasicMachine(String name) {
@@ -57,39 +52,12 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
         BronzeAge.guiHandler.registerHandler(getGuiId(), this);
     }
 
-    public static void updateBlockState(boolean active, World worldObj, int xCoord, int yCoord, int zCoord, ItemStack blockActive, ItemStack blockIdle) {
-        int i = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
-        TileEntity tileentity = worldObj.getTileEntity(xCoord, yCoord, zCoord);
-
-        if (active) {
-            worldObj.setBlock(xCoord, yCoord, zCoord, Block.getBlockFromItem(blockActive.getItem()));
-        } else {
-            worldObj.setBlock(xCoord, yCoord, zCoord, Block.getBlockFromItem(blockIdle.getItem()));
-        }
-
-        worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, i, 2);
-
-        if (tileentity != null) {
-            tileentity.validate();
-            worldObj.setTileEntity(xCoord, yCoord, zCoord, tileentity);
-        }
-    }
-
     public abstract int getGuiId();
-
-    /*@Override
-    public void getSubBlocks(Item item, CreativeTabs tabs, List list) {
-        list.add(new ItemStack(item, 1, 0));//Idle
-        list.add(new ItemStack(item, 1, 1));//Active
-    }*/
 
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
         if (getGuiId() != -1) {
             if (!world.isRemote) {
-                if (world.getTileEntity(x, y, z) instanceof ISteamBoiler) {
-                    ((ISteamBoiler) world.getTileEntity(x, y, z)).fill(null, 1000);
-                }
                 if (player.getCurrentEquippedItem() == null)
                     player.openGui(BronzeAge.INSTANSE, getGuiId(), world, x, y, z);
                 else if (!(player.getCurrentEquippedItem().getItem() instanceof IWrench))
@@ -102,13 +70,10 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
     @Override
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister iconRegister) {
-        sideIcon = iconRegister.registerIcon(Reference.MOD_ID + ":blockBronze");
-        topIcon = iconRegister.registerIcon(Reference.MOD_ID + ":machines_Top");
-        frontIconIdle = iconRegister.registerIcon(Reference.MOD_ID + ":" + name + "_Front_Idle");
-        frontIconActive = iconRegister.registerIcon(Reference.MOD_ID + ":" + name + "_Front_Active");
+        blockIcon = iconRegister.registerIcon(Reference.MOD_ID + ":blockBronze");
     }
 
-    @Override
+    /*@Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int meta) {
         if (side == 1)
@@ -129,6 +94,21 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
         if(side == meta && tile.isActive)
             return frontIconActive;
         return getIcon(side, meta);
+    }*/
+
+    @Override
+    public boolean renderAsNormalBlock() {
+        return false;
+    }
+
+    @Override
+    public boolean isOpaqueCube() {
+        return false;
+    }
+
+    @Override
+    public int getRenderType() {
+        return -1;
     }
 
     private void setDefualtDirection(World world, int x, int y, int z) {
@@ -200,6 +180,7 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
             if (world.getTileEntity(x, y, z) instanceof ISteamBoiler) {
                 ((ISteamBoiler) world.getTileEntity(x, y, z)).getWaterTank().writeToNBT(block.getTagCompound());
                 ((ISteamBoiler) world.getTileEntity(x, y, z)).getSteamTank().writeToNBT(block.getTagCompound());
+                wrench.getTagCompound().setInteger("temp", ((ISteamBoiler) world.getTileEntity(x, y, z)).getTemperature());
             }
 
             if (world.getTileEntity(x, y, z) instanceof TileEntityBasicSteamMachine) {
@@ -266,6 +247,7 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
                         if (world.getTileEntity(x, y, z) instanceof ISteamBoiler) {
                             ((ISteamBoiler) world.getTileEntity(x, y, z)).getWaterTank().readFromNBT(itemStack.getTagCompound());
                             ((ISteamBoiler) world.getTileEntity(x, y, z)).getSteamTank().readFromNBT(itemStack.getTagCompound());
+                            ((ISteamBoiler) world.getTileEntity(x, y, z)).setTemperature(itemStack.getTagCompound().getInteger("temp"));
                         }
 
                         if (world.getTileEntity(x, y, z) instanceof TileEntityBasicSteamMachine) {
@@ -301,21 +283,10 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
                     list.add("Steam Amount: " + itemStack.getTagCompound().getInteger("SteamAmount") + " mb");
                     if (itemStack.getTagCompound().getInteger("Amount") != 0)
                         list.add("Water Amount: " + itemStack.getTagCompound().getInteger("Amount") + " mb");
+                    if (itemStack.getTagCompound().getInteger("temp") != 0)
+                        list.add("Temperature: " + itemStack.getTagCompound().getInteger("temp") + " F");
                 }
             }
-        }
-
-        @Override
-        public String getUnlocalizedName(ItemStack itemStack) {
-            /*switch (itemStack.getItemDamage()) {
-                case 0:
-                    return super.getUnlocalizedName(itemStack) + "Idle";
-                case 1:
-                    return super.getUnlocalizedName(itemStack) + "Active";
-                default:
-                    itemStack.setItemDamage(0);*/
-                    return super.getUnlocalizedName(itemStack) /*+ "Idle"*/;
-            //}
         }
     }
 }
