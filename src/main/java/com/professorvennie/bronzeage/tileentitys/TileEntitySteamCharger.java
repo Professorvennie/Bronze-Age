@@ -2,6 +2,7 @@ package com.professorvennie.bronzeage.tileentitys;
 
 
 import com.professorvennie.bronzeage.api.steam.ISteamUsingItem;
+import net.minecraft.item.ItemStack;
 
 /**
  * Created by ProfessorVennie on 2/15/2015 at 3:25 PM.
@@ -21,6 +22,11 @@ public class TileEntitySteamCharger extends TileEntityBasicSteamMachine {
 
             }
         }
+    }
+
+    @Override
+    public boolean isItemValidForSlot(int slot, ItemStack itemStack) {
+        return false;
     }
 
     @Override

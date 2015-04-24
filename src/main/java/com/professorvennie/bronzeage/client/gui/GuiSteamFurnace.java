@@ -20,4 +20,11 @@ public class GuiSteamFurnace extends GuiBasicSteamMachine {
         super(new ContainerSteamFurnace(player.inventory, basicMachine), basicMachine);
         backGround = new ResourceLocation(Reference.MOD_ID, "textures/gui/steamFurnace.png");
     }
+
+    @Override
+    protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int p_146976_2_, int p_146976_3_) {
+        super.drawGuiContainerBackgroundLayer(p_146976_1_, p_146976_2_, p_146976_3_);
+
+        drawProgressArrow(84, 34);
+    }
 }

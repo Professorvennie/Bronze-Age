@@ -99,7 +99,7 @@ public abstract class TileEntityBasicSteamMachine extends TileEntityBasicMachine
 
     @Override
     public boolean canDrain(ForgeDirection direction, int amount) {
-        if (getTankModeOnSide(direction.getOpposite()) == SideMode.DISABLED || getTankModeOnSide(direction.getOpposite()) == SideMode.BOTH)
+        if (getTankModeOnSide(direction.getOpposite()) == SideMode.EXPORT || getTankModeOnSide(direction.getOpposite()) == SideMode.BOTH)
             return steamTank.getAmount() - amount >= 0;
         else
             return false;
@@ -152,22 +152,18 @@ public abstract class TileEntityBasicSteamMachine extends TileEntityBasicMachine
         switch (getModeOnSide(side)) {
             case IMPORT:
                 sideModesSlots[side.ordinal()] = SideMode.EXPORT;
-                //System.out.println(sideModesSlots[side.ordinal()]);
                 worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
                 break;
             case EXPORT:
                 sideModesSlots[side.ordinal()] = SideMode.BOTH;
-                //System.out.println(sideModesSlots[side.ordinal()]);
                 worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
                 break;
             case BOTH:
                 sideModesSlots[side.ordinal()] = SideMode.DISABLED;
-                //System.out.println(sideModesSlots[side.ordinal()]);
                 worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
                 break;
             case DISABLED:
                 sideModesSlots[side.ordinal()] = SideMode.IMPORT;
-                //System.out.println(sideModesSlots[side.ordinal()]);
                 worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
                 break;
             default:
@@ -193,22 +189,18 @@ public abstract class TileEntityBasicSteamMachine extends TileEntityBasicMachine
         switch (getTankModeOnSide(side)) {
             case IMPORT:
                 sideModeTanks[side.ordinal()] = SideMode.EXPORT;
-                //System.out.println(sideModesSlots[side.ordinal()]);
                 worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
                 break;
             case EXPORT:
                 sideModeTanks[side.ordinal()] = SideMode.BOTH;
-                //System.out.println(sideModesSlots[side.ordinal()]);
                 worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
                 break;
             case BOTH:
                 sideModeTanks[side.ordinal()] = SideMode.DISABLED;
-                //System.out.println(sideModesSlots[side.ordinal()]);
                 worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
                 break;
             case DISABLED:
                 sideModeTanks[side.ordinal()] = SideMode.IMPORT;
-                //System.out.println(sideModesSlots[side.ordinal()]);
                 worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
                 break;
             default:
@@ -232,10 +224,15 @@ public abstract class TileEntityBasicSteamMachine extends TileEntityBasicMachine
 
     @Override
     public int[] getAccessibleSlotsFromSide(int side) {
-        if (getModeOnSide(ForgeDirection.getOrientation(side)) == SideMode.IMPORT || getModeOnSide(ForgeDirection.getOrientation(side)) == SideMode.BOTH)
+        int[] both = new int[inputSlots.length + exportSlots.length];
+        System.arraycopy(inputSlots, 0, both, 0, inputSlots.length);
+        System.arraycopy(exportSlots, 0, both, inputSlots.length, exportSlots.length);
+        if (getModeOnSide(ForgeDirection.getOrientation(side)) == SideMode.IMPORT)
             return inputSlots;
-        else if (getModeOnSide(ForgeDirection.getOrientation(side)) != SideMode.DISABLED && getModeOnSide(ForgeDirection.getOrientation(side)) != SideMode.IMPORT)
+        else if (getModeOnSide(ForgeDirection.getOrientation(side)) == SideMode.EXPORT)
             return exportSlots;
+        else if (getModeOnSide(ForgeDirection.getOrientation(side)) == SideMode.BOTH)
+            return both;
         return new int[0];
     }
 
@@ -248,17 +245,14 @@ public abstract class TileEntityBasicSteamMachine extends TileEntityBasicMachine
 
     @Override
     public boolean canExtractItem(int slot, ItemStack itemStack, int side) {
-        if (getModeOnSide(ForgeDirection.getOrientation(side)) == SideMode.EXPORT || getModeOnSide(ForgeDirection.getOrientation(side)) == SideMode.BOTH) {
+        if (getModeOnSide(ForgeDirection.getOrientation(side)) == SideMode.EXPORT || getModeOnSide(ForgeDirection.getOrientation(side)) == SideMode.BOTH)
             return true;
-        }
         return false;
     }
 
-    @Override
+    public abstract boolean isItemValidForSlot(int slot, ItemStack itemStack);
     public abstract int getSizeInventory();
-
     public abstract int[] getInputSlots();
-
     public abstract int[] getExportSlots();
 
     public int getMachineSpeed() {
@@ -275,6 +269,14 @@ public abstract class TileEntityBasicSteamMachine extends TileEntityBasicMachine
 
     public void setProgress(int progress) {
         this.progress = progress;
+    }
+
+    public void increaseProgressByOne(){
+        this.progress++;
+    }
+
+    public void resetProgress(){
+        this.progress = 0;
     }
 
     public int getProgressScaled(int scale){

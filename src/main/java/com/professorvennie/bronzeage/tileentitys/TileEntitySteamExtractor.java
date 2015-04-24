@@ -1,5 +1,6 @@
 package com.professorvennie.bronzeage.tileentitys;
 
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
 
@@ -18,6 +19,11 @@ public class TileEntitySteamExtractor extends TileEntityBasicSteamMachine implem
     @Override
     public void updateEntity() {
         super.updateEntity();
+    }
+
+    @Override
+    public boolean isItemValidForSlot(int slot, ItemStack itemStack) {
+        return false;
     }
 
     @Override

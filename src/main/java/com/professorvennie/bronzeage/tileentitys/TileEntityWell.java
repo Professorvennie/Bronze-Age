@@ -31,7 +31,7 @@ public class TileEntityWell extends TileEntityBasicMachine implements IFluidHand
                    TileEntity tile = worldObj.getTileEntity(xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ);
                    for (int i = 0; i < ((IFluidHandler) tile).getTankInfo(ForgeDirection.UP).length; i++) {
                        FluidTankInfo info = ((IFluidHandler) tile).getTankInfo(ForgeDirection.UP)[i];
-                       if (info != null) {
+                       if (info != null && info.fluid != null) {
                            int amount = info.fluid.amount;
                            int cap = info.capacity;
                            if (info.fluid.getFluid() == FluidRegistry.WATER) {
@@ -80,8 +80,10 @@ public class TileEntityWell extends TileEntityBasicMachine implements IFluidHand
                         tank.getFluid().amount += amountOfPipes + 10;
                     } else if (amountOfPipes > 32 && amountOfPipes <= 48) {
                         tank.getFluid().amount += amountOfPipes + 20;
-                    } else if (amountOfPipes > 48 && amountOfPipes <= 64) {
+                    } else if (amountOfPipes > 48 && amountOfPipes < 64) {
                         tank.getFluid().amount += amountOfPipes + 30;
+                    } else if(amountOfPipes == 64){
+                        tank.getFluid().amount += amountOfPipes + 64;
                     }
                 }
 

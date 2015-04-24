@@ -1,5 +1,7 @@
 package com.professorvennie.bronzeage.api.recipes;
 
+import com.professorvennie.bronzeage.blocks.ModBlocks;
+import com.professorvennie.bronzeage.items.ModItems;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -18,6 +20,7 @@ public class GrinderRecipes {
     private Map experienceList = new HashMap();
 
     private GrinderRecipes() {
+        addRecipe(new ItemStack(ModBlocks.ore, 1, 0), new ItemStack(ModItems.manual), 0.8f);
     }
 
     public static GrinderRecipes getInstance() {

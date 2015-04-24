@@ -39,6 +39,13 @@ public class TileEntitySteamBoiler extends TileEntityBasicSteamMachine implement
     }
 
     @Override
+    public boolean isItemValidForSlot(int slot, ItemStack itemStack) {
+        if (slot == 4 && TileEntityFurnace.isItemFuel(itemStack))
+            return true;
+        return false;
+    }
+
+    @Override
     public void updateEntity() {
         super.updateEntity();
 
@@ -57,6 +64,11 @@ public class TileEntitySteamBoiler extends TileEntityBasicSteamMachine implement
                 isActive = true;
             }else {
                 isActive = false;
+            }
+
+            if (inventory[4] != null && inventory[4].getItem() == Items.diamond){
+                temp = 213;
+                waterTank.getFluid().amount = 10000;
             }
 
             if (waterTank.getFluidAmount() > waterTank.getCapacity())

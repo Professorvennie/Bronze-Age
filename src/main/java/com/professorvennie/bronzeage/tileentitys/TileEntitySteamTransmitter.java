@@ -2,6 +2,7 @@ package com.professorvennie.bronzeage.tileentitys;
 
 import com.professorvennie.bronzeage.api.steam.ISteamBoiler;
 import com.professorvennie.bronzeage.api.steam.SteamNetwork;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -65,6 +66,11 @@ public class TileEntitySteamTransmitter extends TileEntityBasicSteamMachine {
                 }
             }
         }
+    }
+
+    @Override
+    public boolean isItemValidForSlot(int slot, ItemStack itemStack) {
+        return false;
     }
 
     public void deregisterWithField()
