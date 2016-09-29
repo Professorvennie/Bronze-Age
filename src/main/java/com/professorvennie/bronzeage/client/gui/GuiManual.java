@@ -18,6 +18,7 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -107,7 +108,7 @@ public class GuiManual extends GuiScreen implements IGuiManual {
     }
 
     @Override
-    public void handleMouseInput() {
+    public void handleMouseInput() throws IOException {
         int x = Mouse.getEventX() * this.width / this.mc.displayWidth;
         int y = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
 

@@ -7,6 +7,7 @@ import com.professorvennie.bronzeage.lib.GuiIds;
 import com.professorvennie.bronzeage.tileentitys.TileEntityWrenchRepairer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 /**
@@ -30,15 +31,17 @@ public class BlockWrenchRepairer extends BlockBasicMachine{
 
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-        if(world.getTileEntity(x, y, z) instanceof TileEntityWrenchRepairer)
-            return new ContainerWrenchRepairer(player.inventory, (TileEntityWrenchRepairer)world.getTileEntity(x, y, z));
+        BlockPos pos = new BlockPos(x, y, z);
+        if(world.getTileEntity(pos) instanceof TileEntityWrenchRepairer)
+            return new ContainerWrenchRepairer(player.inventory, (TileEntityWrenchRepairer)world.getTileEntity(pos));
         return null;
     }
 
     @Override
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-        if(world.getTileEntity(x, y, z) instanceof TileEntityWrenchRepairer)
-            return new GuiWrenchRepairer(player, (TileEntityWrenchRepairer)world.getTileEntity(x, y, z));
+        BlockPos pos = new BlockPos(x, y, z);
+        if(world.getTileEntity(pos) instanceof TileEntityWrenchRepairer)
+            return new GuiWrenchRepairer(player, (TileEntityWrenchRepairer)world.getTileEntity(pos));
         return null;
     }
 

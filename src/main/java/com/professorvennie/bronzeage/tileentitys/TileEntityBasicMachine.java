@@ -3,6 +3,7 @@ package com.professorvennie.bronzeage.tileentitys;
 import com.professorvennie.bronzeage.api.enums.RedstoneMode;
 import com.professorvennie.bronzeage.api.tiles.IButtonHandler;
 import com.professorvennie.bronzeage.api.tiles.IRedstoneControlable;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 
 /**
@@ -13,6 +14,7 @@ public class TileEntityBasicMachine extends TileEntityBasicSidedInventory implem
     public boolean canWork;
     private RedstoneMode redStoneMode;
     public boolean isActive;
+    private boolean isWorking;
 
     public TileEntityBasicMachine(String name) {
         super(name);
@@ -20,8 +22,7 @@ public class TileEntityBasicMachine extends TileEntityBasicSidedInventory implem
     }
 
     @Override
-    public void updateEntity() {
-        super.updateEntity();
+    public void update() {
         updateRedStone();
     }
 
@@ -29,13 +30,13 @@ public class TileEntityBasicMachine extends TileEntityBasicSidedInventory implem
 
         switch (redStoneMode) {
             case low:
-                if (!worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord))
+                if (worldObj.isBlockIndirectlyGettingPowered(pos) <= 0)
                     canWork = true;
                 else
                     canWork = false;
                 break;
             case high:
-                if (worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord))
+                if (worldObj.isBlockIndirectlyGettingPowered(pos) > 0)
                     canWork = true;
                 else
                     canWork = false;
@@ -57,10 +58,11 @@ public class TileEntityBasicMachine extends TileEntityBasicSidedInventory implem
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbtTagCompound) {
+    public NBTTagCompound writeToNBT(NBTTagCompound nbtTagCompound) {
         super.writeToNBT(nbtTagCompound);
 
         nbtTagCompound.setInteger("Mode", redStoneMode.ordinal());
+        return nbtTagCompound;
     }
 
     @Override
@@ -78,6 +80,15 @@ public class TileEntityBasicMachine extends TileEntityBasicSidedInventory implem
         }
     }
 
+    public void markDirtyClient() {
+        markDirty();
+        if (worldObj != null) {
+            IBlockState state = worldObj.getBlockState(getPos());
+            worldObj.notifyBlockUpdate(getPos(), state, state, 3);
+        }
+    }
+
+
     @Override
     public RedstoneMode getRedStoneMode() {
         return redStoneMode;
@@ -86,5 +97,13 @@ public class TileEntityBasicMachine extends TileEntityBasicSidedInventory implem
     @Override
     public void setRedstoneMode(RedstoneMode mode) {
         this.redStoneMode = mode;
+    }
+
+    public boolean isWorking() {
+        return isWorking;
+    }
+
+    public void setWorking(boolean working) {
+        isWorking = working;
     }
 }

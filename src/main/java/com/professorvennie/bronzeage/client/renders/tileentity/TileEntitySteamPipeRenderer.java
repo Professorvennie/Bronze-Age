@@ -8,8 +8,8 @@ import net.minecraft.tileentity.TileEntity;
  */
 public class TileEntitySteamPipeRenderer extends TileEntitySpecialRenderer {
 
-    @Override
+    /*@Override
     public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float tick) {
 
-    }
+    }*/
 }

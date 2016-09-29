@@ -5,21 +5,22 @@ import com.professorvennie.bronzeage.api.wrench.IWrench;
 import com.professorvennie.bronzeage.api.wrench.IWrenchable;
 import com.professorvennie.bronzeage.api.wrench.WrenchMaterial;
 import com.professorvennie.bronzeage.lib.Reference;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 import java.util.List;
@@ -30,7 +31,6 @@ import java.util.List;
 public class ItemWrench extends ItemBase implements IWrench {
 
     private final int numOfWrenches = 6;
-    private IIcon[] icons;
 
     public ItemWrench() {
         super("wrench");
@@ -40,7 +40,7 @@ public class ItemWrench extends ItemBase implements IWrench {
 
     @Override
     public String getUnlocalizedName(ItemStack itemStack) {
-        if(itemStack.getTagCompound().getBoolean("isBroken"))
+        if(itemStack.getTagCompound() != null && itemStack.getTagCompound().getBoolean("isBroken"))
             return super.getUnlocalizedName(itemStack) + "." + getWrenchMaterial(itemStack).getLocalizedName() + ".broken";
         return super.getUnlocalizedName(itemStack) + "." + getWrenchMaterial(itemStack).getLocalizedName();
     }
@@ -78,58 +78,56 @@ public class ItemWrench extends ItemBase implements IWrench {
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean b) {
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
-            list.add(EnumChatFormatting.GOLD + translate("material") + ": " + EnumChatFormatting.DARK_AQUA + getWrenchMaterial(itemStack).getLocalizedName());
-            list.add(EnumChatFormatting.GOLD + translate("numOfUses") + ": " + EnumChatFormatting.DARK_AQUA + getNumOfUsesRemaining(itemStack));
-            list.add(EnumChatFormatting.GOLD + translate("rotation") + ": " + EnumChatFormatting.DARK_AQUA + getWrenchMaterial(itemStack).getUsesPerRotation());
-            list.add(EnumChatFormatting.GOLD + translate("dismantle") + ": " + EnumChatFormatting.DARK_AQUA + getWrenchMaterial(itemStack).getUsesPerDismantle());
-            list.add(EnumChatFormatting.GOLD + translate("durability") + ": " + EnumChatFormatting.DARK_AQUA + getDurability(itemStack));
+            list.add(TextFormatting.GOLD + translate("material") + ": " + TextFormatting.DARK_AQUA + getWrenchMaterial(itemStack).getLocalizedName());
+            list.add(TextFormatting.GOLD + translate("numOfUses") + ": " + TextFormatting.DARK_AQUA + getNumOfUsesRemaining(itemStack));
+            list.add(TextFormatting.GOLD + translate("rotation") + ": " + TextFormatting.DARK_AQUA + getWrenchMaterial(itemStack).getUsesPerRotation());
+            list.add(TextFormatting.GOLD + translate("dismantle") + ": " + TextFormatting.DARK_AQUA + getWrenchMaterial(itemStack).getUsesPerDismantle());
+            list.add(TextFormatting.GOLD + translate("durability") + ": " + TextFormatting.DARK_AQUA + getDurability(itemStack));
 
         } else {
-            list.add(EnumChatFormatting.GOLD + translate("numOfUses") + ": " + EnumChatFormatting.DARK_AQUA + getNumOfUsesRemaining(itemStack));
-            list.add(EnumChatFormatting.DARK_GRAY + translate("hold") + " " + EnumChatFormatting.DARK_AQUA + translate("shift") + " " + EnumChatFormatting.DARK_GRAY + translate("moreInfo"));
-            list.add(EnumChatFormatting.DARK_GRAY + translate("hold") + " " + EnumChatFormatting.DARK_AQUA + translate("shiftandh") + " " + EnumChatFormatting.DARK_GRAY + translate("helpInfo"));
+            list.add(TextFormatting.GOLD + translate("numOfUses") + ": " + TextFormatting.DARK_AQUA + getNumOfUsesRemaining(itemStack));
+            list.add(TextFormatting.DARK_GRAY + translate("hold") + " " + TextFormatting.DARK_AQUA + translate("shift") + " " + TextFormatting.DARK_GRAY + translate("moreInfo"));
+            list.add(TextFormatting.DARK_GRAY + translate("hold") + " " + TextFormatting.DARK_AQUA + translate("shiftandh") + " " + TextFormatting.DARK_GRAY + translate("helpInfo"));
         }
 
         if ((Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) && Keyboard.isKeyDown(Keyboard.KEY_H)) {
-            list.add(EnumChatFormatting.DARK_GRAY + translate("info.0"));
-            list.add(EnumChatFormatting.DARK_GRAY + translate("info.1"));
-            list.add(EnumChatFormatting.DARK_GRAY + translate("info.2"));
-            list.add(EnumChatFormatting.DARK_GRAY + translate("info.3"));
-            list.add(EnumChatFormatting.DARK_GRAY + translate("info.4"));
-            list.add(EnumChatFormatting.DARK_GRAY + translate("info.5"));
+            list.add(TextFormatting.DARK_GRAY + translate("info.0"));
+            list.add(TextFormatting.DARK_GRAY + translate("info.1"));
+            list.add(TextFormatting.DARK_GRAY + translate("info.2"));
+            list.add(TextFormatting.DARK_GRAY + translate("info.3"));
+            list.add(TextFormatting.DARK_GRAY + translate("info.4"));
+            list.add(TextFormatting.DARK_GRAY + translate("info.5"));
         }
     }
 
     private String translate(String name) {
-        return StatCollector.translateToLocal("tooltip.wrench." + name);
+        return I18n.translateToLocal("tooltip.wrench." + name);
     }
 
     @Override
-    public boolean onItemUseFirst(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
+    public EnumActionResult onItemUse(ItemStack itemStack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         float dismanlt = getWrenchMaterial(itemStack).getUsesPerDismantle();
         float rotate = getWrenchMaterial(itemStack).getUsesPerRotation();
         float usesRemaining = getNumOfUsesRemaining(itemStack);
         if (!player.isSneaking()) {
-            if (world.getBlock(x, y, z) instanceof IWrenchable) {
-                if (usesRemaining - rotate >= 0 && !world.isRemote && world.getBlock(x, y, z).rotateBlock(world, x, y, z, ForgeDirection.getOrientation(side).getOpposite())) {
+            if (world.getBlockState(pos).getBlock() instanceof IWrenchable) {
+                if (usesRemaining - rotate >= 0 && !world.isRemote/* && world.getBlockState(pos).rotateBlock(world, x, y, z, ForgeDirection.getOrientation(side).getOpposite())*/) {
                     subtractUse(itemStack, rotate);
-                    Block block = world.getBlock(x, y, z);
-                    block.rotateBlock(world, x, y, z, ForgeDirection.getOrientation(side).getOpposite());
-                    player.swingItem();
+                    Block block = world.getBlockState(pos).getBlock();
+                    block.rotateBlock(world, pos, EnumFacing.getFront(side.getIndex()).getOpposite());
                 }else if(usesRemaining == 0){
                     initNBT(itemStack);
                     itemStack.getTagCompound().setBoolean("isBroken", true);
                 }
             }
         } else {
-            if (world.getBlock(x, y, z) instanceof IWrenchable) {
-                IWrenchable wrenchable = (IWrenchable) world.getBlock(x, y, z);
+            if (world.getBlockState(pos) instanceof IWrenchable) {
+                IWrenchable wrenchable = (IWrenchable) world.getBlockState(pos);
 
                 if (usesRemaining - dismanlt >= 0 && !world.isRemote) {
                     subtractUse(itemStack, dismanlt);
                     if (!world.isRemote) {
-                        player.swingItem();
-                        wrenchable.dismantle(world, player, itemStack, x, y, z);
+                        wrenchable.dismantle(world, player, itemStack, pos.getX(), pos.getY(), pos.getZ());
                     }
                 }else if(usesRemaining == 0){
                     initNBT(itemStack);
@@ -143,7 +141,47 @@ public class ItemWrench extends ItemBase implements IWrench {
             itemStack.getTagCompound().setBoolean("isBroken", true);
         }
 
-        return super.onItemUseFirst(itemStack, player, world, x, y, z, side, hitX, hitY, hitZ);
+        return super.onItemUse(itemStack, player, world, pos, hand, side, hitX, hitY, hitZ);
+    }
+
+    @Override
+    public EnumActionResult onItemUseFirst(ItemStack itemStack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
+        float dismanlt = getWrenchMaterial(itemStack).getUsesPerDismantle();
+        float rotate = getWrenchMaterial(itemStack).getUsesPerRotation();
+        float usesRemaining = getNumOfUsesRemaining(itemStack);
+        if (!player.isSneaking()) {
+            if (world.getBlockState(pos).getBlock() instanceof IWrenchable) {
+                if (usesRemaining - rotate >= 0 && !world.isRemote/* && world.getBlockState(pos).rotateBlock(world, x, y, z, ForgeDirection.getOrientation(side).getOpposite())*/) {
+                    subtractUse(itemStack, rotate);
+                    Block block = world.getBlockState(pos).getBlock();
+                    block.rotateBlock(world, pos, EnumFacing.getFront(side.getIndex()).getOpposite());
+                }else if(usesRemaining == 0){
+                    initNBT(itemStack);
+                    itemStack.getTagCompound().setBoolean("isBroken", true);
+                }
+            }
+        } else {
+            if (world.getBlockState(pos) instanceof IWrenchable) {
+                IWrenchable wrenchable = (IWrenchable) world.getBlockState(pos);
+
+                if (usesRemaining - dismanlt >= 0 && !world.isRemote) {
+                    subtractUse(itemStack, dismanlt);
+                    if (!world.isRemote) {
+                        System.out.println("dismatle");
+                        wrenchable.dismantle(world, player, itemStack, pos.getX(), pos.getY(), pos.getZ());
+                    }
+                }else if(usesRemaining == 0){
+                    initNBT(itemStack);
+                    itemStack.getTagCompound().setBoolean("isBroken", true);
+                }
+            }
+        }
+
+        if(!(usesRemaining - dismanlt >= 0 && usesRemaining - rotate >= 0)){
+            initNBT(itemStack);
+            itemStack.getTagCompound().setBoolean("isBroken", true);
+        }
+        return super.onItemUseFirst(itemStack, player, world, pos, side, hitX, hitY, hitZ, hand);
     }
 
     @Override
@@ -191,20 +229,5 @@ public class ItemWrench extends ItemBase implements IWrench {
             itemStack.setTagCompound(new NBTTagCompound());
             itemStack.getTagCompound().setFloat("NumOfUsesRemaining", getWrenchMaterial(itemStack).getNumOfUses());
         }
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister iconRegister) {
-        icons = new IIcon[numOfWrenches];
-
-        for (int i = 0; i < icons.length; i++)
-            icons[i] = iconRegister.registerIcon(Reference.MOD_ID + ":" + getWrenchMaterial(new ItemStack(this, 1, i)).getLocalizedName() + "Wrench");
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public IIcon getIconFromDamage(int i) {
-        return i < icons.length ? icons[i] : icons[0];
     }
 }

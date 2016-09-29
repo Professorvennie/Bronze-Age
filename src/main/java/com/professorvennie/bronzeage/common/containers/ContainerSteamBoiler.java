@@ -1,15 +1,15 @@
 package com.professorvennie.bronzeage.common.containers;
 
 import com.professorvennie.bronzeage.tileentitys.TileEntitySteamBoiler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.inventory.ICrafting;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by ProfessorVennie on 10/23/2014 at 9:46 PM.
@@ -34,41 +34,39 @@ public class ContainerSteamBoiler extends ContainerBasicMachine {
     public void detectAndSendChanges() {
         super.detectAndSendChanges();
 
-        for (int i = 0; i < this.crafters.size(); i++) {
-            ICrafting icrafting = (ICrafting) this.crafters.get(i);
+        for (int i = 0; i < this.listeners.size(); i++) {
+            IContainerListener icrafting = this.listeners.get(i);
 
             if (this.lastBurnTime != this.entity.burnTime) {
-                icrafting.sendProgressBarUpdate(this, 1, this.entity.burnTime);
+                icrafting.sendProgressBarUpdate(this, 1, this.entity.getField(3));
             }
 
             if (this.lastItemBurnTime != this.entity.currentItemBurnTime) {
-                icrafting.sendProgressBarUpdate(this, 2, this.entity.currentItemBurnTime);
+                icrafting.sendProgressBarUpdate(this, 2, this.entity.getField(4));
             }
 
             if (lastTemp != entity.temp) {
-                icrafting.sendProgressBarUpdate(this, 3, entity.temp);
+                icrafting.sendProgressBarUpdate(this, 3, entity.getField(5));
             }
 
             if (lastTank2 != entity.getWaterAmount()) {
-                icrafting.sendProgressBarUpdate(this, 4, entity.getWaterAmount());
+                icrafting.sendProgressBarUpdate(this, 4, entity.getField(7));
             }
         }
-        this.lastBurnTime = this.entity.burnTime;
-        this.lastItemBurnTime = this.entity.currentItemBurnTime;
-        this.lastTemp = this.entity.temp;
-        this.lastTank2 = this.entity.getWaterAmount();
+        this.lastBurnTime = this.entity.getField(0);
+        this.lastItemBurnTime = this.entity.getField(1);
+        this.lastTemp = this.entity.getField(5);
+        this.lastTank2 = this.entity.getField(7);
     }
 
     @SideOnly(Side.CLIENT)
     public void updateProgressBar(int slot, int par2) {
         super.updateProgressBar(slot, par2);
-        if (slot == 1) this.entity.burnTime = par2;
-        if (slot == 2) this.entity.currentItemBurnTime = par2;
-        if (slot == 3) this.entity.temp = par2;
-        if (slot == 4) {
-            if (entity.getWaterTank() != null)
+        entity.setField(slot, par2);
+        /*if (slot == 4) {
+            if (entity.getWaterTank() != null && entity.getWaterTank().getFluid() != null)
                 entity.getWaterTank().getFluid().amount = par2;
-        }
+        }*/
     }
 
     @Override
@@ -76,13 +74,19 @@ public class ContainerSteamBoiler extends ContainerBasicMachine {
         return entity.isUseableByPlayer(player);
     }
 
-    @Override
+   /* @Override
     public void addCraftingToCrafters(ICrafting iCrafting) {
         super.addCraftingToCrafters(iCrafting);
         iCrafting.sendProgressBarUpdate(this, 1, this.entity.burnTime);
         iCrafting.sendProgressBarUpdate(this, 2, this.entity.currentItemBurnTime);
         iCrafting.sendProgressBarUpdate(this, 3, this.entity.temp);
         iCrafting.sendProgressBarUpdate(this, 4, lastTank2);
+    }*/
+
+    @Override
+    public void addListener(IContainerListener listener) {
+        super.addListener(listener);
+        listener.sendAllWindowProperties(this, tile);
     }
 
     @Override
@@ -102,11 +106,11 @@ public class ContainerSteamBoiler extends ContainerBasicMachine {
                     if (!mergeItemStack(itemStack1, TileEntitySteamBoiler.FUELSLOT, TileEntitySteamBoiler.FUELSLOT + 1, false)) {
                         return null;
                     }
-                } else if (itemStack1.getItem() == Items.water_bucket) {
+                } else if (itemStack1.getItem() == Items.WATER_BUCKET) {
                     if (!mergeItemStack(itemStack1, TileEntitySteamBoiler.WATERSLOT, TileEntitySteamBoiler.WATERSLOT + 1, false)) {
                         return null;
                     }
-                } else if (itemStack1.getItem() == Items.bucket) {
+                } else if (itemStack1.getItem() == Items.BUCKET) {
                     if (!mergeItemStack(itemStack1, TileEntitySteamBoiler.STEAMEMPTYSLOT, TileEntitySteamBoiler.STEAMEMPTYSLOT + 1, false)) {
                         return null;
                     }

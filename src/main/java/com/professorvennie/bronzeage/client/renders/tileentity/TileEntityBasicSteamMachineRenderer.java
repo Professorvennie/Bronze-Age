@@ -23,7 +23,7 @@ public class TileEntityBasicSteamMachineRenderer extends TileEntitySpecialRender
         this.texture = texture;
     }
 
-    @Override
+    /*@Override
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float tick) {
         int metaData = tile.getWorldObj().getBlockMetadata(tile.xCoord, tile.yCoord, tile.zCoord);
         BlockBasicMachine basicMachine = (BlockBasicMachine)tile.getWorldObj().getBlock(tile.xCoord, tile.yCoord, tile.zCoord);
@@ -250,5 +250,5 @@ public class TileEntityBasicSteamMachineRenderer extends TileEntitySpecialRender
         tessellator.draw();
         GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glPopMatrix();
-    }
+    }*/
 }

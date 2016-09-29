@@ -2,16 +2,18 @@ package com.professorvennie.bronzeage.blocks;
 
 import com.professorvennie.bronzeage.lib.Reference;
 import com.professorvennie.bronzeage.tileentitys.*;
-import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.IForgeRegistryEntry;
 
 /**
  * Created by ProfessorVennie on 10/21/2014 at 5:19 PM.
  */
 public class ModBlocks {
 
-    public static Block steamBoilerIdle;
+    public static BlockBasicMachine steamBoilerIdle;
     public static Block steamFurnace;
     public static Block steamExtractor;
     public static Block steamGrinder;
@@ -23,31 +25,36 @@ public class ModBlocks {
     public static Block steamReceiver;
     public static Block steamTransmitter;
 
-    public static Block ore;
+    public static BlockOre ore;
 
     public static Block wrenchRepair;
     public static Block charger;
 
     public static void init() {
 
-        steamBoilerIdle = new BlockSteamBoiler();
-        steamFurnace = new BlockSteamFurnace();
-        steamExtractor = new BlockSteamExtractor();
-        steamGrinder = new BlockSteamGrinder();
-        steamWashPlant = new BlockSteamWashPlant();
+        steamBoilerIdle = register(new BlockSteamBoiler());
+        GameRegistry.register(new ItemBasicMachine(steamBoilerIdle));
+        steamFurnace = register(new BlockSteamFurnace());
+        steamExtractor = register(new BlockSteamExtractor());
+        steamGrinder = register(new BlockSteamGrinder());
+        steamWashPlant = register(new BlockSteamWashPlant());
 
-        well = new BlockWell();
-        wellPipe = new BlockWellPipe();
+        well = register(new BlockWell());
+        wellPipe = register(new BlockWellPipe());
 
-        steamReceiver = new BlockSteamReceiver();
-        steamTransmitter = new BlockSteamTransmitter();
+        steamReceiver = register(new BlockSteamReceiver());
+        steamTransmitter = register(new BlockSteamTransmitter());
 
-        wrenchRepair = new BlockWrenchRepairer();
-        charger = new BlockSteamCharger();
+        wrenchRepair = register(new BlockWrenchRepairer());
+        charger = register(new BlockSteamCharger());
 
         ore = new BlockOre();
+        GameRegistry.register(ore);
+        BlockOre.ItemBlockOre itemBlockOre = new BlockOre.ItemBlockOre(ore);
+        GameRegistry.register(itemBlockOre);
+        ore.registerItemModel(itemBlockOre);
 
-        register();
+        //register();
         registerTiles();
     }
 
@@ -87,6 +94,23 @@ public class ModBlocks {
     }
 
     private static void registerMachine(Block block) {
-        GameRegistry.registerBlock(block, BlockBasicMachine.ItemBasicMachine.class, block.getUnlocalizedName());
+        //GameRegistry.registerBlock(block, BlockBasicMachine.ItemBasicMachine.class, block.getUnlocalizedName());
+    }
+
+    private static <T extends Block> T register(T block, ItemBlock itemBlock) {
+        GameRegistry.register(block);
+        GameRegistry.register(itemBlock);
+
+        if (block instanceof BlockBase) {
+            ((BlockBase)block).registerItemModel(itemBlock);
+        }
+
+        return block;
+    }
+
+    private static <T extends Block> T register(T block) {
+        ItemBlock itemBlock = new ItemBlock(block);
+        itemBlock.setRegistryName(block.getRegistryName());
+        return register(block, itemBlock);
     }
 }

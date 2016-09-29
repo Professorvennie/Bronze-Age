@@ -5,13 +5,12 @@ import com.professorvennie.bronzeage.lib.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.IItemRenderer;
 import org.lwjgl.opengl.GL11;
 
 /**
  * Created by ProfessorVennie on 4/3/2015 at 5:16 PM.
  */
-public class BasicMachineItemRenderer implements IItemRenderer {
+public class BasicMachineItemRenderer /*implements IItemRenderer */{
 
     private String texture;
 
@@ -19,7 +18,7 @@ public class BasicMachineItemRenderer implements IItemRenderer {
         this.texture = texture;
     }
 
-    @Override
+    /*@Override
     public boolean handleRenderType(ItemStack item, ItemRenderType type) {
         return true;
     }
@@ -35,5 +34,5 @@ public class BasicMachineItemRenderer implements IItemRenderer {
         Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation(Reference.MOD_ID, "textures/model/" + texture + ".png"));
         new TileEntityBasicSteamMachineRenderer(texture).renderInv();
         GL11.glEnable(GL11.GL_LIGHTING);
-    }
+    }*/
 }

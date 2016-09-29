@@ -7,6 +7,7 @@ import com.professorvennie.bronzeage.lib.GuiIds;
 import com.professorvennie.bronzeage.tileentitys.TileEntitySteamWashPlant;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 /**
@@ -30,12 +31,14 @@ public class BlockSteamWashPlant extends BlockBasicMachine {
 
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-        return new ContainerSteamWashPlant(player.inventory, (TileEntitySteamWashPlant)world.getTileEntity(x, y, z));
+        BlockPos pos = new BlockPos(x, y, z);
+        return new ContainerSteamWashPlant(player.inventory, (TileEntitySteamWashPlant)world.getTileEntity(pos));
     }
 
     @Override
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-        return new GuiSteamWashPlant(new ContainerSteamWashPlant(player.inventory, (TileEntitySteamWashPlant)world.getTileEntity(x, y, z)), (TileEntitySteamWashPlant)world.getTileEntity(x, y, z));
+        BlockPos pos = new BlockPos(x, y, z);
+        return new GuiSteamWashPlant(new ContainerSteamWashPlant(player.inventory, (TileEntitySteamWashPlant)world.getTileEntity(pos)), (TileEntitySteamWashPlant)world.getTileEntity(pos));
     }
 
     @Override

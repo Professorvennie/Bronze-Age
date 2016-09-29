@@ -10,29 +10,35 @@ import com.professorvennie.bronzeage.lib.Reference;
 import com.professorvennie.bronzeage.tileentitys.TileEntityBasicMachine;
 import com.professorvennie.bronzeage.tileentitys.TileEntityBasicSteamMachine;
 import com.professorvennie.bronzeage.tileentitys.TileEntityMod;
-import cpw.mods.fml.common.network.IGuiHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.state.BlockStateContainer;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
+import net.minecraft.tileentity.TileEntity;;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.Rotation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.common.util.ForgeDirection;
-import org.lwjgl.input.Keyboard;
+import net.minecraftforge.fml.common.network.IGuiHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 import java.util.Random;
@@ -42,129 +48,141 @@ import java.util.Random;
  */
 public abstract class BlockBasicMachine extends Block implements ITileEntityProvider, IWrenchable, IGuiHandler, IManualEntry {
 
+    public static final PropertyDirection FACING = BlockHorizontal.FACING;
+    public static final IProperty WORKING = PropertyBool.create("working");
+
     private String name;
 
     protected BlockBasicMachine(String name) {
-        super(Material.iron);
+        super(Material.IRON);
         setCreativeTab(BronzeAge.tabMain);
+        this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
         this.name = name;
-        setBlockName(name);
+        setUnlocalizedName(name);
+        setRegistryName(name);
         BronzeAge.guiHandler.registerHandler(getGuiId(), this);
+    }
+
+    @Override
+    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+        TileEntity tileEntity = worldIn.getTileEntity(pos);
+        boolean working = false;
+        if (tileEntity instanceof TileEntityBasicMachine){
+            working = ((TileEntityBasicMachine)tileEntity).isWorking();
+        }
+        return state.withProperty(WORKING, working);
     }
 
     public abstract int getGuiId();
 
     @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
         if (getGuiId() != -1) {
             if (!world.isRemote) {
-                if (player.getCurrentEquippedItem() == null)
-                    player.openGui(BronzeAge.INSTANSE, getGuiId(), world, x, y, z);
-                else if (!(player.getCurrentEquippedItem().getItem() instanceof IWrench))
-                    player.openGui(BronzeAge.INSTANSE, getGuiId(), world, x, y, z);
+                if (player.getHeldItem(hand) == null)
+                    player.openGui(BronzeAge.INSTANSE, getGuiId(), world, pos.getX(), pos.getY(), pos.getZ());
+                else if (!(player.getHeldItem(hand).getItem() instanceof IWrench)) {
+                    player.openGui(BronzeAge.INSTANSE, getGuiId(), world, pos.getX(), pos.getY(), pos.getZ());
+                    System.out.println("wrench");
+                }
             }
         }
         return true;
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public void registerBlockIcons(IIconRegister iconRegister) {
-        blockIcon = iconRegister.registerIcon(Reference.MOD_ID + ":blockBronze");
-    }
-
-    /*@Override
-    @SideOnly(Side.CLIENT)
-    public IIcon getIcon(int side, int meta) {
-        if (side == 1)
-            return topIcon;
-        else if (side == meta)
-            return frontIconIdle;
-        else if (meta == 0 && side == 3)
-            return frontIconIdle;
-        else
-            return sideIcon;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public IIcon getIcon(IBlockAccess block, int x, int y, int z, int side) {
-        int meta = block.getBlockMetadata(x, y, z);
-        TileEntityBasicMachine tile = (TileEntityBasicMachine)block.getTileEntity(x, y, z);
-        if(side == meta && tile.isActive)
-            return frontIconActive;
-        return getIcon(side, meta);
-    }*/
-
-    @Override
-    public boolean renderAsNormalBlock() {
+    @Deprecated
+    public boolean isOpaqueCube(IBlockState state) {
         return false;
     }
 
     @Override
-    public boolean isOpaqueCube() {
+    @Deprecated
+    public boolean isFullCube(IBlockState state) {
         return false;
     }
 
+
+    private void setDefualtDirection(World worldIn, BlockPos pos, IBlockState state)
+    {
+        if (!worldIn.isRemote)
+        {
+            IBlockState iblockstate = worldIn.getBlockState(pos.north());
+            IBlockState iblockstate1 = worldIn.getBlockState(pos.south());
+            IBlockState iblockstate2 = worldIn.getBlockState(pos.west());
+            IBlockState iblockstate3 = worldIn.getBlockState(pos.east());
+            EnumFacing enumfacing = (EnumFacing)state.getValue(FACING);
+
+            if (enumfacing == EnumFacing.NORTH && iblockstate.isFullBlock() && !iblockstate1.isFullBlock())
+            {
+                enumfacing = EnumFacing.SOUTH;
+            }
+            else if (enumfacing == EnumFacing.SOUTH && iblockstate1.isFullBlock() && !iblockstate.isFullBlock())
+            {
+                enumfacing = EnumFacing.NORTH;
+            }
+            else if (enumfacing == EnumFacing.WEST && iblockstate2.isFullBlock() && !iblockstate3.isFullBlock())
+            {
+                enumfacing = EnumFacing.EAST;
+            }
+            else if (enumfacing == EnumFacing.EAST && iblockstate3.isFullBlock() && !iblockstate2.isFullBlock())
+            {
+                enumfacing = EnumFacing.WEST;
+            }
+
+            worldIn.setBlockState(pos, state.withProperty(FACING, enumfacing), 2);
+        }
+    }
+
+
+    public static void setState(boolean active, World worldIn, BlockPos pos){
+        IBlockState iblockstate = worldIn.getBlockState(pos);
+        TileEntity tileentity = worldIn.getTileEntity(pos);
+
+        if (active) {
+            worldIn.setBlockState(pos, Blocks.LIT_FURNACE.getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)), 3);
+            worldIn.setBlockState(pos, Blocks.LIT_FURNACE.getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)), 3);
+        } else {
+            worldIn.setBlockState(pos, Blocks.FURNACE.getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)), 3);
+            worldIn.setBlockState(pos, Blocks.FURNACE.getDefaultState().withProperty(FACING, iblockstate.getValue(FACING)), 3);
+        }
+
+        if (tileentity != null) {
+            tileentity.validate();
+            worldIn.setTileEntity(pos, tileentity);
+        }
+    }
+
+    public IBlockState getStateFromMeta(int meta) {
+        EnumFacing enumfacing = EnumFacing.getFront(meta);
+
+        if (enumfacing.getAxis() == EnumFacing.Axis.Y){
+            enumfacing = EnumFacing.NORTH;
+        }
+
+        return this.getDefaultState().withProperty(FACING, enumfacing);
+    }
+
+    public int getMetaFromState(IBlockState state) {
+        return ((EnumFacing)state.getValue(FACING)).getIndex();
+    }
+
     @Override
-    public int getRenderType() {
-        return -1;
-    }
-
-    private void setDefualtDirection(World world, int x, int y, int z) {
-        if (!world.isRemote) {
-            Block l = world.getBlock(x, y, z - 1);
-            Block il = world.getBlock(x, y, z + 1);
-            Block jl = world.getBlock(x - 1, y, z);
-            Block kl = world.getBlock(x + 1, y, z - 1);
-            byte b0 = 3;
-
-            if (l.isNormalCube() && !il.isNormalCube()) {
-                b0 = 3;
-            }
-
-            if (il.isNormalCube() && !l.isNormalCube()) {
-                b0 = 2;
-            }
-
-            if (kl.isNormalCube() && !jl.isNormalCube()) {
-                b0 = 5;
-            }
-
-            if (jl.isNormalCube() && !kl.isNormalCube()) {
-                b0 = 4;
-            }
-            world.setBlockMetadataWithNotify(x, y, z, b0, 2);
-        }
+    public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state) {
+        setDefualtDirection(worldIn, pos, state);
+        super.onBlockAdded(worldIn, pos, state);
     }
 
     @Override
-    public void onBlockAdded(World world, int x, int y, int z) {
-        setDefualtDirection(world, x, y, z);
-        super.onBlockAdded(world, x, y, z);
-    }
+    public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+        worldIn.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
 
-    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityLivingBase, ItemStack itemstack) {
-        int l = MathHelper.floor_double((double) (entityLivingBase.rotationYaw * 4.0f / 360.0f) + 0.5D) & 3;
+        if (stack.hasDisplayName()) {
+            TileEntity tileentity = worldIn.getTileEntity(pos);
 
-        if (l == 0) {
-            world.setBlockMetadataWithNotify(x, y, z, 2, 2);
-        }
-
-        if (l == 1) {
-            world.setBlockMetadataWithNotify(x, y, z, 5, 2);
-        }
-
-        if (l == 2) {
-            world.setBlockMetadataWithNotify(x, y, z, 3, 2);
-        }
-
-        if (l == 3) {
-            world.setBlockMetadataWithNotify(x, y, z, 4, 2);
-        }
-
-        if (itemstack.hasDisplayName()) {
-            ((TileEntityMod) world.getTileEntity(x, y, z)).setCustomName(itemstack.getDisplayName());
+            if (stack.hasDisplayName()) {
+                ((TileEntityMod) worldIn.getTileEntity(pos)).setCustomName(stack.getDisplayName());
+            }
         }
     }
 
@@ -173,18 +191,19 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
 
     @Override
     public void dismantle(World world, EntityPlayer player, ItemStack wrench, int x, int y, int z) {
+        BlockPos pos = new BlockPos(x, y, z);
         if (wrench.getItem() instanceof IWrench) {
-            ItemStack block = new ItemStack(world.getBlock(x, y, z), 1, world.getBlockMetadata(x, y, z));
+            ItemStack block = new ItemStack(world.getBlockState(pos).getBlock());
             if (block.getTagCompound() == null)
                 block.setTagCompound(new NBTTagCompound());
-            if (world.getTileEntity(x, y, z) instanceof ISteamBoiler) {
-                ((ISteamBoiler) world.getTileEntity(x, y, z)).getWaterTank().writeToNBT(block.getTagCompound());
-                ((ISteamBoiler) world.getTileEntity(x, y, z)).getSteamTank().writeToNBT(block.getTagCompound());
-                wrench.getTagCompound().setInteger("temp", ((ISteamBoiler) world.getTileEntity(x, y, z)).getTemperature());
+            if (world.getTileEntity(pos) instanceof ISteamBoiler) {
+                ((ISteamBoiler) world.getTileEntity(pos)).getWaterTank().writeToNBT(block.getTagCompound());
+                ((ISteamBoiler) world.getTileEntity(pos)).getSteamTank().writeToNBT(block.getTagCompound());
+                wrench.getTagCompound().setInteger("temp", ((ISteamBoiler) world.getTileEntity(pos)).getTemperature());
             }
 
-            if (world.getTileEntity(x, y, z) instanceof TileEntityBasicSteamMachine) {
-                TileEntityBasicSteamMachine basicMachine = (TileEntityBasicSteamMachine) world.getTileEntity(x, y, z);
+            if (world.getTileEntity(pos) instanceof TileEntityBasicSteamMachine) {
+                TileEntityBasicSteamMachine basicMachine = (TileEntityBasicSteamMachine) world.getTileEntity(pos);
                 basicMachine.getSteamTank().writeToNBT(block.getTagCompound());
                 block.getTagCompound().setInteger("RedStoneMode", basicMachine.getRedStoneMode().ordinal());
                 NBTTagList list = new NBTTagList();
@@ -201,92 +220,35 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
 
             EntityItem item = new EntityItem(world, (double) x, (double) y, (double) z, block);
             world.spawnEntityInWorld(item);
-            world.setBlockToAir(x, y, z);
+            world.setBlockToAir(pos);
         }
     }
 
     @Override
-    public boolean rotateBlock(World worldObj, int x, int y, int z, ForgeDirection axis) {
-        int metadata = worldObj.getBlockMetadata(x, y, z) + 1;
-        if (metadata > 5) metadata = 2;
-        worldObj.setBlockMetadataWithNotify(x, y, z, metadata, 2);
-        return true;
+    public IBlockState withRotation(IBlockState state, Rotation rot) {
+        return state.withProperty(FACING, rot.rotate((EnumFacing)state.getValue(FACING)));
+    }
+
+    public BlockStateContainer createBlockState(){
+        return new BlockStateContainer(this, FACING, WORKING);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void randomDisplayTick(World world, int x, int y, int z, Random random) {
-        if (((TileEntityBasicMachine)world.getTileEntity(x, y, z)).isActive && !world.isRemote) {
+    public void randomDisplayTick(IBlockState state, World world, BlockPos pos, Random random) {
+        if (((TileEntityBasicMachine)world.getTileEntity(pos)).isActive && !world.isRemote) {
             System.out.println("ACTIVE");
-            float x1 = (float) x + 0.5f;
-            float y1 = (float) y + 1.0f;
-            float z1 = (float) z + 0.5f;
+            float x1 = (float) pos.getX() + 0.5f;
+            float y1 = (float) pos.getY() + 1.0f;
+            float z1 = (float) pos.getZ() + 0.5f;
             float f1 = random.nextFloat() * 0.6F - 0.3F;
 
-            world.spawnParticle("smoke", (double) (x1 + f1), (double) y1, (double) (z1 + f1), 0.0D, 0.0D, 0.0D);
-            world.spawnParticle("smoke", (double) (x1 - f1), (double) y1, (double) (z1 + f1), 0.0D, 0.0D, 0.0D);
-            world.spawnParticle("smoke", (double) (x1 + f1), (double) y1, (double) (z1 - f1), 0.0D, 0.0D, 0.0D);
-            world.spawnParticle("smoke", (double) (x1 - f1), (double) y1, (double) (z1 - f1), 0.0D, 0.0D, 0.0D);
-            world.spawnParticle("smoke", (double) x1, (double) (y1 + f1), (double) z1, 0.0D, 0.0D, 0.0D);
-            world.spawnParticle("smoke", (double) (x1 + f1), (double) (y1 + f1), (double) z1, 0.0D, 0.0D, 0.0D);
-        }
-    }
-
-    public static class ItemBasicMachine extends ItemBlock {
-
-        public ItemBasicMachine(Block block) {
-            super(block);
-        }
-
-        @Override
-        public boolean placeBlockAt(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int metadata) {
-            boolean result = super.placeBlockAt(itemStack, player, world, x, y, z, side, hitX, hitY, hitZ, metadata);
-            if (result) {
-                if (!world.isRemote) {
-                    if (itemStack != null && itemStack.getTagCompound() != null) {
-                        if (world.getTileEntity(x, y, z) instanceof ISteamBoiler) {
-                            ((ISteamBoiler) world.getTileEntity(x, y, z)).getWaterTank().readFromNBT(itemStack.getTagCompound());
-                            ((ISteamBoiler) world.getTileEntity(x, y, z)).getSteamTank().readFromNBT(itemStack.getTagCompound());
-                            ((ISteamBoiler) world.getTileEntity(x, y, z)).setTemperature(itemStack.getTagCompound().getInteger("temp"));
-                        }
-
-                        if (world.getTileEntity(x, y, z) instanceof TileEntityBasicSteamMachine) {
-                            TileEntityBasicSteamMachine basicMachine = (TileEntityBasicSteamMachine) world.getTileEntity(x, y, z);
-                            basicMachine.getSteamTank().readFromNBT(itemStack.getTagCompound());
-                            basicMachine.setRedstoneMode(RedstoneMode.values()[itemStack.getTagCompound().getInteger("RedStoneMode")]);
-                            NBTTagList list = itemStack.getTagCompound().getTagList("items", Constants.NBT.TAG_COMPOUND);
-                            basicMachine.inventory = new ItemStack[basicMachine.getSizeInventory()];
-
-                            for (int i = 0; i < list.tagCount(); i++) {
-                                NBTTagCompound compound = list.getCompoundTagAt(i);
-                                int j = compound.getByte("slot") & 0xff;
-
-                                if (j >= 0 && j < basicMachine.inventory.length) {
-                                    basicMachine.inventory[j] = ItemStack.loadItemStackFromNBT(compound);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            return result;
-        }
-
-        @Override
-        public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean b) {
-            if (itemStack.getTagCompound() != null) {
-                list.add("Pre Configured");
-                if (!(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))) {
-                    list.add("Hold " + EnumChatFormatting.AQUA + "Shift" + EnumChatFormatting.GRAY + " for more information");
-                } else {
-                    list.add("RedStone Mode: " + RedstoneMode.values()[itemStack.getTagCompound().getInteger("RedStoneMode")]);
-                    list.add("Steam Amount: " + itemStack.getTagCompound().getInteger("SteamAmount") + " mb");
-                    if (itemStack.getTagCompound().getInteger("Amount") != 0)
-                        list.add("Water Amount: " + itemStack.getTagCompound().getInteger("Amount") + " mb");
-                    if (itemStack.getTagCompound().getInteger("temp") != 0)
-                        list.add("Temperature: " + itemStack.getTagCompound().getInteger("temp") + " F");
-                }
-            }
+            world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double) (x1 + f1), (double) y1, (double) (z1 + f1), 0.0D, 0.0D, 0.0D);
+            world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double) (x1 - f1), (double) y1, (double) (z1 + f1), 0.0D, 0.0D, 0.0D);
+            world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double) (x1 + f1), (double) y1, (double) (z1 - f1), 0.0D, 0.0D, 0.0D);
+            world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double) (x1 - f1), (double) y1, (double) (z1 - f1), 0.0D, 0.0D, 0.0D);
+            world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double) x1, (double) (y1 + f1), (double) z1, 0.0D, 0.0D, 0.0D);
+            world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, (double) (x1 + f1), (double) (y1 + f1), (double) z1, 0.0D, 0.0D, 0.0D);
         }
     }
 }

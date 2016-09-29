@@ -22,8 +22,8 @@ public class GuiButtonBack extends GuiButton {
     public void drawButton(Minecraft minecraft, int x, int y) {
         minecraft.renderEngine.bindTexture(new ResourceLocation(Reference.MOD_ID, "textures/gui/guiElements.png"));
 
-        this.field_146123_n = x >= this.xPosition && y >= this.yPosition && x < this.xPosition + this.width && y < this.yPosition + this.height;
-        int k = getHoverState(field_146123_n);
+        this.enabled = x >= this.xPosition && y >= this.yPosition && x < this.xPosition + this.width && y < this.yPosition + this.height;
+        int k = getHoverState(enabled);
         List<String> tooltip = new ArrayList<String>();
 
         drawTexturedModalRect(xPosition, yPosition, 29, 184, 22, 22);

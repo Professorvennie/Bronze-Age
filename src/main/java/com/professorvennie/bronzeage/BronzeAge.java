@@ -12,15 +12,15 @@ import com.professorvennie.bronzeage.items.ModItems;
 import com.professorvennie.bronzeage.lib.BookData;
 import com.professorvennie.bronzeage.lib.Reference;
 import com.professorvennie.bronzeage.recipes.ModRecipes;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.network.NetworkRegistry;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 /**
  * Created by ProfessorVennie on 10/21/2014 at 5:15 PM.
@@ -44,7 +44,7 @@ public class BronzeAge {
         ModItems.init();
         PacketHandler.init();
         ConfigHandler.init(event.getSuggestedConfigurationFile());
-        FMLCommonHandler.instance().bus().register(new ConfigHandler());
+        MinecraftForge.EVENT_BUS.register(new ConfigHandler());
 
         proxey.registerRenders();
     }

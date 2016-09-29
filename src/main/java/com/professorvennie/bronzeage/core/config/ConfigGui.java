@@ -1,11 +1,11 @@
 package com.professorvennie.bronzeage.core.config;
 
 import com.professorvennie.bronzeage.lib.Reference;
-import cpw.mods.fml.client.config.GuiConfig;
-import cpw.mods.fml.client.config.IConfigElement;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.ConfigElement;
+import net.minecraftforge.fml.client.config.GuiConfig;
+import net.minecraftforge.fml.client.config.IConfigElement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +22,8 @@ public class ConfigGui extends GuiConfig {
     private static List<IConfigElement> getConfigElements(GuiScreen parentScreen) {
         List<IConfigElement> elements = new ArrayList<IConfigElement>();
 
-        elements.add(new ConfigElement<ConfigCategory>(ConfigHandler.config.getCategory("blocks".toLowerCase())));
-        elements.add(new ConfigElement<ConfigCategory>(ConfigHandler.config.getCategory("items".toLowerCase())));
+        elements.add(new ConfigElement(ConfigHandler.config.getCategory("blocks".toLowerCase())));
+        elements.add(new ConfigElement(ConfigHandler.config.getCategory("items".toLowerCase())));
 
         return elements;
     }

@@ -1,10 +1,10 @@
 package com.professorvennie.bronzeage.core.handlers;
 
 import com.professorvennie.bronzeage.items.ModItems;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
 /**
  * Created by ProfessorVennie on 2/14/2015 at 10:33 PM.

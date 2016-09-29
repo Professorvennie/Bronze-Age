@@ -3,16 +3,17 @@ package com.professorvennie.bronzeage.client.handlers;
 import com.professorvennie.bronzeage.api.manual.IManualEntry;
 import com.professorvennie.bronzeage.api.manual.IPage;
 import com.professorvennie.bronzeage.items.ModItems;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -24,18 +25,18 @@ public class HudHandler {
 
     @SubscribeEvent
     public void onDrawScreen(RenderGameOverlayEvent.Post event) {
-        if (event.type == RenderGameOverlayEvent.ElementType.ALL) {
+        if (event.getType() == RenderGameOverlayEvent.ElementType.ALL) {
             Minecraft minecraft = Minecraft.getMinecraft();
-            MovingObjectPosition pos = minecraft.objectMouseOver;
+            RayTraceResult pos = minecraft.objectMouseOver;
             Block block;
-            if (minecraft.theWorld.getBlock(pos.blockX, pos.blockY, pos.blockZ) != null)
-                block = minecraft.theWorld.getBlock(pos.blockX, pos.blockY, pos.blockZ);
-            else
+            //if (minecraft.theWorld.getBlockState(pos.getBlockPos()) != null)
+                //block = minecraft.theWorld.getBlockState(pos.getBlockPos()).getBlock();
+            //else
                 block = null;
 
-            if (minecraft.thePlayer != null && minecraft.thePlayer.getCurrentEquippedItem() != null && block != null) {
-                if (minecraft.thePlayer.getCurrentEquippedItem().getItem() == ModItems.manual && block instanceof IManualEntry && ((IManualEntry)block).getPage(minecraft.theWorld, pos.blockX, pos.blockY, pos.blockZ) != null) {
-                    drawManualHud(((IManualEntry) block).getPage(minecraft.theWorld, pos.blockX, pos.blockY, pos.blockZ), event.resolution);
+            if (minecraft.thePlayer != null && minecraft.thePlayer.getHeldItem(EnumHand.MAIN_HAND) != null && block != null) {
+                if (minecraft.thePlayer.getHeldItem(EnumHand.MAIN_HAND).getItem() == ModItems.manual && block instanceof IManualEntry && ((IManualEntry)block).getPage(minecraft.theWorld, pos.getBlockPos().getX(), pos.getBlockPos().getY(), pos.getBlockPos().getZ()) != null) {
+                    drawManualHud(((IManualEntry) block).getPage(minecraft.theWorld, pos.getBlockPos().getX(), pos.getBlockPos().getY(), pos.getBlockPos().getZ()), event.getResolution());
                 }
             }
         }
@@ -47,16 +48,16 @@ public class HudHandler {
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         Minecraft mc = Minecraft.getMinecraft();
-        RenderItem renderItem = new RenderItem();
-        FontRenderer fontRenderer = mc.fontRenderer;
-        ItemStack manual = mc.thePlayer.getCurrentEquippedItem();
+        RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
+        FontRenderer fontRenderer = mc.fontRendererObj;
+        ItemStack manual = mc.thePlayer.getHeldItem(EnumHand.MAIN_HAND);
         int x = resolution.getScaledWidth() / 2;
         int y = resolution.getScaledHeight() / 2;
 
-        renderItem.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.renderEngine, manual, x - 64, y - 13);
+        renderItem.renderItemAndEffectIntoGUI(manual, x - 64, y - 13);
         fontRenderer.drawString(manual.getDisplayName(), x - (fontRenderer.getStringWidth(manual.getDisplayName()) / 2), y - 10, color);
-        String string = StatCollector.translateToLocal("bronzeAge.book.shifttoread");
-        fontRenderer.drawString(StatCollector.translateToLocal(page.getUnlocalizedName()), x - (fontRenderer.getStringWidth(StatCollector.translateToLocal(page.getUnlocalizedName())) / 2), y + 8, color);
+        String string = I18n.translateToLocal("bronzeAge.book.shifttoread");
+        fontRenderer.drawString(I18n.translateToLocal(page.getUnlocalizedName()), x - (fontRenderer.getStringWidth(I18n.translateToLocal(page.getUnlocalizedName())) / 2), y + 8, color);
         fontRenderer.drawString(string, x - (fontRenderer.getStringWidth(string) / 2), y + 18, color);
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glDisable(GL11.GL_LIGHTING);

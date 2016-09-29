@@ -5,20 +5,19 @@ import com.professorvennie.bronzeage.api.manual.IPage;
 import com.professorvennie.bronzeage.client.gui.GuiManual;
 import com.professorvennie.bronzeage.lib.BookData;
 import com.professorvennie.bronzeage.lib.Reference;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -48,8 +47,8 @@ public class Page implements IPage {
         if (name != null) {
             int x = screen.getLeft() + (146 / 2);
             int y = screen.getTop();
-            String localName = StatCollector.translateToLocal(getUnlocalizedName());
-            minecraft.fontRenderer.drawString(EnumChatFormatting.UNDERLINE + localName, x - (minecraft.fontRenderer.getStringWidth(localName) / 2), y - 10, 0xFF5D00);
+            String localName = net.minecraft.util.text.translation.I18n.translateToLocal(getUnlocalizedName());
+            minecraft.fontRendererObj.drawString(TextFormatting.UNDERLINE + localName, x - (minecraft.fontRendererObj.getStringWidth(localName) / 2), y - 10, 0xFF5D00);
         }
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
     }
@@ -79,10 +78,10 @@ public class Page implements IPage {
     }
 
     public void renderItem(ItemStack itemStack, int x, int y) {
-        RenderItem itemRenderer = new RenderItem();
-        FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
+        RenderItem itemRenderer = Minecraft.getMinecraft().getRenderItem();
+        FontRenderer fontRenderer = Minecraft.getMinecraft().fontRendererObj;
         if (itemStack != null)
-            itemRenderer.renderItemAndEffectIntoGUI(fontRenderer, minecraft.renderEngine, itemStack, x, y);
+            itemRenderer.renderItemAndEffectIntoGUI(itemStack, x, y);
 
         if((gui.getMouseX() >= x && gui.getMouseX() <= x + 16) && (gui.getMouseY() >= y && gui.getMouseY() <= y + 16))
             toolTipStack = itemStack;

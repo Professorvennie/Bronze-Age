@@ -3,7 +3,6 @@ package com.professorvennie.bronzeage.blocks;
 import com.professorvennie.bronzeage.tileentitys.TileEntitySteamReceiver;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -13,12 +12,7 @@ import net.minecraft.world.World;
 public class BlockSteamReceiver extends BlockBase implements ITileEntityProvider {
 
     protected BlockSteamReceiver() {
-        super(Material.iron, "steamReceiver");
-    }
-
-    @Override
-    public void registerBlockIcons(IIconRegister iconRegister) {
-
+        super(Material.IRON, "steamReceiver");
     }
 
     @Override

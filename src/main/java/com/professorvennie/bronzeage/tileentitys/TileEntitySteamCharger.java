@@ -14,8 +14,8 @@ public class TileEntitySteamCharger extends TileEntityBasicSteamMachine {
     }
 
     @Override
-    public void updateEntity() {
-        super.updateEntity();
+    public void update() {
+        super.update();
 
         if(!worldObj.isRemote){
             if(getStackInSlot(2) != null && getStackInSlot(2).getItem() instanceof ISteamUsingItem){

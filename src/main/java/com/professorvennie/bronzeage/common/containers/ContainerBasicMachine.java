@@ -2,13 +2,13 @@ package com.professorvennie.bronzeage.common.containers;
 
 import com.professorvennie.bronzeage.api.steam.SteamTank;
 import com.professorvennie.bronzeage.tileentitys.TileEntityBasicSteamMachine;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ICrafting;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by ProfessorVennie on 2/15/2015 at 3:35 PM.
@@ -48,33 +48,34 @@ public class ContainerBasicMachine extends Container {
     public void detectAndSendChanges() {
         super.detectAndSendChanges();
 
-        for (int i = 0; i < this.crafters.size(); i++) {
-            ICrafting icrafting = (ICrafting) this.crafters.get(i);
+        for (int i = 0; i < this.listeners.size(); i++) {
+            IContainerListener icrafting = (IContainerListener) this.listeners.get(i);
 
             if (lastSteamAmount != tile.getSteamAmount()) {
-                icrafting.sendProgressBarUpdate(this, 0, tile.getSteamAmount());
+                icrafting.sendProgressBarUpdate(this, 0, tile.getField(2));
             }
 
             if(lastProgress != tile.getProgress())
-                icrafting.sendProgressBarUpdate(this, 1, tile.getProgress());
+                icrafting.sendProgressBarUpdate(this, 1, tile.getField(1));
         }
-        this.lastSteamAmount = this.tile.getSteamAmount();
-        this.lastProgress = this.tile.getProgress();
+        this.lastSteamAmount = tile.getField(2);
+        this.lastProgress = tile.getField(1);
     }
 
     @SideOnly(Side.CLIENT)
     public void updateProgressBar(int slot, int par2) {
-        if (slot == 0) {
-            if (tile.getSteamTank() != null)
-                ((SteamTank) tile.getSteamTank()).steamAmount = par2;
-        }
-        if(slot == 1)tile.setProgress(par2);
+        tile.setField(slot, par2);
     }
 
-    @Override
+   /* @Override
     public void addCraftingToCrafters(ICrafting iCrafting) {
         super.addCraftingToCrafters(iCrafting);
         iCrafting.sendProgressBarUpdate(this, 0, lastSteamAmount);
         iCrafting.sendProgressBarUpdate(this, 1, lastProgress);
+    }*/
+
+    public void addListener(IContainerListener listener) {
+        super.addListener(listener);
+        listener.sendAllWindowProperties(this, this.tile);
     }
 }

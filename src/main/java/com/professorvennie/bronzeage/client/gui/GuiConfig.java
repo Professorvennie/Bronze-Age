@@ -13,11 +13,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.util.ForgeDirection;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
+
+import java.io.IOException;
 
 /**
  * Created by ProfessorVennie on 1/2/2015 at 1:12 AM.
@@ -38,12 +40,12 @@ public class GuiConfig extends GuiContainer {
     @Override
     public void initGui() {
         super.initGui();
-        north = new GuiButtonSides(1, guiLeft + (xSize / 2 - 8), guiTop + (ySize / 2 - (8 + 80 / 2)), basicMachine.getModeOnSide(ForgeDirection.NORTH), basicMachine.getTankModeOnSide(ForgeDirection.NORTH), ForgeDirection.NORTH);
-        up = new GuiButtonSides(1, guiLeft + (xSize / 2 - 8), guiTop + (ySize / 2 - (8 + 80 / 2 + 18)), basicMachine.getModeOnSide(ForgeDirection.UP), basicMachine.getTankModeOnSide(ForgeDirection.UP), ForgeDirection.UP);
-        down = new GuiButtonSides(1, guiLeft + (xSize / 2 - 8), guiTop + (ySize / 2 - (8 + 80 / 2 - 18)), basicMachine.getModeOnSide(ForgeDirection.DOWN), basicMachine.getTankModeOnSide(ForgeDirection.DOWN), ForgeDirection.DOWN);
-        east = new GuiButtonSides(1, guiLeft + (xSize / 2 - 8 - 18), guiTop + (ySize / 2 - (8 + 80 / 2)), basicMachine.getModeOnSide(ForgeDirection.EAST), basicMachine.getTankModeOnSide(ForgeDirection.EAST), ForgeDirection.EAST);
-        west = new GuiButtonSides(1, guiLeft + (xSize / 2 - 8 + 18), guiTop + (ySize / 2 - (8 + 80 / 2)), basicMachine.getModeOnSide(ForgeDirection.WEST), basicMachine.getTankModeOnSide(ForgeDirection.WEST), ForgeDirection.WEST);
-        south = new GuiButtonSides(1, guiLeft + (xSize / 2 - 8 + 18), guiTop + (ySize / 2 - (8 + 80 / 2 - 18)), basicMachine.getModeOnSide(ForgeDirection.SOUTH), basicMachine.getTankModeOnSide(ForgeDirection.SOUTH), ForgeDirection.SOUTH);
+        north = new GuiButtonSides(1, guiLeft + (xSize / 2 - 8), guiTop + (ySize / 2 - (8 + 80 / 2)), basicMachine.getModeOnSide(EnumFacing.NORTH), basicMachine.getTankModeOnSide(EnumFacing.NORTH), EnumFacing.NORTH);
+        up = new GuiButtonSides(1, guiLeft + (xSize / 2 - 8), guiTop + (ySize / 2 - (8 + 80 / 2 + 18)), basicMachine.getModeOnSide(EnumFacing.UP), basicMachine.getTankModeOnSide(EnumFacing.UP), EnumFacing.UP);
+        down = new GuiButtonSides(1, guiLeft + (xSize / 2 - 8), guiTop + (ySize / 2 - (8 + 80 / 2 - 18)), basicMachine.getModeOnSide(EnumFacing.DOWN), basicMachine.getTankModeOnSide(EnumFacing.DOWN), EnumFacing.DOWN);
+        east = new GuiButtonSides(1, guiLeft + (xSize / 2 - 8 - 18), guiTop + (ySize / 2 - (8 + 80 / 2)), basicMachine.getModeOnSide(EnumFacing.EAST), basicMachine.getTankModeOnSide(EnumFacing.EAST), EnumFacing.EAST);
+        west = new GuiButtonSides(1, guiLeft + (xSize / 2 - 8 + 18), guiTop + (ySize / 2 - (8 + 80 / 2)), basicMachine.getModeOnSide(EnumFacing.WEST), basicMachine.getTankModeOnSide(EnumFacing.WEST), EnumFacing.WEST);
+        south = new GuiButtonSides(1, guiLeft + (xSize / 2 - 8 + 18), guiTop + (ySize / 2 - (8 + 80 / 2 - 18)), basicMachine.getModeOnSide(EnumFacing.SOUTH), basicMachine.getTankModeOnSide(EnumFacing.SOUTH), EnumFacing.SOUTH);
 
         buttonList.add(new GuiButtonBack(0, guiLeft + xSize + 1, guiTop + ySize - 160));
         buttonList.add(north);
@@ -88,24 +90,24 @@ public class GuiConfig extends GuiContainer {
     protected void actionPerformed(GuiButton button) {
         if (button instanceof GuiButtonBack) {
             Minecraft.getMinecraft().thePlayer.closeScreen();
-            Minecraft.getMinecraft().thePlayer.openGui(BronzeAge.INSTANSE, blockBasicMachine.getGuiId(), Minecraft.getMinecraft().theWorld, basicMachine.xCoord, basicMachine.yCoord, basicMachine.zCoord);
+            Minecraft.getMinecraft().thePlayer.openGui(BronzeAge.INSTANSE, blockBasicMachine.getGuiId(), Minecraft.getMinecraft().theWorld, basicMachine.getPos().getX(), basicMachine.getPos().getY(), basicMachine.getPos().getZ());
         } else if (button instanceof GuiButtonSides) {
             if (!(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
                 GuiButtonSides buttonSides = (GuiButtonSides) button;
                 basicMachine.changeMode(buttonSides.getDirection());
-                PacketHandler.INSTANCE.sendToServer(new MessageConfigUpdate(basicMachine.xCoord, basicMachine.yCoord, basicMachine.zCoord, buttonSides.getDirection(), false));
+                PacketHandler.INSTANCE.sendToServer(new MessageConfigUpdate(basicMachine.getPos().getX(), basicMachine.getPos().getY(), basicMachine.getPos().getZ(), buttonSides.getDirection(), false));
                 buttonSides.setSideMode(basicMachine.getModeOnSide(buttonSides.getDirection()));
             } else {
                 GuiButtonSides buttonSides = (GuiButtonSides) button;
                 basicMachine.changeTankMode(buttonSides.getDirection());
-                PacketHandler.INSTANCE.sendToServer(new MessageConfigUpdate(basicMachine.xCoord, basicMachine.yCoord, basicMachine.zCoord, buttonSides.getDirection(), true));
+                PacketHandler.INSTANCE.sendToServer(new MessageConfigUpdate(basicMachine.getPos().getX(), basicMachine.getPos().getY(), basicMachine.getPos().getZ(), buttonSides.getDirection(), true));
                 buttonSides.setTankMode(basicMachine.getTankModeOnSide(buttonSides.getDirection()));
             }
         }
     }
 
     @Override
-    public void handleMouseInput() {
+    public void handleMouseInput() throws IOException {
         super.handleMouseInput();
         int x = Mouse.getEventX() * this.width / this.mc.displayWidth;
         int y = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;

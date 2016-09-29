@@ -16,7 +16,7 @@ public class WoodenWellTileRenderer extends TileEntitySpecialRenderer {
     private int textureWidth = 16;
     private int textureHeight = 16;
 
-    @Override
+    /*@Override
     public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float f) {
         GL11.glPushMatrix();
         GL11.glDisable(GL11.GL_LIGHTING);
@@ -114,5 +114,5 @@ public class WoodenWellTileRenderer extends TileEntitySpecialRenderer {
         tessellator.addVertexWithUV(1 - (9) / 2 * pixel, 1, 1 - (9) / 2 * pixel, 4 * (1F / textureWidth), 0 * (1F / textureHeight));
         tessellator.addVertexWithUV(1 - (9) / 2 * pixel, 1, (9) / 2 * pixel, 12 * (1F / textureWidth), 0 * (1F / textureHeight));
         tessellator.draw();
-    }
+    }*/
 }

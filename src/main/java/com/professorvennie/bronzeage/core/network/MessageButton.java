@@ -1,11 +1,13 @@
 package com.professorvennie.bronzeage.core.network;
 
 import com.professorvennie.bronzeage.api.tiles.IButtonHandler;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+
 import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 /**
  * Created by ProfessorVennie on 12/14/2014 at 7:41 PM.
@@ -38,7 +40,7 @@ public class MessageButton extends MessageCoords implements IMessage {
 
         @Override
         public IMessage onMessage(MessageButton message, MessageContext ctx) {
-            TileEntity tile = ctx.getServerHandler().playerEntity.worldObj.getTileEntity(message.x, message.y, message.z);
+            TileEntity tile = ctx.getServerHandler().playerEntity.worldObj.getTileEntity(new BlockPos(message.x, message.y, message.z));
             if (tile != null && tile instanceof IButtonHandler) {
                 ((IButtonHandler) tile).handleClick(message.id);
             }

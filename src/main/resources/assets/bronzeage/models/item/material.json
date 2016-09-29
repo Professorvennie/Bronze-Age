@@ -1,0 +1,25 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "bronzeage:item/generated"
+  },
+  "variants": {
+    "variant": {
+      "copper": {
+        "textures": {
+          "layer0": "bronzeage:items/materials/ingotCopper.png"
+        }
+      },
+      "tin": {
+        "textures": {
+          "layer0": "bronzeage:items/materials/ingotTin"
+        }
+      },
+      "silver": {
+        "textures": {
+          "layer0": "bronzeage:items/materials/ingotSilver"
+        }
+      }
+    }
+  }
+}

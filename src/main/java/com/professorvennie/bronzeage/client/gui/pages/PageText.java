@@ -2,8 +2,9 @@ package com.professorvennie.bronzeage.client.gui.pages;
 
 import com.professorvennie.bronzeage.api.manual.IGuiManual;
 import com.professorvennie.bronzeage.client.gui.GuiManual;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
 
 /**
  * Created by ProfessorVennie on 10/25/2014 at 10:41 PM.

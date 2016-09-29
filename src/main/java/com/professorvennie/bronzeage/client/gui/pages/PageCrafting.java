@@ -4,12 +4,9 @@ import com.professorvennie.bronzeage.api.manual.IGuiManual;
 import com.professorvennie.bronzeage.client.gui.GuiManual;
 import com.professorvennie.bronzeage.client.helpers.RenderHelper;
 import com.professorvennie.bronzeage.lib.Reference;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -17,6 +14,8 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import org.lwjgl.opengl.GL11;
@@ -51,7 +50,7 @@ public class PageCrafting extends Page {
         if (items.length > 0) {
             renderSlot(screen, screen.getWidth() / 2 - 9, 15);
             renderItem(output, screen.getLeft() + screen.getWidth() / 2 - 8, screen.getTop() + 16);
-            FontRenderer fontRenderer = minecraft.fontRenderer;
+            FontRenderer fontRenderer = minecraft.fontRendererObj;
 
             if (output.stackSize > 1)
                 fontRenderer.drawString("" + output.stackSize, screen.getLeft() + screen.getWidth() / 2 - 8, screen.getTop() + 16, 0x0026FF);

@@ -1,17 +1,17 @@
 package com.professorvennie.bronzeage.blocks;
 
-import com.professorvennie.bronzeage.lib.Reference;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockColored;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockStateContainer;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.IStringSerializable;
 
 import java.util.List;
 
@@ -20,50 +20,102 @@ import java.util.List;
  */
 public class BlockOre extends BlockBase {
 
-    @SideOnly(Side.CLIENT)
-    private IIcon[] icons;
+    public static final PropertyEnum ORES = PropertyEnum.create("variant", EnumOres.class);
 
     public BlockOre() {
-        super(Material.rock, "ore");
+        super(Material.ROCK, "ore");
     }
 
     @Override
     public void getSubBlocks(Item item, CreativeTabs tab, List list) {
-        for (int i = 0; i < icons.length; i++)
-            list.add(new ItemStack(item, 1, i));
+        for (int i = 0; i < EnumOres.values().length; i++) {
+            EnumOres[] enumOreses = EnumOres.values();
+            EnumOres ores = enumOreses[i];
+            list.add(new ItemStack(item, 1, ores.getMeta()));
+        }
+    }
+
+    public IBlockState getStateFromMeta(int meta){
+        return this.getDefaultState().withProperty(ORES, EnumOres.getEnumFromMeta(meta));
+    }
+
+    public int getMetaFromState(IBlockState state){
+        return ((EnumOres)state.getValue(ORES)).getMeta();
+    }
+
+    protected BlockStateContainer createBlockState(){
+        return new BlockStateContainer(this, ORES);
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public void registerBlockIcons(IIconRegister iconRegister) {
-        icons = new IIcon[2];
-        String[] names = new String[]{"oreCopper", "oreTin"};
-
-        for (int i = 0; i < icons.length; i++)
-            icons[i] = iconRegister.registerIcon(Reference.MOD_ID + ":" + names[i]);
+    public int damageDropped(IBlockState state) {
+        return ((EnumOres)state.getValue(ORES)).getMeta();
     }
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public IIcon getIcon(int side, int meta) {
-        return icons[meta % icons.length];
-    }
 
     public static class ItemBlockOre extends ItemBlock {
 
         public ItemBlockOre(Block block) {
             super(block);
+            setUnlocalizedName(block.getUnlocalizedName());
+            setRegistryName(block.getUnlocalizedName());
+        }
+
+        @Override
+        public int getMetadata(int damage) {
+            return damage;
         }
 
         @Override
         public void getSubItems(Item item, CreativeTabs tab, List list) {
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < EnumOres.values().length; i++)
                 list.add(new ItemStack(item, 1, i));
         }
 
         @Override
         public String getUnlocalizedName(ItemStack itemStack) {
             return super.getUnlocalizedName() + "." + itemStack.getItemDamage();
+        }
+    }
+
+    public static enum EnumOres implements IStringSerializable {
+
+        COPPER(0, "copper"),
+        TIN(1, "tin");
+
+        private int meta;
+        private String name;
+        private static EnumOres[] ORES = new EnumOres[values().length];
+
+        private EnumOres(int meta, String name){
+            this.meta = meta;
+            this.name = name;
+        }
+
+        public int getMeta() {
+            return meta;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        public static EnumOres getEnumFromMeta(int meta){
+            if (meta < 0 || meta >= ORES.length)
+                meta = 0;
+
+            return ORES[meta];
+        }
+
+        static{
+            EnumOres[] var0 = values();
+            int var1 = var0.length;
+
+            for (int var2 = 0; var2 < var1; ++var2) {
+                EnumOres var3 = var0[var2];
+                ORES[var3.getMeta()] = var3;
+            }
         }
     }
 }

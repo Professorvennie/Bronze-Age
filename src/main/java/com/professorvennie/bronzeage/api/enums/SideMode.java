@@ -12,7 +12,7 @@ public enum SideMode {
 
     private String tooltip;
 
-    private SideMode(String tooltip) {
+    SideMode(String tooltip) {
         this.tooltip = tooltip;
     }
 

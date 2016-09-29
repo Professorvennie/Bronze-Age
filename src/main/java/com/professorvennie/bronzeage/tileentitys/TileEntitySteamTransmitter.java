@@ -4,7 +4,6 @@ import com.professorvennie.bronzeage.api.steam.ISteamBoiler;
 import com.professorvennie.bronzeage.api.steam.SteamNetwork;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,11 +25,12 @@ public class TileEntitySteamTransmitter extends TileEntityBasicSteamMachine {
     }
 
     @Override
-    public void updateEntity() {
-        super.updateEntity();
+    public void update() {
+        super.update();
 
+        //// TODO: 9/12/2016 finish this
         if(!worldObj.isRemote) {
-            for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS) {
+            /*for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS) {
                 // System.out.println(worldObj.getTileEntity(xCoord + direction.offsetX, yCoord + direction.offsetY, zCoord + direction.offsetZ));
                 //System.out.println("X: " + direction.offsetX + " Y: " + direction.offsetY + " Z: " + direction.offsetZ);
                 //System.out.println("TRUE");
@@ -43,10 +43,10 @@ public class TileEntitySteamTransmitter extends TileEntityBasicSteamMachine {
                         fill(direction, transmitAmount);
                     }
                 }
-            }
+            }*/
         }
 
-        if (!worldObj.isRemote) {
+       /* if (!worldObj.isRemote) {
              for (int i = 0; i < range * 2 + 1; i++) {
                 for (int j = 0; j < range * 2 + 1; j++) {
                     for (int k = 0; k < range * 2 + 1; k++) {
@@ -65,7 +65,8 @@ public class TileEntitySteamTransmitter extends TileEntityBasicSteamMachine {
                     }
                 }
             }
-        }
+        }*/
+
     }
 
     @Override

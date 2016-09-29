@@ -5,15 +5,14 @@ import com.professorvennie.bronzeage.lib.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.IItemRenderer;
 import org.lwjgl.opengl.GL11;
 
 /**
  * Created by ProfessorVennie on 1/31/2015 at 2:31 PM.
  */
-public class WellPipeItemRenderer implements IItemRenderer {
+public class WellPipeItemRenderer /*implements IItemRenderer */{
 
-    @Override
+    /*@Override
     public boolean handleRenderType(ItemStack item, ItemRenderType type) {
         return true;
     }
@@ -31,5 +30,5 @@ public class WellPipeItemRenderer implements IItemRenderer {
         new WoodenWellTileRenderer().renderInv();
         GL11.glScalef(-1.2F, -1.2F, -1.2F);
         GL11.glEnable(GL11.GL_LIGHTING);
-    }
+    }*/
 }

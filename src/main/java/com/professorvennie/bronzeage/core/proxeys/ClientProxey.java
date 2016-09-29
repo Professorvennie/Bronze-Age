@@ -8,10 +8,13 @@ import com.professorvennie.bronzeage.client.renders.item.WellPipeItemRenderer;
 import com.professorvennie.bronzeage.client.renders.tileentity.TileEntityBasicSteamMachineRenderer;
 import com.professorvennie.bronzeage.client.renders.tileentity.TileEntitySteamPipeRenderer;
 import com.professorvennie.bronzeage.client.renders.tileentity.WoodenWellTileRenderer;
+import com.professorvennie.bronzeage.lib.Reference;
 import com.professorvennie.bronzeage.tileentitys.*;
-import cpw.mods.fml.client.registry.ClientRegistry;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 /**
  * Created by ProfessorVennie on 10/21/2014 at 5:22 PM.
@@ -30,7 +33,7 @@ public class ClientProxey extends CommonProxey {
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySteamWashPlant.class, new TileEntityBasicSteamMachineRenderer("steamWashPlant"));
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWrenchRepairer.class, new TileEntityBasicSteamMachineRenderer("wrenchRepairer"));
 
-        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.wellPipe), new WellPipeItemRenderer());
+        /*MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.wellPipe), new WellPipeItemRenderer());
         MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.steamBoilerIdle), new BasicMachineItemRenderer("steamBoiler"));
         MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.steamFurnace), new BasicMachineItemRenderer("steamFurnace"));
         MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.well), new BasicMachineItemRenderer("well"));
@@ -38,7 +41,12 @@ public class ClientProxey extends CommonProxey {
         MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.steamGrinder), new BasicMachineItemRenderer("steamGrinder"));
         MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.steamExtractor), new BasicMachineItemRenderer("steamExtractor"));
         MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.steamWashPlant), new BasicMachineItemRenderer("steamWashPlant"));
-        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.wrenchRepair), new BasicMachineItemRenderer("wrenchRepairer"));
+        MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.wrenchRepair), new BasicMachineItemRenderer("wrenchRepairer"));*/
+    }
+
+    @Override
+    public void registerItemRenderer(Item item, int meta, String id) {
+        ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(Reference.MOD_ID + ":" + id, "inventory"));
     }
 
     @Override

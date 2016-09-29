@@ -5,13 +5,12 @@ import com.professorvennie.bronzeage.api.steam.ISteamUsingItem;
 import com.professorvennie.bronzeage.api.wrench.IWrench;
 import com.professorvennie.bronzeage.api.wrench.WrenchMaterial;
 import com.professorvennie.bronzeage.lib.Reference;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
@@ -86,11 +85,5 @@ public class ItemSteamWrench extends ItemBase implements IWrench, ISteamUsingIte
     @Override
     public void subtractUse(ItemStack itemStack, float amountOfUses) {
 
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister iconRegister) {
-        itemIcon = iconRegister.registerIcon(Reference.MOD_ID + "steamWrench");
     }
 }

@@ -1,24 +1,25 @@
 package com.professorvennie.bronzeage.core.network;
 
 import com.professorvennie.bronzeage.api.tiles.ISideConfigurable;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 /**
  * Created by ProfessorVennie on 1/9/2015 at 11:12 AM.
  */
 public class MessageConfigUpdate extends MessageCoords implements IMessage {
 
-    private ForgeDirection direction;
+    private EnumFacing direction;
     private boolean isTanks;
 
     public MessageConfigUpdate() {
     }
 
-    public MessageConfigUpdate(int x, int y, int z, ForgeDirection direction, boolean isTanks) {
+    public MessageConfigUpdate(int x, int y, int z, EnumFacing direction, boolean isTanks) {
         super(x, y, z);
         this.direction = direction;
         this.isTanks = isTanks;
@@ -28,7 +29,7 @@ public class MessageConfigUpdate extends MessageCoords implements IMessage {
     public void fromBytes(ByteBuf buf) {
         super.fromBytes(buf);
 
-        direction = ForgeDirection.getOrientation(buf.readInt());
+        direction = EnumFacing.getFront(buf.readInt());
         isTanks = buf.readBoolean();
     }
 
@@ -44,10 +45,10 @@ public class MessageConfigUpdate extends MessageCoords implements IMessage {
 
         @Override
         public IMessage onMessage(MessageConfigUpdate message, MessageContext ctx) {
-            if (ctx.getServerHandler().playerEntity.worldObj.getTileEntity(message.x, message.y, message.z) instanceof ISideConfigurable) {
-                ((ISideConfigurable) ctx.getServerHandler().playerEntity.worldObj.getTileEntity(message.x, message.y, message.z)).changeMode(message.direction);
+            if (ctx.getServerHandler().playerEntity.worldObj.getTileEntity(new BlockPos(message.x, message.y, message.z)) instanceof ISideConfigurable) {
+                ((ISideConfigurable) ctx.getServerHandler().playerEntity.worldObj.getTileEntity(new BlockPos(message.x, message.y, message.z))).changeMode(message.direction);
                 if (message.isTanks)
-                    ((ISideConfigurable) ctx.getServerHandler().playerEntity.worldObj.getTileEntity(message.x, message.y, message.z)).changeTankMode(message.direction);
+                    ((ISideConfigurable) ctx.getServerHandler().playerEntity.worldObj.getTileEntity(new BlockPos(message.x, message.y, message.z))).changeTankMode(message.direction);
             }
             return null;
         }

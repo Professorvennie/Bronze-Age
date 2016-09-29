@@ -2,9 +2,9 @@ package com.professorvennie.bronzeage.client.gui.pages;
 
 import com.professorvennie.bronzeage.api.manual.IGuiManual;
 import com.professorvennie.bronzeage.client.gui.GuiManual;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 /**

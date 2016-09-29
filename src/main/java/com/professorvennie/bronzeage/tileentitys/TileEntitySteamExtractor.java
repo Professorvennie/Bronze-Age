@@ -1,7 +1,7 @@
 package com.professorvennie.bronzeage.tileentitys;
 
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.*;
 
 /**
@@ -17,8 +17,8 @@ public class TileEntitySteamExtractor extends TileEntityBasicSteamMachine implem
     }
 
     @Override
-    public void updateEntity() {
-        super.updateEntity();
+    public void update() {
+        super.update();
     }
 
     @Override
@@ -42,34 +42,34 @@ public class TileEntitySteamExtractor extends TileEntityBasicSteamMachine implem
     }
 
     @Override
-    public int fill(ForgeDirection from, FluidStack resource, boolean doFill) {
+    public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
         tank.fill(resource, doFill);
         return 0;
     }
 
     @Override
-    public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) {
+    public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain) {
         return drain(from, resource.amount, doDrain);
     }
 
     @Override
-    public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
+    public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
         tank.drain(maxDrain, doDrain);
         return null;
     }
 
     @Override
-    public boolean canFill(ForgeDirection from, Fluid fluid) {
+    public boolean canFill(EnumFacing from, Fluid fluid) {
         return true;
     }
 
     @Override
-    public boolean canDrain(ForgeDirection from, Fluid fluid) {
+    public boolean canDrain(EnumFacing from, Fluid fluid) {
         return true;
     }
 
     @Override
-    public FluidTankInfo[] getTankInfo(ForgeDirection from) {
+    public FluidTankInfo[] getTankInfo(EnumFacing from) {
         return new FluidTankInfo[]{tank.getInfo()};
     }
 }

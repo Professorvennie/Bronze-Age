@@ -5,9 +5,9 @@ import com.professorvennie.bronzeage.client.helpers.RenderHelper;
 import com.professorvennie.bronzeage.lib.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.text.translation.I18n;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +19,9 @@ public class GuiButtonSides extends GuiButton {
 
     private SideMode sideMode;
     private SideMode tankMode;
-    private ForgeDirection direction;
+    private EnumFacing direction;
 
-    public GuiButtonSides(int id, int x, int y, SideMode modeSide, SideMode tankMode, ForgeDirection direction) {
+    public GuiButtonSides(int id, int x, int y, SideMode modeSide, SideMode tankMode, EnumFacing direction) {
         super(id, x, y, 16, 16, "");
         this.sideMode = modeSide;
         this.tankMode = tankMode;
@@ -43,26 +43,24 @@ public class GuiButtonSides extends GuiButton {
                 drawTexturedModalRect(xPosition, yPosition, 240, 224, 16, 16);
                 break;
         }
-
-
     }
 
     public void renderToolTip(int x, int y) {
-        this.field_146123_n = x >= this.xPosition && y >= this.yPosition && x < this.xPosition + this.width && y < this.yPosition + this.height;
-        int k = getHoverState(field_146123_n);
+        this.enabled = x >= this.xPosition && y >= this.yPosition && x < this.xPosition + this.width && y < this.yPosition + this.height;
+        int k = getHoverState(enabled);
         List<String> tooltip = new ArrayList<String>();
 
         tooltip.clear();
         tooltip.add("Sides:");
-        tooltip.add(direction + ": " + StatCollector.translateToLocal("toolTip.config." + sideMode.getTooltip()));
+        tooltip.add(direction + ": " + I18n.translateToLocal("toolTip.config." + sideMode.getTooltip()));
         tooltip.add("Tanks");
-        tooltip.add(direction + ": " + StatCollector.translateToLocal("toolTip.config." + tankMode.getTooltip()));
+        tooltip.add(direction + ": " + I18n.translateToLocal("toolTip.config." + tankMode.getTooltip()));
 
         if (k == 2)
             RenderHelper.renderTooltip(x, y, tooltip);
     }
 
-    public ForgeDirection getDirection() {
+    public EnumFacing getDirection() {
         return direction;
     }
 

@@ -14,8 +14,8 @@ public class TileEntitySteamGrinder extends TileEntityBasicSteamMachine {
     }
 
     @Override
-    public void updateEntity() {
-        super.updateEntity();
+    public void update() {
+        super.update();
         if (canWork) {
             if(hasEnoughSteam() && (canGrind(1) || canGrind(2))){
                 increaseProgressByOne();

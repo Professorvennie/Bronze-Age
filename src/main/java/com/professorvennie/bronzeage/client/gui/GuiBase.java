@@ -15,14 +15,13 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.inventory.Container;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,7 +75,7 @@ public class GuiBase extends GuiContainer {
         this.fontRendererObj.drawString(I18n.format("container.inventory", BronzeAge.INSTANSE), 8, this.ySize - 96 + 2, 4210752);
         String name = "";
         if (basicSteamMachine != null)
-            name = StatCollector.translateToLocal("container." + basicSteamMachine.getInventoryName());
+            name = net.minecraft.util.text.translation.I18n.translateToLocal("container." + basicSteamMachine.getCustomName());
         this.fontRendererObj.drawString(name, this.xSize / 2 - this.fontRendererObj.getStringWidth(name) / 2, 6, 4210752);
     }
 
@@ -91,17 +90,17 @@ public class GuiBase extends GuiContainer {
                             case low:
                                 buttonRedStone.setMode(RedstoneMode.high);
                                 basicSteamMachine.setRedstoneMode(RedstoneMode.high);
-                                PacketHandler.INSTANCE.sendToServer(new MessageButton(basicSteamMachine.xCoord, basicSteamMachine.yCoord, basicSteamMachine.zCoord, 0));
+                                PacketHandler.INSTANCE.sendToServer(new MessageButton(basicSteamMachine.getPos().getX(), basicSteamMachine.getPos().getY(), basicSteamMachine.getPos().getZ(), 0));
                                 break;
                             case high:
                                 buttonRedStone.setMode(RedstoneMode.disabled);
                                 basicSteamMachine.setRedstoneMode(RedstoneMode.disabled);
-                                PacketHandler.INSTANCE.sendToServer(new MessageButton(basicSteamMachine.xCoord, basicSteamMachine.yCoord, basicSteamMachine.zCoord, 1));
+                                PacketHandler.INSTANCE.sendToServer(new MessageButton(basicSteamMachine.getPos().getX(), basicSteamMachine.getPos().getY(), basicSteamMachine.getPos().getZ(), 1));
                                 break;
                             case disabled:
                                 buttonRedStone.setMode(RedstoneMode.low);
                                 basicSteamMachine.setRedstoneMode(RedstoneMode.low);
-                                PacketHandler.INSTANCE.sendToServer(new MessageButton(basicSteamMachine.xCoord, basicSteamMachine.yCoord, basicSteamMachine.zCoord, 2));
+                                PacketHandler.INSTANCE.sendToServer(new MessageButton(basicSteamMachine.getPos().getX(), basicSteamMachine.getPos().getY(), basicSteamMachine.getPos().getZ(), 2));
                                 break;
                         }
                         break;
@@ -111,7 +110,7 @@ public class GuiBase extends GuiContainer {
     }
 
     @Override
-    public void handleMouseInput() {
+    public void handleMouseInput() throws IOException {
         super.handleMouseInput();
         int x = Mouse.getEventX() * this.width / this.mc.displayWidth;
         int y = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
@@ -148,10 +147,10 @@ public class GuiBase extends GuiContainer {
             return;
         mc.renderEngine.bindTexture(new ResourceLocation("textures/atlas/blocks.png"));
         GL11.glColor3ub((byte) (fluid.getFluid().getColor() >> 16 & 0xFF), (byte) (fluid.getFluid().getColor() >> 8 & 0xFF), (byte) (fluid.getFluid().getColor() & 0xFF));
-        drawTiledTexture(x, y, fluid.getFluid().getIcon(fluid), width, height);
+        drawTiledTexture(x, y, fluid.getFluid().getStill(fluid), width, height);
     }
 
-    public void drawTiledTexture(int x, int y, IIcon icon, int width, int height) {
+    public void drawTiledTexture(int x, int y, ResourceLocation icon, int width, int height) {
         int i = 0;
         int j = 0;
 
@@ -168,11 +167,11 @@ public class GuiBase extends GuiContainer {
         GL11.glColor4f(1f, 1f, 1f, 1F);
     }
 
-    public void drawScaledTexturedModelRectFromIcon(int x, int y, IIcon icon, int width, int height) {
+    public void drawScaledTexturedModelRectFromIcon(int x, int y, ResourceLocation icon, int width, int height) {
         if (icon == null)
             return;
 
-        double minU = icon.getMinU();
+       /* double minU = icon.getMinU();
         double maxU = icon.getMaxU();
         double minV = icon.getMinV();
         double maxV = icon.getMaxV();
@@ -183,6 +182,6 @@ public class GuiBase extends GuiContainer {
         tessellator.addVertexWithUV(x + width, y + height, this.zLevel, minU + (maxU - minU) * width / 16F, minV + (maxV - minV) * height / 16F);
         tessellator.addVertexWithUV(x + width, y, this.zLevel, minU + (maxU - minU) * width / 16F, minV);
         tessellator.addVertexWithUV(x, y, this.zLevel, minU, minV);
-        tessellator.draw();
+        tessellator.draw();*/
     }
 }

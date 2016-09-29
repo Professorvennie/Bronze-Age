@@ -1,7 +1,7 @@
 package com.professorvennie.bronzeage.core.network;
 
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import io.netty.buffer.ByteBuf;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 /**
  * Created by ProfessorVennie on 12/14/2014 at 7:42 PM.

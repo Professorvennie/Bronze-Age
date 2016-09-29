@@ -1,7 +1,6 @@
 package com.professorvennie.bronzeage.api.wrench;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 
 /**
  * Created by ProfessorVennie on 12/1/2014 at 5:04 PM.
@@ -27,7 +26,7 @@ public class WrenchMaterial {
     }
 
     public String getLocalizedName() {
-        return StatCollector.translateToLocal(getUnlocalizedName());
+        return net.minecraft.util.text.translation.I18n.translateToLocal(getUnlocalizedName());
     }
 
     public float  getNumOfUses() {

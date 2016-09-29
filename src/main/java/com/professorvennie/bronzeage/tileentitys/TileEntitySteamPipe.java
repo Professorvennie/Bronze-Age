@@ -4,14 +4,16 @@ import com.professorvennie.bronzeage.api.steam.ISteamBoiler;
 import com.professorvennie.bronzeage.api.steam.ISteamHandler;
 import com.professorvennie.bronzeage.api.steam.ISteamTank;
 import com.professorvennie.bronzeage.api.steam.SteamTank;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
 
 /**
  * Created by ProfessorVennie on 10/21/2014 at 8:03 PM.
  */
-public class TileEntitySteamPipe extends TileEntityMod implements ISteamHandler {
+public class TileEntitySteamPipe extends TileEntityMod implements ISteamHandler, ITickable {
 
-    public ForgeDirection[] connections = new ForgeDirection[6];
+    public EnumFacing[] connections = new EnumFacing[6];
     private SteamTank steamTank;
 
     public TileEntitySteamPipe() {
@@ -19,15 +21,14 @@ public class TileEntitySteamPipe extends TileEntityMod implements ISteamHandler 
     }
 
     @Override
-    public void updateEntity() {
-        super.updateEntity();
-
-        for (ForgeDirection direction : connections) {
+    public void update() {
+        for (EnumFacing direction : connections) {
             if (direction != null) {
                 switch (direction) {
                     case UP:
-                        if (worldObj.getTileEntity(xCoord, yCoord + 1, zCoord) instanceof ISteamBoiler) {
-                            ISteamBoiler boiler = (ISteamBoiler) worldObj.getTileEntity(xCoord, yCoord + 1, zCoord);
+                        BlockPos pos = new BlockPos(getPos().getX(), getPos().getY() + 1, getPos().getZ());
+                        if (worldObj.getTileEntity(pos) instanceof ISteamBoiler) {
+                            ISteamBoiler boiler = (ISteamBoiler) worldObj.getTileEntity(pos);
                             boiler.drain(direction, 100);
                             this.fill(direction, 100);
                         }
@@ -43,23 +44,23 @@ public class TileEntitySteamPipe extends TileEntityMod implements ISteamHandler 
     }
 
     @Override
-    public boolean canFill(ForgeDirection direction, int amount) {
+    public boolean canFill(EnumFacing direction, int amount) {
         return steamTank.getAmount() + amount <= steamTank.getCapacity();
     }
 
     @Override
-    public boolean canDrain(ForgeDirection direction, int amount) {
+    public boolean canDrain(EnumFacing direction, int amount) {
         return steamTank.getAmount() - amount >= 0;
     }
 
     @Override
-    public void fill(ForgeDirection direction, int amount) {
+    public void fill(EnumFacing direction, int amount) {
         if (canFill(direction, amount))
             steamTank.fill(amount);
     }
 
     @Override
-    public void drain(ForgeDirection direction, int amount) {
+    public void drain(EnumFacing direction, int amount) {
         if (canDrain(direction, amount))
             steamTank.drain(amount);
     }
@@ -67,6 +68,11 @@ public class TileEntitySteamPipe extends TileEntityMod implements ISteamHandler 
     @Override
     public int getSteamAmount() {
         return steamTank.getAmount();
+    }
+
+    @Override
+    public void setSteamAmount(int amount) {
+
     }
 
     @Override

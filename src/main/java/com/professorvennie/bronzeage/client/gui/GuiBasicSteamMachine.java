@@ -59,7 +59,7 @@ public class GuiBasicSteamMachine extends GuiBase {
             List<String> text = new ArrayList<String>();
             text.clear();
             text.add("Steam");
-            text.add(basicSteamMachine.getSteamAmount() + "/" + basicSteamMachine.getSteamCapacity() + "mB");
+            text.add(basicSteamMachine.getField(2) + "/" + basicSteamMachine.getSteamCapacity() + "mB");
             drawToolTipOverArea(mouseX, mouseY, 11, 8, 26, 73, text, fontRendererObj);
         }
 
@@ -72,19 +72,23 @@ public class GuiBasicSteamMachine extends GuiBase {
         switch (button.id) {
             case 1:
                 if (button instanceof GuiButtonConfig)
-                    Minecraft.getMinecraft().thePlayer.openGui(BronzeAge.INSTANSE, GuiIds.CONFIG, Minecraft.getMinecraft().theWorld, basicSteamMachine.xCoord, basicSteamMachine.yCoord, basicSteamMachine.zCoord);
+                    Minecraft.getMinecraft().thePlayer.openGui(BronzeAge.INSTANSE, GuiIds.CONFIG, Minecraft.getMinecraft().theWorld, basicSteamMachine.getPos().getX(), basicSteamMachine.getPos().getY(), basicSteamMachine.getPos().getZ());
                 break;
         }
     }
 
     public void drawSteamTank(int x, int y) {
         Minecraft.getMinecraft().getTextureManager().bindTexture(elements);
-        int j = getValueScaled(basicSteamMachine.getSteamAmount(), basicSteamMachine.getSteamCapacity(), 66);
+        int j = getValueScaled(basicSteamMachine.getField(2), basicSteamMachine.getSteamCapacity(), 66);
         drawElement(x, y - j, 240, 66 - j, 16, j);
     }
 
     public void drawProgressArrow(int x, int y){
-        int j = basicSteamMachine.getProgressScaled(24);
+        int j = getProgressScaled(24);
         drawElement(x, y, 51, 6, j + 1, 16);
+    }
+
+    public int getProgressScaled(int scale){
+        return basicSteamMachine.getField(1) * scale / basicSteamMachine.getField(0);
     }
 }

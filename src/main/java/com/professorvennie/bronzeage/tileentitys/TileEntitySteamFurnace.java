@@ -1,5 +1,6 @@
 package com.professorvennie.bronzeage.tileentitys;
 
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 
@@ -14,17 +15,20 @@ public class TileEntitySteamFurnace extends TileEntityBasicSteamMachine {
     }
 
     @Override
-    public void updateEntity() {
-    super.updateEntity();
+    public void update() {
+    super.update();
         if (canWork) {
             if(hasEnoughSteam() && (canSmelt(1) || canSmelt(2))){
                 increaseProgressByOne();
                 isActive = true;
-                if(getProgress() == getMachineSpeed()){
+                if(getProgress() == getMachineSpeed()) {
                     smeltItem();
                     resetProgress();
                     getSteamTank().drain(1000);
                 }
+
+                if (!worldObj.isRemote && inventory[0] != null && inventory[0].getItem() == Items.DIAMOND)
+                    steamTank.steamAmount = steamTank.getCapacity();
             }else
                 isActive = false;
         }
@@ -32,7 +36,7 @@ public class TileEntitySteamFurnace extends TileEntityBasicSteamMachine {
 
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack itemStack) {
-        if (slot == 2 && FurnaceRecipes.smelting().getSmeltingResult(itemStack) != null)
+        if (slot == 2 && FurnaceRecipes.instance().getSmeltingResult(itemStack) != null)
             return true;
         return false;
     }
@@ -48,7 +52,7 @@ public class TileEntitySteamFurnace extends TileEntityBasicSteamMachine {
             if (this.inventory[2] == null) {
                 return false;
             } else {
-                ItemStack itemstack = FurnaceRecipes.smelting().getSmeltingResult(this.inventory[2]);
+                ItemStack itemstack = FurnaceRecipes.instance().getSmeltingResult(this.inventory[2]);
                 if (itemstack == null) return false;
                 if (this.inventory[3] == null) return true;
                 if (!this.inventory[3].isItemEqual(itemstack)) return false;
@@ -59,7 +63,7 @@ public class TileEntitySteamFurnace extends TileEntityBasicSteamMachine {
             if (this.inventory[2] == null) {
                 return false;
             }else{
-                ItemStack itemstack = FurnaceRecipes.smelting().getSmeltingResult(this.inventory[2]);
+                ItemStack itemstack = FurnaceRecipes.instance().getSmeltingResult(this.inventory[2]);
                 if (itemstack == null) return false;
                 if (this.inventory[4] == null) return true;
                 if (!this.inventory[4].isItemEqual(itemstack)) return false;
@@ -72,7 +76,7 @@ public class TileEntitySteamFurnace extends TileEntityBasicSteamMachine {
 
     public void smeltItem(){
         if (this.canSmelt(1)){
-            ItemStack itemstack = FurnaceRecipes.smelting().getSmeltingResult(this.inventory[2]);
+            ItemStack itemstack = FurnaceRecipes.instance().getSmeltingResult(this.inventory[2]);
 
             if (this.inventory[3] == null){
                 this.inventory[3] = itemstack.copy();
@@ -87,7 +91,7 @@ public class TileEntitySteamFurnace extends TileEntityBasicSteamMachine {
                 this.inventory[2] = null;
             }
         }else if (this.canSmelt(2)){
-            ItemStack itemstack = FurnaceRecipes.smelting().getSmeltingResult(this.inventory[2]);
+            ItemStack itemstack = FurnaceRecipes.instance().getSmeltingResult(this.inventory[2]);
 
             if (this.inventory[4] == null){
                 this.inventory[4] = itemstack.copy();

@@ -1,13 +1,13 @@
 package com.professorvennie.bronzeage.common.containers;
 
 import com.professorvennie.bronzeage.tileentitys.TileEntityWell;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ICrafting;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by ProfessorVennie on 1/31/2015 at 2:49 PM.
@@ -35,19 +35,25 @@ public class ContainerWell extends Container {
         }
     }
 
-    @Override
+    /*@Override
     public void addCraftingToCrafters(ICrafting icrafting) {
         super.addCraftingToCrafters(icrafting);
         icrafting.sendProgressBarUpdate(this, 0, lastTankAmount);
         icrafting.sendProgressBarUpdate(this, 1, lastPipes);
+    }*/
+
+    @Override
+    public void addListener(IContainerListener listener) {
+        super.addListener(listener);
+        listener.sendAllWindowProperties(this, tile);
     }
 
     @Override
     public void detectAndSendChanges() {
         super.detectAndSendChanges();
 
-        for (int i = 0; i < this.crafters.size(); i++) {
-            ICrafting icrafting = (ICrafting) this.crafters.get(i);
+        for (int i = 0; i < this.listeners.size(); i++) {
+            IContainerListener icrafting = (IContainerListener) this.listeners.get(i);
 
             if (lastTankAmount != tile.tank.getFluidAmount())
                 icrafting.sendProgressBarUpdate(this, 0, tile.tank.getFluidAmount());

@@ -1,9 +1,6 @@
 package com.professorvennie.bronzeage.items;
 
 import com.professorvennie.bronzeage.BronzeAge;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.Item;
 
 /**
@@ -11,12 +8,17 @@ import net.minecraft.item.Item;
  */
 public abstract class ItemBase extends Item {
 
+    String name;
+
     public ItemBase(String name) {
+        this.name = name;
         setUnlocalizedName(name);
+        setRegistryName(name);
         setCreativeTab(BronzeAge.tabMain);
+        BronzeAge.proxey.registerItemRenderer(this, 0, name);
     }
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public abstract void registerIcons(IIconRegister iconRegister);
+    public void registerItemModel() {
+        BronzeAge.proxey.registerItemRenderer(this, 0, name);
+    }
 }

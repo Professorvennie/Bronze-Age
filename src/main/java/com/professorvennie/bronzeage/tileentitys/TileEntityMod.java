@@ -2,8 +2,7 @@ package com.professorvennie.bronzeage.tileentitys;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 
 /**
@@ -35,28 +34,29 @@ public class TileEntityMod extends TileEntity {
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbtTagCompound) {
+    public NBTTagCompound writeToNBT(NBTTagCompound nbtTagCompound) {
         super.writeToNBT(nbtTagCompound);
 
         if (this.hasCustomName()) {
             nbtTagCompound.setString("customName", customName);
         }
+        return nbtTagCompound;
     }
 
     public boolean hasCustomName() {
         return customName != null && customName.length() > 0;
     }
 
-
     @Override
-    public Packet getDescriptionPacket() {
+    public SPacketUpdateTileEntity getUpdatePacket() {
         NBTTagCompound tileTag = new NBTTagCompound();
         this.writeToNBT(tileTag);
-        return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 0, tileTag);
+        return new SPacketUpdateTileEntity(pos, 0, tileTag);
     }
 
+
     @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
-        this.readFromNBT(pkt.func_148857_g());
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+        this.readFromNBT(pkt.getNbtCompound());
     }
 }

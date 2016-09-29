@@ -1,7 +1,8 @@
 package com.professorvennie.bronzeage.api.manual;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by ProfessorVennie on 11/9/2014 at 6:53 PM.

@@ -14,8 +14,8 @@ public class TileEntityWrenchRepairer extends TileEntityBasicSteamMachine {
     }
 
     @Override
-    public void updateEntity() {
-        super.updateEntity();
+    public void update() {
+        super.update();
         if(!worldObj.isRemote){
             if(getStackInSlot(0) != null && getStackInSlot(0).getItem() instanceof IWrench){
                 if(getStackInSlot(1) != null && getStackInSlot(1).getItem() == ((IWrench)getStackInSlot(0).getItem()).getWrenchMaterial(getStackInSlot(0)).getRepairStack().getItem()){

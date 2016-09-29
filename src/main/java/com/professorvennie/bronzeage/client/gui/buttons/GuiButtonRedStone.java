@@ -7,7 +7,6 @@ import com.professorvennie.bronzeage.tileentitys.TileEntityBasicMachine;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +29,8 @@ public class GuiButtonRedStone extends GuiButton {
     public void drawButton(Minecraft minecraft, int x, int y) {
         minecraft.renderEngine.bindTexture(new ResourceLocation(Reference.MOD_ID, "textures/gui/guiElements.png"));
 
-        this.field_146123_n = x >= this.xPosition && y >= this.yPosition && x < this.xPosition + this.width && y < this.yPosition + this.height;
-        int k = getHoverState(field_146123_n);
+        this.enabled = x >= this.xPosition && y >= this.yPosition && x < this.xPosition + this.width && y < this.yPosition + this.height;
+        int k = getHoverState(enabled);
         List<String> tooltip = new ArrayList<String>();
         //int tooltipY = (tooltip.size() - 1) * 10;
 
@@ -39,21 +38,21 @@ public class GuiButtonRedStone extends GuiButton {
             case low:
                 drawTexturedModalRect(xPosition, yPosition, 0, 122, 22, 22);
                 tooltip.clear();
-                tooltip.add(StatCollector.translateToLocal("tooltip.redStone.low"));
+                tooltip.add(net.minecraft.util.text.translation.I18n.translateToLocal("tooltip.redStone.low"));
                 if (k == 2)
                     RenderHelper.renderTooltip(x, y, tooltip);
                 break;
             case high:
                 drawTexturedModalRect(xPosition, yPosition, 0, 168, 22, 22);
                 tooltip.clear();
-                tooltip.add(StatCollector.translateToLocal("tooltip.redStone.high"));
+                tooltip.add(net.minecraft.util.text.translation.I18n.translateToLocal("tooltip.redStone.high"));
                 if (k == 2)
                     RenderHelper.renderTooltip(x, y, tooltip);
                 break;
             case disabled:
                 drawTexturedModalRect(xPosition, yPosition, 0, 145, 22, 22);
                 tooltip.clear();
-                tooltip.add(StatCollector.translateToLocal("tooltip.redStone.disabled"));
+                tooltip.add(net.minecraft.util.text.translation.I18n.translateToLocal("tooltip.redStone.disabled"));
                 if (k == 2)
                     RenderHelper.renderTooltip(x, y, tooltip);
                 break;

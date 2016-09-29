@@ -1,0 +1,9 @@
+{
+  "forge_maker": 1,
+  "defaults": {
+    "model": "bronzeage:steamBoiler"
+  },
+  "variants": {
+    "variant=tin": { "model": "bronzeage:copperOre" },
+    "variant=copper": { "model": "bronzeage:blocks/oreTin"}
+  }

@@ -2,15 +2,18 @@ package com.professorvennie.bronzeage.tileentitys;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 import net.minecraftforge.common.util.Constants;
 
 /**
  * Created by ProfessorVennie on 10/22/2014 at 8:39 PM.
  */
-public class TileEntityBasicSidedInventory extends TileEntityMod implements ISidedInventory {
+public class TileEntityBasicSidedInventory extends TileEntityMod implements ISidedInventory, ITickable {
 
     public ItemStack[] inventory = new ItemStack[getSizeInventory()];
     public int[] slots_top;
@@ -23,17 +26,17 @@ public class TileEntityBasicSidedInventory extends TileEntityMod implements ISid
     }
 
     @Override
-    public int[] getAccessibleSlotsFromSide(int side) {
-        return side == 0 ? slots_bottom : (side == 1 ? slots_top : slots_sides);
+    public int[] getSlotsForFace(EnumFacing side) {
+        return side == EnumFacing.DOWN ? slots_bottom : (side == EnumFacing.UP ? slots_top : slots_sides);
     }
 
     @Override
-    public boolean canInsertItem(int var1, ItemStack itemStack, int i2) {
-        return isItemValidForSlot(var1, itemStack);
+    public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction) {
+        return isItemValidForSlot(index, itemStackIn);
     }
 
     @Override
-    public boolean canExtractItem(int i, ItemStack itemStack, int i2) {
+    public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) {
         return false;
     }
 
@@ -84,7 +87,7 @@ public class TileEntityBasicSidedInventory extends TileEntityMod implements ISid
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbtTagCompound) {
+    public NBTTagCompound writeToNBT(NBTTagCompound nbtTagCompound) {
         super.writeToNBT(nbtTagCompound);
 
         NBTTagList list = new NBTTagList();
@@ -98,9 +101,10 @@ public class TileEntityBasicSidedInventory extends TileEntityMod implements ISid
             }
         }
         nbtTagCompound.setTag("items", list);
+        return nbtTagCompound;
     }
 
-    @Override
+   /* @Override
     public ItemStack getStackInSlotOnClosing(int slot) {
         if (this.inventory[slot] != null) {
             ItemStack itemstack = this.inventory[slot];
@@ -108,7 +112,7 @@ public class TileEntityBasicSidedInventory extends TileEntityMod implements ISid
             return itemstack;
         }
         return null;
-    }
+    }*/
 
     @Override
     public void setInventorySlotContents(int slot, ItemStack itemStack) {
@@ -120,13 +124,14 @@ public class TileEntityBasicSidedInventory extends TileEntityMod implements ISid
     }
 
     @Override
-    public String getInventoryName() {
+    public String getName() {
         return this.hasCustomName() ? this.getCustomName() : name;
     }
 
     @Override
-    public boolean hasCustomInventoryName() {
-        return hasCustomName();
+    public boolean hasCustomName() {
+        //todo fix this
+        return false;
     }
 
     @Override
@@ -136,19 +141,51 @@ public class TileEntityBasicSidedInventory extends TileEntityMod implements ISid
 
     @Override
     public boolean isUseableByPlayer(EntityPlayer player) {
-        return this.worldObj.getTileEntity(this.xCoord, this.yCoord, this.zCoord) != this ? false : player.getDistanceSq((double) this.xCoord + 0.5D, (double) this.yCoord + 0.5D, (double) this.zCoord + 0.5D) <= 64D;
+        return this.worldObj.getTileEntity(pos) != this ? false : player.getDistanceSq((double) this.pos.getX() + 0.5D, (double) this.pos.getY() + 0.5D, (double) this.pos.getZ() + 0.5D) <= 64D;
     }
 
     @Override
-    public void openInventory() {
+    public void openInventory(EntityPlayer player) {
+
     }
 
     @Override
-    public void closeInventory() {
+    public void closeInventory(EntityPlayer player) {
+
     }
 
     @Override
     public boolean isItemValidForSlot(int i, ItemStack itemStack) {
         return true;
+    }
+
+    @Override
+    public int getField(int id) {
+        return 0;
+    }
+
+    @Override
+    public void setField(int id, int value) {
+
+    }
+
+    @Override
+    public int getFieldCount() {
+        return 0;
+    }
+
+    @Override
+    public void clear() {
+
+    }
+
+    @Override
+    public ItemStack removeStackFromSlot(int index) {
+        return ItemStackHelper.getAndRemove(this.inventory, index);
+    }
+
+    @Override
+    public void update() {
+
     }
 }

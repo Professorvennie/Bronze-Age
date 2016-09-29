@@ -39,7 +39,7 @@ public class GuiSteamBoiler extends GuiBasicSteamMachine {
 
         text.clear();
         text.add("Temperature");
-        text.add(steamBoiler.temp + "F / " + steamBoiler.maxTemp + "F");
+        text.add(steamBoiler.getField(5) + "F / " + steamBoiler.getField(6) + "F");
         drawToolTipOverArea(mouseX, mouseY, 53, 63, 122, 68, text, fontRendererObj);
     }
 
@@ -48,16 +48,29 @@ public class GuiSteamBoiler extends GuiBasicSteamMachine {
         super.drawGuiContainerBackgroundLayer(p_146976_1_, p_146976_2_, p_146976_3_);
         Minecraft.getMinecraft().getTextureManager().bindTexture(elements);
         if (this.steamBoiler.isBurning()) {
-            int k = this.steamBoiler.getBurnTimeReamingScaled(12);
+            int k = getBurnLeftScaled(12);
             drawTexturedModalRect(guiLeft + 81, guiTop + 38 - k, 0, 206 - k, 14, k + 2);
         }
 
         int j = getValueScaled(steamBoiler.getWaterAmount(), steamBoiler.getWaterCapacity(), 66);
         drawElement(11, 74 - j, 176, 80 - j, 16, j);
 
-        j = steamBoiler.getTempScaled(70);
+        j = getTempScaled(70);
         drawElement(53, 63, 51, 0, j + 1, 6);
 
         drawSteamTank(149, 74);
+    }
+
+    private int getBurnLeftScaled(int pixels) {
+        int i = steamBoiler.getField(4);
+
+        if (i == 0)
+            i = 100;
+
+        return steamBoiler.getField(3) * pixels / i;
+    }
+
+    public int getTempScaled(int scale) {
+        return steamBoiler.getField(5) * scale / steamBoiler.getField(6);
     }
 }

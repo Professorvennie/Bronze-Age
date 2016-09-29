@@ -5,7 +5,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Arrays;
@@ -39,7 +38,7 @@ public class GuiButtonNextPage extends GuiButton {
             int var5 = 0;
             int var6;
             int var7;
-            FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
+            FontRenderer fontRenderer = Minecraft.getMinecraft().fontRendererObj;
             for (var6 = 0; var6 < tooltipData.size(); ++var6) {
                 var7 = fontRenderer.getStringWidth(tooltipData.get(var6));
                 if (var7 > var5)
@@ -92,14 +91,14 @@ public class GuiButtonNextPage extends GuiButton {
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glShadeModel(GL11.GL_SMOOTH);
 
-        Tessellator tessellator = Tessellator.instance;
-        tessellator.startDrawingQuads();
+        Tessellator tessellator = Tessellator.getInstance();
+        /*tessellator.startDrawingQuads();
         tessellator.setColorRGBA_F(var8, var9, var10, var7);
         tessellator.addVertex(par3, par2, z);
         tessellator.addVertex(par1, par2, z);
         tessellator.setColorRGBA_F(var12, var13, var14, var11);
         tessellator.addVertex(par1, par4, z);
-        tessellator.addVertex(par3, par4, z);
+        tessellator.addVertex(par3, par4, z);*/
         tessellator.draw();
         GL11.glShadeModel(GL11.GL_FLAT);
         GL11.glDisable(GL11.GL_BLEND);
@@ -111,15 +110,15 @@ public class GuiButtonNextPage extends GuiButton {
     public void drawButton(Minecraft minecraft, int x, int y) {
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         if (enabled) {
-            field_146123_n = x >= xPosition && y >= yPosition && x < xPosition + width && y < yPosition + height;
-            int k = getHoverState(field_146123_n);
+            enabled = x >= xPosition && y >= yPosition && x < xPosition + width && y < yPosition + height;
+            int k = getHoverState(enabled);
 
             minecraft.renderEngine.bindTexture(GuiManual.texture);
             GL11.glColor4f(1F, 1F, 1F, 1F);
             drawTexturedModalRect(xPosition, yPosition, k == 2 ? 18 : 0, isRight ? 180 : 190, 18, 10);
 
             if (k == 2)
-                renderTooltip(x, y, Arrays.asList(StatCollector.translateToLocal(isRight ? "bronzeAge.book.nextPage" : "bronzeAge.book.prevPage")));
+                renderTooltip(x, y, Arrays.asList(net.minecraft.util.text.translation.I18n.translateToLocal(isRight ? "bronzeAge.book.nextPage" : "bronzeAge.book.prevPage")));
         }
     }
 }

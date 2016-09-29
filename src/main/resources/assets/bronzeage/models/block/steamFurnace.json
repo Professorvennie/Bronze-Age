@@ -1,0 +1,8 @@
+{
+  "parent": "block/orientable",
+  "textures": {
+    "top": "bronzeage:blocks/machines_Top",
+    "front": "bronzeage:blocks/steamFurnace_Front_Idle",
+    "side": "bronzeage:blocks/blockBronze"
+  }
+}
