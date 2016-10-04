@@ -22,6 +22,7 @@ public class TileEntityBasicSidedInventory extends TileEntityMod implements ISid
     private String name;
 
     public TileEntityBasicSidedInventory(String name) {
+        super(name);
         this.name = name;
     }
 
@@ -130,8 +131,7 @@ public class TileEntityBasicSidedInventory extends TileEntityMod implements ISid
 
     @Override
     public boolean hasCustomName() {
-        //todo fix this
-        return false;
+        return name != null;
     }
 
     @Override

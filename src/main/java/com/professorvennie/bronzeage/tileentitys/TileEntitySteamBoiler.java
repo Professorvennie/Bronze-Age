@@ -1,6 +1,7 @@
 package com.professorvennie.bronzeage.tileentitys;
 
 import com.professorvennie.bronzeage.api.steam.ISteamBoiler;
+import com.professorvennie.bronzeage.blocks.fluids.ModFluids;
 import com.professorvennie.bronzeage.core.network.MessageUpdate;
 import com.professorvennie.bronzeage.core.network.PacketHandler;
 import com.professorvennie.bronzeage.items.ModItems;
@@ -26,7 +27,7 @@ public class TileEntitySteamBoiler extends TileEntityBasicSteamMachine implement
     private FluidTank waterTank;
 
     public TileEntitySteamBoiler() {
-        super("container.SteamBoiler", 10000);
+        super("SteamBoiler", 10000);
         waterTank = new FluidTank(FluidRegistry.WATER, 0, 10000);
     }
 
@@ -67,10 +68,17 @@ public class TileEntitySteamBoiler extends TileEntityBasicSteamMachine implement
             markDirtyClient();
         }
 
+        int clientSteam = 0;
+        if (!worldObj.isRemote)
+            clientSteam = getSteamAmount();
+
+        if (canWork && !worldObj.isRemote && isWorking() && clientSteam != getSteamAmount())
+            PacketHandler.INSTANCE.sendToAll(new MessageUpdate(pos.getX(), pos.getY(), pos.getZ(), getWaterAmount(), getSteamAmount(), 0, 0));
+
             //System.out.println("SteamAmount: " + getSteamAmount() + "  WaterAmount: " + getWaterAmount() + "  BurnAmount: " + burnTime + "  Temp: " + temp);
         //if (!worldObj.isRemote) {
-            PacketHandler.INSTANCE.sendToServer(new MessageUpdate(pos.getX(), pos.getY(), pos.getZ(), getWaterAmount(), getSteamAmount(), burnTime, temp));
-            worldObj.updateBlockTick(pos, worldObj.getBlockState(pos).getBlock(), 1, 10);
+            //PacketHandler.INSTANCE.sendToServer(new MessageUpdate(pos.getX(), pos.getY(), pos.getZ(), getWaterAmount(), getSteamAmount(), burnTime, temp));
+           // worldObj.updateBlockTick(pos, worldObj.getBlockState(pos).getBlock(), 1, 10);
             if (burnTime > 0) {
                 isActive = true;
             }else {
@@ -104,10 +112,14 @@ public class TileEntitySteamBoiler extends TileEntityBasicSteamMachine implement
                         temp--;
                 }
 
-                if (temp >= 212 && getWaterAmount() > 0) {
-                    if(getSteamTank().getAmount() + 100 <= getSteamTank().getCapacity()) {
-                        getSteamTank().fill(100);
-                        drain(new FluidStack(FluidRegistry.WATER, 100), true);
+                if (!worldObj.isRemote) {
+                    if (temp >= 212 && getWaterAmount() > 0) {
+                        if (getSteamTank().getFluidAmount() + 100 <= getSteamTank().getCapacity()) {
+                            getSteamTank().fill(new FluidStack(ModFluids.steam, 100), true);
+                            //PacketHandler.INSTANCE.sendToAll(new MessageUpdate(pos.getX(), pos.getY(), pos.getZ(), waterTank.getFluidAmount(), getSteamAmount(), 0, 0));
+                            //System.out.println("SteamAmount: " + getSteamAmount());
+                            waterTank.drain(100, true);
+                        }
                     }
                 }
 
@@ -170,10 +182,10 @@ public class TileEntitySteamBoiler extends TileEntityBasicSteamMachine implement
                             }
                         }
 
-                       /* if (getWaterAmount() < getWaterCapacity()) {
+                        if (getWaterAmount() < getWaterCapacity()) {
                             if (temp >= 1000)
                                 waterTank.getFluid().amount += 1000;
-                        }*/
+                        }
                     }
 
                 } else if (inventory[2].getItem() == Items.BUCKET) {
@@ -300,28 +312,6 @@ public class TileEntitySteamBoiler extends TileEntityBasicSteamMachine implement
     public int getWaterCapacity() {
         return waterTank.getCapacity();
     }
-
-//    @Override
-//    public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
-//        waterTank.fill(resource, doFill);
-//        return 0;
-//    }
-//
-//    @Override
-//    public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain) {
-//        return drain(from, resource.amount, doDrain);
-//    }
-//
-//    @Override
-//    public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
-//        waterTank.drain(maxDrain, doDrain);
-//        return null;
-//    }
-//
-//    @Override
-//    public FluidTankInfo[] getTankInfo(EnumFacing from) {
-//        return new FluidTankInfo[]{waterTank.getInfo()};
-//    }
 
     public boolean isBurning() {
         return burnTime > 0;

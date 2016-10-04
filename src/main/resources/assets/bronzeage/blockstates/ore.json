@@ -4,6 +4,6 @@
     "model": "bronzeage:steamBoiler"
   },
   "variants": {
-    "variant=tin": { "model": "bronzeage:copperOre" },
+    "variant=tin": { "model": "bronzeage:blocks/oreCopper" },
     "variant=copper": { "model": "bronzeage:blocks/oreTin"}
   }

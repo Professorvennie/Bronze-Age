@@ -1,5 +1,5 @@
 {
-  "parent": "bronzeage:block/steamFurnace",
+  "parent": "bronzeage:block/steamGrinder",
 
   "display": {
     "thirdperson": {

@@ -4,9 +4,10 @@ import com.professorvennie.bronzeage.api.enums.RedstoneMode;
 import com.professorvennie.bronzeage.api.enums.SideMode;
 import com.professorvennie.bronzeage.api.tiles.ISideConfigurable;
 import com.professorvennie.bronzeage.api.steam.ISteamHandler;
-import com.professorvennie.bronzeage.api.steam.ISteamTank;
-import com.professorvennie.bronzeage.api.steam.SteamTank;
 import com.professorvennie.bronzeage.blocks.BlockBasicMachine;
+import com.professorvennie.bronzeage.blocks.fluids.ModFluids;
+import com.professorvennie.bronzeage.core.network.MessageUpdate;
+import com.professorvennie.bronzeage.core.network.PacketHandler;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -14,6 +15,13 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
+
+import javax.annotation.Nullable;
 
 /**
  * Created by ProfessorVennie on 11/23/2014 at 3:29 PM.
@@ -21,12 +29,12 @@ import net.minecraft.world.World;
 public abstract class TileEntityBasicSteamMachine extends TileEntityBasicMachine implements ISteamHandler, ISideConfigurable {
 
     protected SideMode[] sideModesSlots, sideModeTanks;
-    public SteamTank steamTank;
+    public FluidTank steamTank;
     private int inputSlots[], exportSlots[], machineSpeed, progress;
 
     public TileEntityBasicSteamMachine(String name, int capacity) {
         super(name);
-        steamTank = new SteamTank(0, capacity);
+        steamTank = new FluidTank(ModFluids.steam, 0, 10000);
         inputSlots = getInputSlots();
         exportSlots = getExportSlots();
 
@@ -50,19 +58,7 @@ public abstract class TileEntityBasicSteamMachine extends TileEntityBasicMachine
     public void update() {
         super.update();
 
-       /* if (isActive){
-            BlockBasicMachine blockBasicMachine = (BlockBasicMachine)worldObj.getBlockState(pos).getBlock();
-            IBlockState oldState = worldObj.getBlockState(pos);
-            worldObj.setBlockState(pos, blockBasicMachine.getActualState(oldState, worldObj, pos));
-            worldObj.notifyBlockUpdate(pos, oldState, blockBasicMachine.getActualState(worldObj.getBlockState(pos), worldObj, pos), 3);
-        }else {
-            BlockBasicMachine blockBasicMachine = (BlockBasicMachine)worldObj.getBlockState(pos).getBlock();
-            IBlockState oldState = worldObj.getBlockState(pos);
-            worldObj.setBlockState(pos, blockBasicMachine.getActualState(oldState, worldObj, pos));
-            worldObj.notifyBlockUpdate(pos, oldState, blockBasicMachine.getActualState(worldObj.getBlockState(pos), worldObj, pos), 3);
-        }*/
-
-        //if(!worldObj.isRemote){
+        if(!worldObj.isRemote){
             for(EnumFacing direction : EnumFacing.HORIZONTALS){
                 BlockPos pos = new BlockPos(getPos().getX() + direction.getFrontOffsetX(), getPos().getY() + direction.getFrontOffsetY(), getPos().getZ() + direction.getFrontOffsetZ());
                 TileEntity tile = worldObj.getTileEntity(pos);
@@ -72,10 +68,11 @@ public abstract class TileEntityBasicSteamMachine extends TileEntityBasicMachine
                     if(steamHandler.canFill(direction, 100) && canDrain(direction, 100)){
                         steamHandler.fill(direction, 100);
                         drain(direction, 100);
+                        //PacketHandler.INSTANCE.sendToServer(new MessageUpdate(pos.getX(), pos.getY(), pos.getZ(), 0, steamHandler.getSteamAmount(), 0, 0));
                     }
                 }
             }
-       // }
+        }
     }
 
     @Override
@@ -109,19 +106,20 @@ public abstract class TileEntityBasicSteamMachine extends TileEntityBasicMachine
 
     //ISteamHandler
     @Override
-    public ISteamTank getSteamTank() {
+    public FluidTank getSteamTank() {
         return steamTank;
     }
 
     @Override
     public void setSteamAmount(int amount) {
-        this.steamTank.steamAmount = amount;
+        steamTank.drain(steamTank.getFluidAmount(), true);
+        steamTank.fill(new FluidStack(ModFluids.steam, amount), true);
     }
 
     @Override
     public boolean canFill(EnumFacing direction, int amount) {
         if (getTankModeOnSide(direction.getOpposite()) == SideMode.IMPORT || getTankModeOnSide(direction.getOpposite()) == SideMode.BOTH)
-            return steamTank.getAmount() + amount <= steamTank.getCapacity();
+            return steamTank.getFluidAmount() + amount <= steamTank.getCapacity();
         else
             return false;
     }
@@ -129,7 +127,7 @@ public abstract class TileEntityBasicSteamMachine extends TileEntityBasicMachine
     @Override
     public boolean canDrain(EnumFacing direction, int amount) {
         if (getTankModeOnSide(direction.getOpposite()) == SideMode.EXPORT || getTankModeOnSide(direction.getOpposite()) == SideMode.BOTH)
-            return steamTank.getAmount() - amount >= 0;
+            return steamTank.getFluidAmount() - amount >= 0;
         else
             return false;
     }
@@ -137,18 +135,18 @@ public abstract class TileEntityBasicSteamMachine extends TileEntityBasicMachine
     @Override
     public void fill(EnumFacing direction, int amount) {
         if (canFill(direction, amount))
-            steamTank.fill(amount);
+            steamTank.fill(new FluidStack(ModFluids.steam, amount), true);
     }
 
     @Override
     public void drain(EnumFacing direction, int amount) {
         if (canDrain(direction, amount))
-            steamTank.drain(amount);
+            steamTank.fill(new FluidStack(ModFluids.steam, amount), true);
     }
 
     @Override
     public int getSteamAmount() {
-        return steamTank.getAmount();
+        return steamTank.getFluidAmount();
     }
 
     @Override
@@ -293,7 +291,7 @@ public abstract class TileEntityBasicSteamMachine extends TileEntityBasicMachine
                 return progress;
             case 2:
                 //System.out.println("GetSteamAmount: " + steamTank.getAmount());
-                 return steamTank.getAmount();
+                 return steamTank.getFluidAmount();
             default:
                 return 0;
         }
@@ -315,6 +313,48 @@ public abstract class TileEntityBasicSteamMachine extends TileEntityBasicMachine
             default:
                 break;
         }
+    }
+
+    @Override
+    public IFluidTankProperties[] getTankProperties() {
+        return steamTank.getTankProperties();
+    }
+
+    @Override
+    public int fill(FluidStack resource, boolean doFill) {
+        if(steamTank.canFill()){
+            steamTank.fill(resource, doFill);
+            return steamTank.getFluidAmount();
+        }
+        return 0;
+    }
+
+    @Nullable
+    @Override
+    public FluidStack drain(int maxDrain, boolean doDrain) {
+        return drain(new FluidStack(ModFluids.steam, maxDrain), doDrain);
+    }
+
+    @Nullable
+    @Override
+    public FluidStack drain(FluidStack resource, boolean doDrain) {
+        if (steamTank.canDrain()){
+            steamTank.drain(resource, doDrain);
+            return steamTank.getFluid();
+        }
+        return null;
+    }
+
+    @Override
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+        return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
+    }
+
+    @Override
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+            return (T) steamTank;
+        return super.getCapability(capability, facing);
     }
 
     @Override

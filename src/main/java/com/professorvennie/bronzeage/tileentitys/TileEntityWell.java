@@ -1,15 +1,23 @@
 package com.professorvennie.bronzeage.tileentitys;
 
 import com.professorvennie.bronzeage.blocks.ModBlocks;
-import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fluids.*;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.FluidTankProperties;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
+
+import javax.annotation.Nullable;
 
 /**
  * Created by ProfessorVennie on 1/31/2015 at 2:33 PM.
@@ -33,16 +41,16 @@ public class TileEntityWell extends TileEntityBasicMachine implements IFluidHand
                 BlockPos pos = new BlockPos(getPos().getX() + direction.getFrontOffsetX(), getPos().getY() + direction.getFrontOffsetY(), getPos().getZ() + direction.getFrontOffsetZ());
                 if (worldObj.getTileEntity(pos) != null && worldObj.getTileEntity(pos) instanceof IFluidHandler) {
                     TileEntity tile = worldObj.getTileEntity(pos);
-                    for (int i = 0; i < ((IFluidHandler) tile).getTankInfo(EnumFacing.UP).length; i++) {
-                        FluidTankInfo info = ((IFluidHandler) tile).getTankInfo(EnumFacing.UP)[i];
-                        if (info != null && info.fluid != null) {
-                            int amount = info.fluid.amount;
-                            int cap = info.capacity;
-                            if (info.fluid.getFluid() == FluidRegistry.WATER) {
+                    for (int i = 0; i < ((IFluidHandler) tile).getTankProperties().length; i++) {
+                        IFluidTankProperties info = ((IFluidHandler) tile).getTankProperties()[i];
+                        if (info != null && info.getContents() != null) {
+                            int amount = info.getContents().amount;
+                            int cap = info.getCapacity();
+                            if (info.getContents().getFluid() == FluidRegistry.WATER) {
                                 if (amount + 1 <= cap) {
                                     if (tank.getFluidAmount() >= 1) {
                                         tank.getFluid().amount -= 1;
-                                        ((IFluidHandler) tile).fill(EnumFacing.UP, new FluidStack(FluidRegistry.WATER, 1), true);
+                                        ((IFluidHandler) tile).fill(new FluidStack(FluidRegistry.WATER, 1), true);
                                     }
                                 }
                             }
@@ -99,6 +107,41 @@ public class TileEntityWell extends TileEntityBasicMachine implements IFluidHand
     }
 
     @Override
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+        return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
+    }
+
+    @Override
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+            return (T) tank;
+        return super.getCapability(capability, facing);
+    }
+
+    @Override
+    public int getField(int id) {
+        switch (id){
+            case 0:
+                return tank.getFluidAmount();
+            case 1:
+                return tank.getCapacity();
+            default:
+                return 0;
+        }
+    }
+
+    @Override
+    public void setField(int id, int value) {
+        switch (id){
+            case 0:
+                tank = new FluidTank(FluidRegistry.WATER, value, 10000);
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound) {
         super.readFromNBT(nbtTagCompound);
 
@@ -117,12 +160,12 @@ public class TileEntityWell extends TileEntityBasicMachine implements IFluidHand
         return nbtTagCompound;
     }
 
-    /*@Override
+    @Override
     public int getSizeInventory() {
         return 3;
     }
 
-    @Override
+    /*@Override
     public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
         return 0;
     }
@@ -161,32 +204,24 @@ public class TileEntityWell extends TileEntityBasicMachine implements IFluidHand
     }
 
     @Override
-    public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
+    public IFluidTankProperties[] getTankProperties() {
+        return tank.getTankProperties();
+    }
+
+    @Override
+    public int fill(FluidStack resource, boolean doFill) {
         return 0;
     }
 
+    @Nullable
     @Override
-    public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain) {
+    public FluidStack drain(FluidStack resource, boolean doDrain) {
         return null;
     }
 
+    @Nullable
     @Override
-    public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
+    public FluidStack drain(int maxDrain, boolean doDrain) {
         return null;
-    }
-
-    @Override
-    public boolean canFill(EnumFacing from, Fluid fluid) {
-        return false;
-    }
-
-    @Override
-    public boolean canDrain(EnumFacing from, Fluid fluid) {
-        return false;
-    }
-
-    @Override
-    public FluidTankInfo[] getTankInfo(EnumFacing from) {
-        return new FluidTankInfo[]{tank.getInfo()};
     }
 }

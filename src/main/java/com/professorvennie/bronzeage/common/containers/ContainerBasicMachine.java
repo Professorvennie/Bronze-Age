@@ -1,6 +1,5 @@
 package com.professorvennie.bronzeage.common.containers;
 
-import com.professorvennie.bronzeage.api.steam.SteamTank;
 import com.professorvennie.bronzeage.tileentitys.TileEntityBasicSteamMachine;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;

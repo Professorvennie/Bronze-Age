@@ -41,7 +41,7 @@ public class GuiBasicSteamMachine extends GuiBase {
         super.drawGuiContainerBackgroundLayer(p_146976_1_, p_146976_2_, p_146976_3_);
 
         if (basicSteamMachine != null) {
-            GL11.glColor4f(0.97F, 0.00F, 0F, 1F);
+            GL11.glColor4f(0.0f, 0.5F, 1.0f, 1F);
             Minecraft.getMinecraft().getTextureManager().bindTexture(elements);
             drawTexturedModalRect(guiLeft + 176, guiTop + 31, 0, 93, 28, 28);
         }

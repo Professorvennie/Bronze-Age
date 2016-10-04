@@ -6,7 +6,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 /**
  * Created by ProfessorVennie on 11/20/2014 at 6:59 PM.
  */
-public interface ISteamBoiler extends IFluidHandler, ISteamHandler {
+public interface ISteamBoiler extends ISteamHandler {
 
     public FluidTank getWaterTank();
 

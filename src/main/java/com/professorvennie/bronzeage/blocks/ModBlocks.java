@@ -14,10 +14,10 @@ import net.minecraftforge.fml.common.registry.IForgeRegistryEntry;
 public class ModBlocks {
 
     public static BlockBasicMachine steamBoilerIdle;
-    public static Block steamFurnace;
-    public static Block steamExtractor;
-    public static Block steamGrinder;
-    public static Block steamWashPlant;
+    public static BlockBasicMachine steamFurnace;
+    public static BlockBasicMachine steamExtractor;
+    public static BlockBasicMachine steamGrinder;
+    public static BlockBasicMachine steamWashPlant;
 
     public static Block well;
     public static Block wellPipe;
@@ -27,17 +27,47 @@ public class ModBlocks {
 
     public static BlockOre ore;
 
-    public static Block wrenchRepair;
-    public static Block charger;
+    public static BlockBasicMachine wrenchRepair;
+    public static BlockBasicMachine charger;
 
     public static void init() {
 
-        steamBoilerIdle = register(new BlockSteamBoiler());
-        GameRegistry.register(new ItemBasicMachine(steamBoilerIdle));
-        steamFurnace = register(new BlockSteamFurnace());
-        steamExtractor = register(new BlockSteamExtractor());
-        steamGrinder = register(new BlockSteamGrinder());
-        steamWashPlant = register(new BlockSteamWashPlant());
+        steamBoilerIdle = new BlockSteamBoiler();
+        ItemBasicMachine basicMachineBoiler = new ItemBasicMachine(steamBoilerIdle);
+        GameRegistry.register(steamBoilerIdle);
+        GameRegistry.register(basicMachineBoiler);
+        steamBoilerIdle.registerItemModel(basicMachineBoiler);
+
+        steamFurnace = new BlockSteamFurnace();
+        ItemBasicMachine furnace = new ItemBasicMachine(steamFurnace);
+        GameRegistry.register(steamFurnace);
+        GameRegistry.register(furnace);
+        steamFurnace.registerItemModel(furnace);
+
+
+        steamExtractor = new BlockSteamExtractor();
+        ItemBasicMachine extractor = new ItemBasicMachine(steamExtractor);
+        GameRegistry.register(steamExtractor);
+        GameRegistry.register(extractor);
+        steamExtractor.registerItemModel(extractor);
+
+        steamGrinder = new BlockSteamGrinder();
+        ItemBasicMachine grinder = new ItemBasicMachine(steamGrinder);
+        GameRegistry.register(steamGrinder);
+        GameRegistry.register(grinder);
+        steamGrinder.registerItemModel(grinder);
+
+        charger = new BlockSteamCharger();
+        ItemBasicMachine chargerItem = new ItemBasicMachine(charger);
+        GameRegistry.register(charger);
+        GameRegistry.register(chargerItem);
+        charger.registerItemModel(chargerItem);
+
+        steamWashPlant = new BlockSteamWashPlant();
+        ItemBasicMachine washPlant = new ItemBasicMachine(steamWashPlant);
+        GameRegistry.register(steamWashPlant);
+        GameRegistry.register(washPlant);
+        steamWashPlant.registerItemModel(washPlant);
 
         well = register(new BlockWell());
         wellPipe = register(new BlockWellPipe());
@@ -45,8 +75,6 @@ public class ModBlocks {
         steamReceiver = register(new BlockSteamReceiver());
         steamTransmitter = register(new BlockSteamTransmitter());
 
-        wrenchRepair = register(new BlockWrenchRepairer());
-        charger = register(new BlockSteamCharger());
 
         ore = new BlockOre();
         GameRegistry.register(ore);

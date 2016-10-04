@@ -32,7 +32,7 @@ public class GuiWell extends GuiBase {
         if (entity.tank.getFluidAmount() > 0 || (entity.tank.getFluid() != null && entity.tank.getFluid().getFluid() != null)) {
             text.clear();
             text.add(entity.tank.getFluid().getFluid().getLocalizedName(null));
-            text.add(entity.tank.getFluidAmount() + "/" + entity.tank.getCapacity() + "mB");
+            text.add(entity.getField(0) + "/" + entity.getField(1) + "mB");
             drawToolTipOverArea(mouseX, mouseY, 11, 8, 26, 73, text, fontRendererObj);
         } else {
             text.clear();

@@ -7,7 +7,7 @@
     "variant": {
       "copper": {
         "textures": {
-          "layer0": "bronzeage:items/materials/ingotCopper.png"
+          "layer0": "bronzeage:items/materials/ingotCopper"
         }
       },
       "tin": {

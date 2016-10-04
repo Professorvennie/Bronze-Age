@@ -12,8 +12,8 @@ public class TileEntityMod extends TileEntity {
 
     protected String customName;
 
-    public TileEntityMod() {
-        customName = "";
+    public TileEntityMod(String name) {
+        customName = name;
     }
 
     public String getCustomName() {

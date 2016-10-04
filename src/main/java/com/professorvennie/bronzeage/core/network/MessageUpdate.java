@@ -52,9 +52,10 @@ public class MessageUpdate extends MessageCoords implements IMessage {
         public IMessage onMessage(MessageUpdate message, MessageContext ctx) {
             if (ctx.getServerHandler().playerEntity.worldObj.getTileEntity(new BlockPos(message.x, message.y, message.z)) instanceof TileEntitySteamBoiler){
                 TileEntitySteamBoiler boiler = (TileEntitySteamBoiler)ctx.getServerHandler().playerEntity.worldObj.getTileEntity(new BlockPos(message.x, message.y, message.z));
+                System.out.println("Boiler Amount: " + boiler.getSteamAmount() + "  Boiler getFeild: " + boiler.getField(2) + "  MessageSteam: " + message.steam);
                 //boiler.temp = message.temp;
                 //boiler.burnTime = message.burnTime;
-                boiler.steamTank.steamAmount = message.steam;
+                boiler.setSteamAmount(message.steam);
             }
             return null;
         }

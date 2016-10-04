@@ -2,11 +2,15 @@ package com.professorvennie.bronzeage.tileentitys;
 
 import com.professorvennie.bronzeage.api.steam.ISteamBoiler;
 import com.professorvennie.bronzeage.api.steam.ISteamHandler;
-import com.professorvennie.bronzeage.api.steam.ISteamTank;
-import com.professorvennie.bronzeage.api.steam.SteamTank;
+import com.professorvennie.bronzeage.blocks.fluids.ModFluids;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
+
+import javax.annotation.Nullable;
 
 /**
  * Created by ProfessorVennie on 10/21/2014 at 8:03 PM.
@@ -14,10 +18,11 @@ import net.minecraft.util.math.BlockPos;
 public class TileEntitySteamPipe extends TileEntityMod implements ISteamHandler, ITickable {
 
     public EnumFacing[] connections = new EnumFacing[6];
-    private SteamTank steamTank;
+    private FluidTank steamTank;
 
     public TileEntitySteamPipe() {
-        steamTank = new SteamTank(0, 1000);
+        super("steamCable");
+        steamTank = new FluidTank(ModFluids.steam, 0, 10000);
     }
 
     @Override
@@ -39,35 +44,33 @@ public class TileEntitySteamPipe extends TileEntityMod implements ISteamHandler,
     }
 
     @Override
-    public ISteamTank getSteamTank() {
+    public FluidTank getSteamTank() {
         return steamTank;
     }
 
     @Override
     public boolean canFill(EnumFacing direction, int amount) {
-        return steamTank.getAmount() + amount <= steamTank.getCapacity();
+        return false;
     }
 
     @Override
     public boolean canDrain(EnumFacing direction, int amount) {
-        return steamTank.getAmount() - amount >= 0;
+        return false;
     }
 
     @Override
     public void fill(EnumFacing direction, int amount) {
-        if (canFill(direction, amount))
-            steamTank.fill(amount);
+
     }
 
     @Override
     public void drain(EnumFacing direction, int amount) {
-        if (canDrain(direction, amount))
-            steamTank.drain(amount);
+
     }
 
     @Override
     public int getSteamAmount() {
-        return steamTank.getAmount();
+        return 0;
     }
 
     @Override
@@ -78,5 +81,27 @@ public class TileEntitySteamPipe extends TileEntityMod implements ISteamHandler,
     @Override
     public int getSteamCapacity() {
         return steamTank.getCapacity();
+    }
+
+    @Override
+    public IFluidTankProperties[] getTankProperties() {
+        return new IFluidTankProperties[0];
+    }
+
+    @Override
+    public int fill(FluidStack resource, boolean doFill) {
+        return 0;
+    }
+
+    @Nullable
+    @Override
+    public FluidStack drain(FluidStack resource, boolean doDrain) {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public FluidStack drain(int maxDrain, boolean doDrain) {
+        return null;
     }
 }

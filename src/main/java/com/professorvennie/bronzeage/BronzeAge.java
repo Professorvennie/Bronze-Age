@@ -1,6 +1,7 @@
 package com.professorvennie.bronzeage;
 
 import com.professorvennie.bronzeage.blocks.ModBlocks;
+import com.professorvennie.bronzeage.blocks.fluids.ModFluids;
 import com.professorvennie.bronzeage.client.handlers.HudHandler;
 import com.professorvennie.bronzeage.core.config.ConfigHandler;
 import com.professorvennie.bronzeage.core.creativetab.CreativeTab;
@@ -38,10 +39,12 @@ public class BronzeAge {
 
     public static GuiHandler guiHandler = new GuiHandler();
 
+
     @Mod.EventHandler
     public static void preInit(FMLPreInitializationEvent event) {
         ModBlocks.init();
         ModItems.init();
+        ModFluids.init();
         PacketHandler.init();
         ConfigHandler.init(event.getSuggestedConfigurationFile());
         MinecraftForge.EVENT_BUS.register(new ConfigHandler());

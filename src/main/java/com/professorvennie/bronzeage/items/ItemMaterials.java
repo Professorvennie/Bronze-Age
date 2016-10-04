@@ -2,10 +2,16 @@ package com.professorvennie.bronzeage.items;
 
 
 import com.professorvennie.bronzeage.BronzeAge;
+import com.professorvennie.bronzeage.lib.Reference;
+import net.minecraft.client.renderer.ItemMeshDefinition;
+import net.minecraft.client.renderer.block.model.ModelBakery;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -32,7 +38,7 @@ public class ItemMaterials extends ItemBase {
 
     @Override
     public void registerItemModel() {
-        BronzeAge.proxey.registerItemRenderer(this, getDamage(new ItemStack(this)), getUnlocalizedName(new ItemStack(this)));
+
     }
 
     @Override

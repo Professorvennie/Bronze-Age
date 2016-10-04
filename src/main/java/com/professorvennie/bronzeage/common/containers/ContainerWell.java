@@ -56,23 +56,19 @@ public class ContainerWell extends Container {
             IContainerListener icrafting = (IContainerListener) this.listeners.get(i);
 
             if (lastTankAmount != tile.tank.getFluidAmount())
-                icrafting.sendProgressBarUpdate(this, 0, tile.tank.getFluidAmount());
+                icrafting.sendProgressBarUpdate(this, 0, tile.getField(0));
 
             if (lastPipes != tile.getAmountOfPipes())
                 icrafting.sendProgressBarUpdate(this, 1, tile.getAmountOfPipes());
         }
-        lastTankAmount = tile.tank.getFluidAmount();
+        lastTankAmount = tile.getField(0);
         lastPipes = tile.getAmountOfPipes();
     }
 
     @SideOnly(Side.CLIENT)
     public void updateProgressBar(int slot, int par2) {
         super.updateProgressBar(slot, par2);
-        if (slot == 0) {
-            if (tile.tank.getFluid() != null)
-                tile.tank.getFluid().amount = par2;
-
-        }
+        tile.setField(slot, par2);
         if (slot == 1)tile.setAmountOfPipes(par2);
     }
 

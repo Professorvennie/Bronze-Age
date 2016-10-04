@@ -6,6 +6,9 @@ import com.professorvennie.bronzeage.api.wrench.IWrenchable;
 import com.professorvennie.bronzeage.api.wrench.WrenchMaterial;
 import com.professorvennie.bronzeage.lib.Reference;
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.ItemMeshDefinition;
+import net.minecraft.client.renderer.block.model.ModelBakery;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,27 +18,64 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Created by ProfessorVennie on 11/26/2014 at 11:50 PM.
  */
 public class ItemWrench extends ItemBase implements IWrench {
 
-    private final int numOfWrenches = 6;
-
     public ItemWrench() {
         super("wrench");
         setHasSubtypes(true);
         setMaxStackSize(1);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerItemModel() {
+        ModelResourceLocation stone = new ModelResourceLocation(getRegistryName() + "_stone");
+        ModelResourceLocation tin = new ModelResourceLocation(getRegistryName() + "_tin");
+
+        ModelBakery.registerItemVariants(this, stone, tin);
+
+        ModelLoader.setCustomMeshDefinition(this, stack -> {
+            switch (stack.getItemDamage()){
+                case 0:
+                    System.out.println("STONEE");
+                    return stone;
+                case 1:
+                    System.out.println("TINNI");
+                    return tin;
+                case 2:
+                    System.out.println("copper ");
+                    return null;
+                case 3:
+                    System.out.println("iron");
+                    return null;
+                case 4:
+                    System.out.println("bronze");
+                    return null;
+                case 5:
+                    System.out.println("diamond");
+                    return null;
+                default:
+                    return null;
+
+            }
+        });
     }
 
     @Override
@@ -48,8 +88,8 @@ public class ItemWrench extends ItemBase implements IWrench {
     @Override
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs tab, List list) {
-        for (int i = 0; i < numOfWrenches; i++) {
-            list.add(new ItemStack(item, 1, i));
+        for (int i = 0; i < EnumType.values().length; i++) {
+            list.add(new ItemStack(item, 1, EnumType.META_LOOKUP[i].getMeta()));
         }
     }
 
@@ -115,23 +155,27 @@ public class ItemWrench extends ItemBase implements IWrench {
                     subtractUse(itemStack, rotate);
                     Block block = world.getBlockState(pos).getBlock();
                     block.rotateBlock(world, pos, EnumFacing.getFront(side.getIndex()).getOpposite());
+                    return EnumActionResult.SUCCESS;
                 }else if(usesRemaining == 0){
                     initNBT(itemStack);
                     itemStack.getTagCompound().setBoolean("isBroken", true);
+                    return EnumActionResult.FAIL;
                 }
             }
         } else {
-            if (world.getBlockState(pos) instanceof IWrenchable) {
-                IWrenchable wrenchable = (IWrenchable) world.getBlockState(pos);
+            if (world.getBlockState(pos).getBlock() instanceof IWrenchable) {
+                IWrenchable wrenchable = (IWrenchable) world.getBlockState(pos).getBlock();
 
                 if (usesRemaining - dismanlt >= 0 && !world.isRemote) {
                     subtractUse(itemStack, dismanlt);
                     if (!world.isRemote) {
                         wrenchable.dismantle(world, player, itemStack, pos.getX(), pos.getY(), pos.getZ());
+                        return EnumActionResult.SUCCESS;
                     }
                 }else if(usesRemaining == 0){
                     initNBT(itemStack);
                     itemStack.getTagCompound().setBoolean("isBroken", true);
+                    return EnumActionResult.FAIL;
                 }
             }
         }
@@ -139,9 +183,10 @@ public class ItemWrench extends ItemBase implements IWrench {
         if(!(usesRemaining - dismanlt >= 0 && usesRemaining - rotate >= 0)){
             initNBT(itemStack);
             itemStack.getTagCompound().setBoolean("isBroken", true);
+            return EnumActionResult.FAIL;
         }
 
-        return super.onItemUse(itemStack, player, world, pos, hand, side, hitX, hitY, hitZ);
+        return EnumActionResult.PASS;
     }
 
     @Override
@@ -228,6 +273,43 @@ public class ItemWrench extends ItemBase implements IWrench {
         if (itemStack.getTagCompound() == null) {
             itemStack.setTagCompound(new NBTTagCompound());
             itemStack.getTagCompound().setFloat("NumOfUsesRemaining", getWrenchMaterial(itemStack).getNumOfUses());
+        }
+    }
+
+    public enum EnumType implements IStringSerializable {
+
+        STONE(0, "stone"),
+        TIN(1, "tin"),
+        COPPER(2, "copper"),
+        IRON(3, "iron"),
+        BRONZE(4, "bronze"),
+        DIAMOND(5, "diamond");
+
+        private static final ItemWrench.EnumType[] META_LOOKUP = Stream.of(values()).sorted(Comparator.comparing(ItemWrench.EnumType::getMeta)).toArray(ItemWrench.EnumType[]::new);
+
+        private final int meta;
+        private final String name;
+
+        EnumType(int meta, String name) {
+            this.meta = meta;
+            this.name = name;
+        }
+
+        public int getMeta() {
+            return meta;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        public static ItemWrench.EnumType byMetadata(int meta) {
+            if (meta < 0 || meta >= META_LOOKUP.length) {
+                meta = 0;
+            }
+
+            return META_LOOKUP[meta];
         }
     }
 }

@@ -22,7 +22,7 @@ public class TileEntitySteamGrinder extends TileEntityBasicSteamMachine {
                 if(getProgress() == getMachineSpeed()){
                     grindItem();
                     resetProgress();
-                    getSteamTank().drain(1000);
+                    getSteamTank().drain(1000, true);
                 }
             }
         }

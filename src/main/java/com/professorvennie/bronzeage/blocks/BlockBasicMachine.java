@@ -63,6 +63,10 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
         BronzeAge.guiHandler.registerHandler(getGuiId(), this);
     }
 
+    public void registerItemModel(ItemBlock itemBlock) {
+        BronzeAge.proxey.registerItemRenderer(itemBlock, 0, name);
+    }
+
     @Override
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
         TileEntity tileEntity = worldIn.getTileEntity(pos);
@@ -199,7 +203,7 @@ public abstract class BlockBasicMachine extends Block implements ITileEntityProv
             if (world.getTileEntity(pos) instanceof ISteamBoiler) {
                 ((ISteamBoiler) world.getTileEntity(pos)).getWaterTank().writeToNBT(block.getTagCompound());
                 ((ISteamBoiler) world.getTileEntity(pos)).getSteamTank().writeToNBT(block.getTagCompound());
-                wrench.getTagCompound().setInteger("temp", ((ISteamBoiler) world.getTileEntity(pos)).getTemperature());
+                block.getTagCompound().setInteger("temp", ((ISteamBoiler) world.getTileEntity(pos)).getTemperature());
             }
 
             if (world.getTileEntity(pos) instanceof TileEntityBasicSteamMachine) {

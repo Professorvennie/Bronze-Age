@@ -1,11 +1,13 @@
 package com.professorvennie.bronzeage.blocks;
 
+import com.professorvennie.bronzeage.BronzeAge;
 import com.professorvennie.bronzeage.api.enums.RedstoneMode;
 import com.professorvennie.bronzeage.api.steam.ISteamBoiler;
 import com.professorvennie.bronzeage.tileentitys.TileEntityBasicSteamMachine;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -28,6 +30,7 @@ public class ItemBasicMachine extends ItemBlock {
         super(block);
         setUnlocalizedName(block.getUnlocalizedName());
         setRegistryName(block.getUnlocalizedName());
+       // BronzeAge.proxey.registerItemRenderer(Item.getItemFromBlock(block), block.getMetaFromState(block.getDefaultState()), block.getUnlocalizedName());
     }
 
     @Override
@@ -64,7 +67,6 @@ public class ItemBasicMachine extends ItemBlock {
         return result;
     }
 
-    //// TODO: FIX THIS
     @Override
     public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean b) {
         if (itemStack.getTagCompound() != null) {

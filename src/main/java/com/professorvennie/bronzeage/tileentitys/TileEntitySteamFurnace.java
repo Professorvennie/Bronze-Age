@@ -24,11 +24,11 @@ public class TileEntitySteamFurnace extends TileEntityBasicSteamMachine {
                 if(getProgress() == getMachineSpeed()) {
                     smeltItem();
                     resetProgress();
-                    getSteamTank().drain(1000);
+                    getSteamTank().drain(1000, true);
                 }
 
                 if (!worldObj.isRemote && inventory[0] != null && inventory[0].getItem() == Items.DIAMOND)
-                    steamTank.steamAmount = steamTank.getCapacity();
+                    setSteamAmount(10000);
             }else
                 isActive = false;
         }
