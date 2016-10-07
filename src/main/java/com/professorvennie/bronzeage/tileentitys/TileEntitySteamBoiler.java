@@ -359,8 +359,10 @@ public class TileEntitySteamBoiler extends TileEntityBasicSteamMachine implement
 
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && facing == EnumFacing.DOWN)
             return (T) waterTank;
+        else if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && facing == EnumFacing.UP)
+            return (T) steamTank;
         return super.getCapability(capability, facing);
     }
 }

@@ -9,12 +9,14 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 public class ModItems {
 
     public static Item manual;
-    public static Item wrench;
+    public static ItemBase wrench;
     public static Item materials;
 
     public static void init() {
         manual = register(new ItemManual());
-        wrench = register(new ItemWrench());
+        wrench = new ItemWrench();
+        GameRegistry.register(wrench);
+        wrench.registerItemModel();
         materials = register(new ItemMaterials());
     }
 

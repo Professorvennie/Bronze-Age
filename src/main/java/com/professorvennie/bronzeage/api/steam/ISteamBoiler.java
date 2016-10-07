@@ -8,13 +8,13 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
  */
 public interface ISteamBoiler extends ISteamHandler {
 
-    public FluidTank getWaterTank();
+    FluidTank getWaterTank();
 
-    public int getWaterAmount();
+    int getWaterAmount();
 
-    public int getWaterCapacity();
+    int getWaterCapacity();
 
-    public int getTemperature();
+    int getTemperature();
 
-    public void setTemperature(int temperature);
+    void setTemperature(int temperature);
 }

@@ -7,13 +7,13 @@ import net.minecraft.item.ItemStack;
  */
 public interface ISteamUsingItem {
 
-    public int getSteamCapacity();
+    int getSteamCapacity();
 
-    public void receiveSteam(ItemStack itemStack, int amount);
+    void receiveSteam(ItemStack itemStack, int amount);
 
-    public void extractSteam(ItemStack itemStack, int amount);
+    void extractSteam(ItemStack itemStack, int amount);
 
-    public boolean canExtract();
+    boolean canExtract();
 
-    public boolean canReceive();
+    boolean canReceive();
 }

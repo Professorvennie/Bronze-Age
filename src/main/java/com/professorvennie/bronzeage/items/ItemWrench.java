@@ -15,10 +15,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.translation.I18n;
@@ -46,25 +43,25 @@ public class ItemWrench extends ItemBase implements IWrench {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerItemModel() {
-        ModelResourceLocation stone = new ModelResourceLocation(getRegistryName() + "_stone");
+        ModelResourceLocation stone = new ModelResourceLocation(getRegistryName() + "_stone", "inventory");
         ModelResourceLocation tin = new ModelResourceLocation(getRegistryName() + "_tin");
+        ModelResourceLocation copper = new ModelResourceLocation(getRegistryName() + "_copper");
+        ModelResourceLocation iron = new ModelResourceLocation(getRegistryName() + "_iron");
 
-        ModelBakery.registerItemVariants(this, stone, tin);
+        ModelBakery.registerItemVariants(this, stone, tin, copper, iron);
 
         ModelLoader.setCustomMeshDefinition(this, stack -> {
             switch (stack.getItemDamage()){
                 case 0:
-                    System.out.println("STONEE");
                     return stone;
                 case 1:
-                    System.out.println("TINNI");
                     return tin;
                 case 2:
                     System.out.println("copper ");
-                    return null;
+                    return copper;
                 case 3:
                     System.out.println("iron");
-                    return null;
+                    return iron;
                 case 4:
                     System.out.println("bronze");
                     return null;
@@ -89,7 +86,7 @@ public class ItemWrench extends ItemBase implements IWrench {
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs tab, List list) {
         for (int i = 0; i < EnumType.values().length; i++) {
-            list.add(new ItemStack(item, 1, EnumType.META_LOOKUP[i].getMeta()));
+            list.add(new ItemStack(item, 1, i));
         }
     }
 
@@ -123,13 +120,11 @@ public class ItemWrench extends ItemBase implements IWrench {
             list.add(TextFormatting.GOLD + translate("rotation") + ": " + TextFormatting.DARK_AQUA + getWrenchMaterial(itemStack).getUsesPerRotation());
             list.add(TextFormatting.GOLD + translate("dismantle") + ": " + TextFormatting.DARK_AQUA + getWrenchMaterial(itemStack).getUsesPerDismantle());
             list.add(TextFormatting.GOLD + translate("durability") + ": " + TextFormatting.DARK_AQUA + getDurability(itemStack));
-
         } else {
             list.add(TextFormatting.GOLD + translate("numOfUses") + ": " + TextFormatting.DARK_AQUA + getNumOfUsesRemaining(itemStack));
             list.add(TextFormatting.DARK_GRAY + translate("hold") + " " + TextFormatting.DARK_AQUA + translate("shift") + " " + TextFormatting.DARK_GRAY + translate("moreInfo"));
             list.add(TextFormatting.DARK_GRAY + translate("hold") + " " + TextFormatting.DARK_AQUA + translate("shiftandh") + " " + TextFormatting.DARK_GRAY + translate("helpInfo"));
         }
-
         if ((Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) && Keyboard.isKeyDown(Keyboard.KEY_H)) {
             list.add(TextFormatting.DARK_GRAY + translate("info.0"));
             list.add(TextFormatting.DARK_GRAY + translate("info.1"));
